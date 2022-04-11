@@ -131,6 +131,7 @@ class RemoteScan(Scan):
 
         current_machine_id = str(return_current_machine_id(self))
 
+        # create the threadpool
         threads = []
 
         args = ([self, update_db_n_seconds, current_machine_id,self.stage])
@@ -145,5 +146,6 @@ class RemoteScan(Scan):
         thread.start()
         threads.append(thread)
 
+        # excecute the threadpool
         for t in threads:
             t.join()
