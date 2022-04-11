@@ -1,0 +1,6 @@
+talos
+numpy
+pandas
+paramiko
+sqlalchemy
+sqlalchemy_utils
