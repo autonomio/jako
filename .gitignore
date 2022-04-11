@@ -1,0 +1,17 @@
+.DS_Store
+*.pyc
+__pycache__
+*.csv
+*.log
+dist/
+jako.egg-info
+.idea/
+*.zip
+*_.csv
+*.txt
+*.h5
+*.json
+*.npy
+test.sh
+.vscode
+.test_*
