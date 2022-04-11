@@ -13,14 +13,18 @@ def test_distribute():
     y = dataset[:, 8]
 
     def diabetes(x_train, y_train, x_val, y_val, params):
-        
+
         from tensorflow.keras.models import Sequential
         from tensorflow.keras.layers import Dense
 
         model = Sequential()
-        model.add(Dense(params['first_neuron'], input_dim=8, activation=params['activation']))
+        model.add(Dense(params['first_neuron'],
+                        input_dim=8,
+                        activation=params['activation']))
         model.add(Dense(1, activation='sigmoid'))
-        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+        model.compile(loss='binary_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])
 
         out = model.fit(x=x,
                         y=y,
@@ -41,5 +45,6 @@ def test_distribute():
                         model=diabetes,
                         experiment_name='diabetes_test',
                         config='config.json')
+
 
 test_distribute()
