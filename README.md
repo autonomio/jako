@@ -51,7 +51,7 @@ Jako works on **Linux, Mac OSX**, and **Windows** systems and can be operated cp
 
 ### :arrow_forward: Examples
 
-All of the below <strong>Talos</strong> examples will work, simply change `talos.Scan()` to `talos.DistributedScan` or `jako.DistributedScan` and you're good to go.
+All of the below <strong>Talos</strong> examples will work, simply change `talos.Scan()` to `talos.DistributedScan()` or `jako.DistributedScan()` and you're good to go.
 
 Get the below code [here](https://gist.github.com/mikkokotila/4c0d6298ff0a22dc561fb387a1b4b0bb). More examples further below.
 
