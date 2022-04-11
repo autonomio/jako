@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://autonom.io"><img src="https://raw.githubusercontent.com/autonomio/talos/master/assets/Jako-Logo-NoBg.png" alt="Jako" width="250"></a>
+  <a href="http://autonom.io"><img src="https://raw.githubusercontent.com/autonomio/jako/main/assets/Jako-Logo-NoBg.png" alt="Jako" width="250"></a>
   <br>
 </h1>
 
