@@ -3,7 +3,7 @@ def test_distribute():
     '''Test distributing a Talos experiment'''
 
     from numpy import loadtxt
-    from talos import DistributedScan
+    from jako import DistributedScan
 
     url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
 
