@@ -39,6 +39,7 @@ def test_distribute():
                         y=y,
                         params=p,
                         model=diabetes,
-                        experiment_name='diabetes_test')
+                        experiment_name='diabetes_test',
+                        config='config.json')
 
 test_distribute()
