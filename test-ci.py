@@ -40,12 +40,12 @@ def test_distribute():
          'activation': ['relu', 'elu'],
          'batch_size': [10, 20, 40]}
 
-    _t = DistributedScan(x=x,
-                         y=y,
-                         params=p,
-                         model=diabetes,
-                         experiment_name='diabetes_test',
-                         config='config.json')
+    _ = DistributedScan(x=x,
+                        y=y,
+                        params=p,
+                        model=diabetes,
+                        experiment_name='diabetes_test',
+                        config='config.json')
 
 
 test_distribute()
