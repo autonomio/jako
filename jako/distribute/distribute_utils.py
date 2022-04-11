@@ -72,28 +72,29 @@ def return_central_machine_id(self):
 
 
 def read_config(self,remote=False):
-    '''read config from file'''
-    if remote:
-        
+    
+    '''Read config from file'''
+    
+    if remote:    
         config_path="tmp/remote_config.json"
+    
     else: 
-        
         config_path="config.json"
         
     with open(config_path, 'r') as f:
         config_data = json.load(f)
+        
     return config_data
 
 
 def write_config(self, new_config,remote=False):
+    
     ''' write config to file'''
     
-    if remote:
-        
+    if remote:    
         config_path="tmp/remote_config.json"
         
-    else: 
-        
+    else:
         config_path="config.json"
         
     with open(config_path, 'w') as outfile:
@@ -101,40 +102,47 @@ def write_config(self, new_config,remote=False):
 
 
 def ssh_connect(self):
+    
     '''
     Returns
     -------
     clients | `list` | List of client objects of machines after connection.
 
     '''
+    
     configs = self.config_data['machines']
     clients = {}
+    
     for config in configs:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         host = config['TALOS_IP_ADDRESS']
         port = config['TALOS_PORT']
         username = config['TALOS_USER']
+        
         if 'TALOS_PASSWORD' in config.keys():
             password = config['TALOS_PASSWORD']
             client.connect(host, port, username, password)
+        
         elif 'TALOS_KEY_FILENAME' in config.keys():
-            client.connect(
-                host, port, username, key_filename=config['TALOS_KEY_FILENAME']
-            )
+            client.connect(host, port, username, key_filename=config['TALOS_KEY_FILENAME'])
 
         clients[config['machine_id']] = client
+    
     return clients
 
 
 def ssh_file_transfer(self, client, machine_id):
+    
     '''transfer the current talos script to the remote machines'''
+    
     create_temp_file(self)
 
     sftp = client.open_sftp()
 
     try:
         sftp.chdir(self.dest_dir)  # Test if dest dir exists
+    
     except IOError:
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
@@ -147,8 +155,9 @@ def ssh_file_transfer(self, client, machine_id):
 
 
 def ssh_run(self, client, machine_id):
-    '''
-
+    
+    '''Run the transmitted script remotely without args and show its output.
+    
     Parameters
     ----------
     client | `Object` | paramiko ssh client object
@@ -160,22 +169,20 @@ def ssh_run(self, client, machine_id):
     None.
 
     '''
-    # Run the transmitted script remotely without args and show its output.
-    # SSHClient.exec_command() returns the tuple (stdin,stdout,stderr)'''
 
-    stdin, stdout, stderr = client.exec_command(
-        'python3 tmp/scanfile_remote.py')
+    stdin, stdout, stderr = client.exec_command('python3 tmp/scanfile_remote.py')
+    
     if stderr:
         for line in stderr:
             try:
-                # Process each error  line in the remote output
+                # Process each error line in the remote output
                 print(line)
             except:
                 print('Cannot Output error')
 
     for line in stdout:
         try:
-            # Process each  line in the remote output
+            # Process each line in the remote output
             print(line)
         except:
             print('Cannot Output error')
@@ -183,7 +190,7 @@ def ssh_run(self, client, machine_id):
 
 def fetch_latest_file(self):
 
-    # fetch the latest csv for an experiment'''
+    '''Fetch the latest csv for an experiment'''
 
     experiment_name = self.experiment_name
     save_timestamp = self.save_timestamp
@@ -198,7 +205,6 @@ def fetch_latest_file(self):
     ]
 
     if filelist:
-
         latest_filepath = max(filelist, key=os.path.getmtime)
         try:
             results_data = pd.read_csv(latest_filepath)
@@ -222,8 +228,7 @@ def get_experiment_stage(self,db):
 
 def add_experiment_id(self, results_data, machine_id,start_row,end_row,db,stage):
 
-    # generate experiment id from model id and row number'''
-    # results_data = results_data.drop(['experiment_id'], axis=1, errors='ignore')
+    '''Generate experiment id from model id and row number'''
 
     try:
         ids = db.return_existing_experiment_ids()
