@@ -5,7 +5,8 @@ def test_distribute():
     from numpy import loadtxt
     from jako import DistributedScan
 
-    url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
+    url = 'https://raw.githubusercontent.com/'
+    url += 'jbrownlee/Datasets/master/pima-indians-diabetes.data.csv'
 
     dataset = loadtxt(url, delimiter=',')
 
@@ -39,12 +40,12 @@ def test_distribute():
          'activation': ['relu', 'elu'],
          'batch_size': [10, 20, 40]}
 
-    t = DistributedScan(x=x,
-                        y=y,
-                        params=p,
-                        model=diabetes,
-                        experiment_name='diabetes_test',
-                        config='config.json')
+    _t = DistributedScan(x=x,
+                         y=y,
+                         params=p,
+                         model=diabetes,
+                         experiment_name='diabetes_test',
+                         config='config.json')
 
 
 test_distribute()
