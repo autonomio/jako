@@ -1,5 +1,5 @@
 import time
-from .distribute_utils import read_config, write_config, add_experiment_id, fetch_latest_file
+from .distribute_utils import read_config, write_config, add_experiment_id, add_timestamp, fetch_latest_file
 
 
 def get_db_object(self):
@@ -84,6 +84,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                     end_row = len(results_data)
 
                     if start_row != end_row and end_row > start_row:
+                        results_data = add_timestamp(self, results_data)
                         results_data = add_experiment_id(self,
                                                          results_data,
                                                          current_machine_id,
@@ -109,7 +110,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                     end_row = len(results_data)
 
                     if start_row != end_row and end_row > start_row:
-
+                        results_data = add_timestamp(self, results_data)
                         results_data = add_experiment_id(self,
                                                          results_data,
                                                          current_machine_id,

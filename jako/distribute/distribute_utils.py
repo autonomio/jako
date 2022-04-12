@@ -2,6 +2,7 @@ import json
 import paramiko
 import os
 import pandas as pd
+import datetime
 
 
 def create_temp_file(self):
@@ -212,6 +213,28 @@ def fetch_latest_file(self):
             return []
     else:
         return []
+
+
+def add_timestamp(self, results_data):
+    '''Adds timestamp to the DataFrame'''
+
+    ct = datetime.datetime.now()
+    hour = ct.hour
+    minute = ct.minute
+    day = ct.day
+    month = ct.month
+    year = ct.year
+
+    if minute < 10:
+        minute = '0' + str(minute)
+
+    if hour < 10:
+        hour = '0' + str(hour)
+
+    timestamp = "{}:{}/{}-{}-{}".format(hour, minute, day, month, year)
+    results_data["timestamp"] = [timestamp] * len(results_data)
+
+    return results_data
 
 
 def get_experiment_stage(self, db):
