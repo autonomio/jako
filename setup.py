@@ -51,7 +51,7 @@ if __name__ == '__main__':
         packages=[
             'jako',
             'jako.distribute',
-            'talos.database',
+            'jako.database',
         ],
         classifiers=[
             'Intended Audience :: Science/Research',
