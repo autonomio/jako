@@ -2,7 +2,6 @@ from talos import Scan
 
 
 class RemoteScan(Scan):
-    
     def __init__(self,
                  x,
                  y,
@@ -29,14 +28,13 @@ class RemoteScan(Scan):
                  print_params=False,
                  clear_session=True,
                  save_weights=True,
-                 config='tmp/remote_config.json'):
-        
+                 config='/tmp/remote_config.json'):
         '''Distributed version of talos.Scan() for the remote machines.
-        
+
         Parameters
         ----------
         params | `dict` | Hyperparameters for distribution.
-        config | str or dict | The default is 'tmp/remote_config.json'.
+        config | str or dict | The default is '/tmp/remote_config.json'.
 
         Returns
         -------
@@ -94,7 +92,7 @@ class RemoteScan(Scan):
 
         elif isinstance(config, dict):
             self.config_data = config
-            with open('tmp/remote_config.json', 'w') as outfile:
+            with open('/tmp/remote_config.json', 'w') as outfile:
                 json.dump(self.config_data, outfile, indent=2)
 
         else:
@@ -104,12 +102,12 @@ class RemoteScan(Scan):
             del self.config_data['finished_scan_run']
 
         config = self.config_data
-        
-        with open("tmp/arguments_remote.json" ,"r") as f:
-            arguments_dict=json.load(f)
-            
-        self.stage=arguments_dict["stage"]
-        
+
+        with open("/tmp/arguments_remote.json", "r") as f:
+            arguments_dict = json.load(f)
+
+        self.stage = arguments_dict["stage"]
+
         if 'run_central_node' in config.keys():
             run_central_node = config['run_central_node']
         else:
@@ -134,9 +132,9 @@ class RemoteScan(Scan):
         # create the threadpool
         threads = []
 
-        args = ([self, update_db_n_seconds, current_machine_id,self.stage])
+        args = ([self, update_db_n_seconds, current_machine_id, self.stage])
         thread = threading.Thread(target=update_db, args=args)
- 
+
         thread.start()
         threads.append(thread)
 

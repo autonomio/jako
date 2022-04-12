@@ -7,7 +7,6 @@ from .distribute_database import update_db
 
 
 def run_central_machine(self, n_splits, run_central_node):
-    
     '''Runs `talos.Scan()` in the central machine.
 
     Parameters
@@ -21,12 +20,11 @@ def run_central_machine(self, n_splits, run_central_node):
     '''
 
     machine_id = 0
-    
+
     run_scan(self, n_splits, run_central_node, machine_id)
 
 
 def distribute_run(self):
-
     '''
 
     Parameters
@@ -64,15 +62,15 @@ def distribute_run(self):
         clients = ssh_connect(self)
 
         for machine_id, client in clients.items():
-            
+
             new_config = config
             new_config['current_machine_id'] = machine_id
-            
-            with open('tmp/remote_config.json', 'w') as outfile:
+
+            with open('/tmp/remote_config.json', 'w') as outfile:
                 json.dump(new_config, outfile)
-            
+
             ssh_file_transfer(self, client, machine_id)
-        
+
         # create the threads
         threads = []
 
@@ -83,13 +81,13 @@ def distribute_run(self):
             thread.start()
             threads.append(thread)
 
-            args = ([self, update_db_n_seconds, current_machine_id,self.stage])
+            args = ([self, update_db_n_seconds, current_machine_id, self.stage])
             thread = threading.Thread(target=update_db, args=args)
             thread.start()
             threads.append(thread)
 
         for machine_id, client in clients.items():
-            
+
             args = (self, client, machine_id)
             thread = threading.Thread(target=ssh_run, args=args)
             thread.start()

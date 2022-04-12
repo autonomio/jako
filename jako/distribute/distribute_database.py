@@ -1,6 +1,6 @@
 import time
-import pandas as pd
 from .distribute_utils import read_config, write_config, add_experiment_id, fetch_latest_file
+
 
 def get_db_object(self):
     config = self.config_data
@@ -34,9 +34,9 @@ def get_db_object(self):
                   encoding=encoding)
 
     return db
-    
-def update_db(self, update_db_n_seconds, current_machine_id,stage):
-    
+
+
+def update_db(self, update_db_n_seconds, current_machine_id, stage):
     '''Make changes to the datastore based on a time interval
 
     Parameters
@@ -45,13 +45,14 @@ def update_db(self, update_db_n_seconds, current_machine_id,stage):
 
     Returns
     -------
-    db | Database object | Database object with engine 
+    db | Database object | Database object with engine
 
     '''
 
     # update the database every n seconds
     db = get_db_object(self)
     config = self.config_data
+
     def __start_upload(results_data):
         if len(results_data) > 0:
             db.write_to_db(results_data)
@@ -60,7 +61,7 @@ def update_db(self, update_db_n_seconds, current_machine_id,stage):
     start_time = int(self.save_timestamp)
 
     start_row = 0
-    end_row = 0 
+    end_row = 0
 
     while True:
 
@@ -79,45 +80,44 @@ def update_db(self, update_db_n_seconds, current_machine_id,stage):
                     continue
 
                 if len(results_data) > 0:
-                    start_row=end_row
-                    end_row=len(results_data)
-  
-                    if start_row!=end_row and end_row>start_row:
-                        
-                        results_data = add_experiment_id(self, 
-                                                         results_data, 
+                    start_row = end_row
+                    end_row = len(results_data)
+
+                    if start_row != end_row and end_row > start_row:
+                        results_data = add_experiment_id(self,
+                                                         results_data,
                                                          current_machine_id,
                                                          start_row,
                                                          end_row,
                                                          db,
                                                          stage)
-    
+
                         __start_upload(results_data)
-                    
+
                 if int(current_machine_id) == 0:
                     remote = False
                 else:
                     remote = True
-                    
-                new_config = read_config(self,remote)
+
+                new_config = read_config(self, remote)
 
                 if 'finished_scan_run' in new_config.keys():
 
                     results_data = fetch_latest_file(self)
-                    
+
                     start_row = end_row
                     end_row = len(results_data)
 
-                    if start_row != end_row and end_row>start_row:
-                    
+                    if start_row != end_row and end_row > start_row:
+
                         results_data = add_experiment_id(self,
-                                                         results_data, 
+                                                         results_data,
                                                          current_machine_id,
                                                          start_row,
                                                          end_row,
                                                          db,
                                                          stage)
-                       
+
                         __start_upload(results_data)
                         write_config(self, new_config)
                         print('Scan Run Finished in machine id : ' + current_machine_id)
@@ -131,5 +131,3 @@ def update_db(self, update_db_n_seconds, current_machine_id,stage):
 
             else:
                 print('Database credentials not given.')
-
-    

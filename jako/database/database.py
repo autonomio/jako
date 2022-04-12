@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database, drop_database
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy_utils import database_exists, drop_database
 from sqlalchemy.schema import DropTable
 
 
@@ -15,7 +14,6 @@ class Database:
                  database_name='EXPERIMENT_LOG',
                  table_name='experiment_log',
                  encoding='LATIN1'):
-
         '''
 
         Parameters
@@ -73,11 +71,10 @@ class Database:
         self.DB_URL = DB_URL
 
     def create_db(self):
-        
         '''
         Create database if it doesn't exists.
         '''
-        
+
         engine = create_engine(self.DB_URL, echo=False, isolation_level='AUTOCOMMIT')
 
         if not database_exists(engine.url):

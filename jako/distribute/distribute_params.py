@@ -3,7 +3,6 @@ from .distribute_utils import read_config, write_config
 
 
 def create_param_space(self, n_splits):
-    
     '''Creates the parameter space for each machine
 
     Parameters
@@ -12,7 +11,7 @@ def create_param_space(self, n_splits):
 
     Returns
     -------
-    param_grid | `list` of `dict` | Split parameter spaces for each machine to run.
+    param_grid | `list` of `dict` | Split parameter spaces for each machine.
 
     '''
 
@@ -40,20 +39,19 @@ def create_param_space(self, n_splits):
 
 
 def run_scan(self, machines, run_central_node, machine_id):
-    
     '''Run `talos.Scan()` on each machine.
 
     Parameters
     ----------
     machines | int |
-    run_central_node | bool | 
+    run_central_node | bool |
 
     Returns
     -------
     None.
 
     '''
-    
+
     # runs Scan in a machine after param split
     machine_id = int(machine_id)
 
@@ -92,12 +90,12 @@ def run_scan(self, machines, run_central_node, machine_id):
 
     new_config = read_config(self)
     new_config['finished_scan_run'] = True
-    
+
     if machine_id == 0:
         new_config['current_machine_id'] = 0
-        remote=False
-    
-    else:   
-        remote=True
+        remote = False
 
-    write_config(self, new_config,remote)
+    else:
+        remote = True
+
+    write_config(self, new_config, remote)
