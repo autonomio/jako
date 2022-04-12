@@ -95,7 +95,7 @@ def run_scan(self, machines, run_central_node, machine_id):
     new_config = read_config(self)
     new_config['finished_scan_run'] = True
 
-    if machine_id == 0:
+    if int(machine_id) == 0:
         new_config['current_machine_id'] = 0
         remote = False
 

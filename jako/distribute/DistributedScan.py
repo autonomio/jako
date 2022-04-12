@@ -117,7 +117,7 @@ class DistributedScan(Scan):
         if not os.path.exists("/tmp/"):
             os.mkdir("/tmp/")
 
-        self.dest_dir = "./tmp"
+        self.dest_dir = "/tmp/"
 
         # save data in numpy format
         np.save("/tmp/x_data_remote.npy", x)
