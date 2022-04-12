@@ -6,7 +6,7 @@ import pandas as pd
 
 def create_temp_file(self):
     filestr = '''
-from talos import RemoteScan
+from jako import RemoteScan
 import numpy as np
 import json
 import pickle

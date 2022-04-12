@@ -78,13 +78,13 @@ def distribute_run(self):
 
         if run_central_node:
 
-            args = args=(self, n_splits, run_central_node)
+            args = (self, n_splits, run_central_node)
             thread = threading.Thread(target=run_central_machine, args=args)
             thread.start()
             threads.append(thread)
 
             args = ([self, update_db_n_seconds, current_machine_id,self.stage])
-            threads = threading.Thread(target=update_db, args=args)
+            thread = threading.Thread(target=update_db, args=args)
             thread.start()
             threads.append(thread)
 

@@ -1,7 +1,7 @@
 def script_script():
   
     out = '''
-from talos import RemoteScan
+from jako import RemoteScan
 import numpy as np
 import json
 import pickle
