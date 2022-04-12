@@ -110,6 +110,18 @@ class DistributedScan(Scan):
         else:
             TypeError('`config` must be dict or filename string.')
 
+        # write database name as same as experiment name
+        self.config_data['database']['DB_TABLE_NAME'] = experiment_name
+
+        if isinstance(config, str):
+            config_path = config
+
+        else:
+            config_path = 'config.json'
+
+        with open(config_path, 'w') as f:
+            json.dump(self.config_data, f)
+
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
 
