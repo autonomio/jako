@@ -62,6 +62,8 @@ def run_scan(self, machines, run_central_node, machine_id):
     split_params = create_param_space(self, n_splits=machines)
     split_params = split_params.param_spaces[machine_id]
 
+    print('Started experiment in machine id : {}'.format(machine_id))
+
     scan_object = Scan(x=self.x,
                        y=self.y,
                        params=split_params,

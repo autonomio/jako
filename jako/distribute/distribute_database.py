@@ -120,7 +120,6 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
 
                         __start_upload(results_data)
                         write_config(self, new_config)
-                        print('Scan Run Finished in machine id : ' + current_machine_id)
 
                     exit()
 
