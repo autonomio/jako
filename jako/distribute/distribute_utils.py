@@ -149,7 +149,7 @@ def ssh_file_transfer(self, client, machine_id):
     scan_filenames = data_files + scan_script_files + additional_scan_files
     for file in os.listdir("/tmp"):
         if file in scan_filenames:
-            sftp.put("/tmp/"+file, file)
+            sftp.put("/tmp/" + file, file)
 
     sftp.close()
 
@@ -219,7 +219,7 @@ def get_experiment_stage(self, db):
 
     try:
         ids = db.return_existing_experiment_ids()
-        stage = int(list(ids)[-1].split("-")[0])+1
+        stage = int(list(ids)[-1].split("-")[0]) + 1
 
     except Exception as e:
         stage = 0

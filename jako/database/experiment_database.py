@@ -40,18 +40,10 @@ class ExperimentDatabase:
         elif db_type == 'mysql':
             if port is None:
                 port = 3306
-            DB_URL = (
-                'mysql+pymysql://'
-                + username
-                + ':'
-                + password
-                + '@'
-                + host
-                + ':'
-                + str(port)
-                + '/'
-                + database_name
-            )
+
+            url = 'postgresql://' + username + ':' + password + '@' + host + ':' + str(port) + '/' + database_name
+            DB_URL = (url)
+
         elif db_type == 'postgres':
             if port is None:
                 port = 5432
