@@ -1,4 +1,4 @@
-from talos.scan.Scan import Scan
+from talos import Scan
 
 
 class RemoteScan(Scan):
