@@ -90,6 +90,8 @@ def run_scan(self, machines, run_central_node, machine_id):
                        clear_session=self.clear_session,
                        save_weights=self.save_weights)
 
+    print('Completed experiment in machine id : {}'.format(machine_id))
+
     new_config = read_config(self)
     new_config['finished_scan_run'] = True
 
