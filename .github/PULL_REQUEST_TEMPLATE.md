@@ -17,7 +17,6 @@ the below items:
 #### Tests
 
 - [ ] Changes have gone through actual use testing
-- [ ] All local tests have passed (run python test-ci.py in /jako)
 - [ ] Tests have been updated to reflect the changes
 
 <hr>
