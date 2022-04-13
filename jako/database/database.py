@@ -169,7 +169,7 @@ class Database:
         return ids
 
     def return_columns(self):
-        '''return columns of the current table'''
+        '''Return columns of the current table'''
 
         query_string = """select COLUMN_NAME from information_schema.columns where table_name='{}'"""
         query_string = query_string.format(self.table_name)

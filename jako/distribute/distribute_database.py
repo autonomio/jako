@@ -54,7 +54,16 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
     config = self.config_data
 
     def __start_upload(results_data):
+
         if len(results_data) > 0:
+            db_cols = db.return_columns()
+            df_cols = results_data.columns
+            missing_columns = [col for col in db_cols if col not in df_cols]
+
+            if len(missing_columns) > 0:
+                exception_str = '''You have to change the experiment_name or add at least value for {} into the input parameter'''.format(missing_columns)
+                raise Exception(exception_str)
+
             db.write_to_db(results_data)
         return db
 
