@@ -167,3 +167,13 @@ class Database:
         table = self.return_table_df()
         ids = table.iloc[:, -1]
         return ids
+
+    def return_columns(self):
+        '''return columns of the current table'''
+
+        query_string = """select COLUMN_NAME from information_schema.columns where table_name='{}'"""
+        query_string = query_string.format(self.table_name)
+        cols = self.query_table(query_string)
+        cols = [col[0] for col in cols]
+
+        return cols
