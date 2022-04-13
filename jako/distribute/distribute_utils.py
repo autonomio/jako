@@ -206,11 +206,13 @@ def fetch_latest_file(self):
 
     if filelist:
         latest_filepath = max(filelist, key=os.path.getmtime)
+
         try:
             results_data = pd.read_csv(latest_filepath)
             return results_data
-        except Exception as e:
+        except:
             return []
+
     else:
         return []
 
@@ -244,7 +246,7 @@ def get_experiment_stage(self, db):
         ids = db.return_existing_experiment_ids()
         stage = int(list(ids)[-1].split("-")[0]) + 1
 
-    except Exception as e:
+    except:
         stage = 0
 
     return stage
@@ -258,7 +260,7 @@ def add_experiment_id(self, results_data, machine_id, start_row, end_row, db, st
         if "experiment_id" in results_data.columns:
             results_data = results_data[~results_data['experiment_id'].isin(ids)]
 
-    except Exception as e:
+    except:
         pass
 
     results_data = results_data.iloc[start_row:end_row]

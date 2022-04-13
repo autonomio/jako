@@ -79,7 +79,7 @@ class Database:
                     )
                 )
 
-            except Exception as e:
+            except:
                 pass
 
         return engine
