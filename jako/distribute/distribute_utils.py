@@ -54,7 +54,7 @@ t=RemoteScan(x=x,
 
 
 def return_current_machine_id(self,):
-    ''' return machine id after checking the ip from config'''
+    ''' Return machine id after checking the ip from config'''
 
     current_machine_id = 0
     if 'current_machine_id' in self.config_data.keys():
@@ -64,7 +64,7 @@ def return_current_machine_id(self,):
 
 
 def return_central_machine_id(self):
-    ''' return central machine id as mentioned in config'''
+    ''' Return central machine id as mentioned in config'''
     central_id = 0
     config_data = self.config_data
     if 'database' in config_data.keys():
@@ -88,7 +88,7 @@ def read_config(self, remote=False):
 
 
 def write_config(self, new_config, remote=False):
-    ''' write config to file'''
+    ''' Write config to file'''
 
     if remote:
         config_path = "/tmp/remote_config.json"
@@ -131,7 +131,7 @@ def ssh_connect(self):
 
 
 def ssh_file_transfer(self, client, machine_id):
-    '''transfer the current talos script to the remote machines'''
+    '''Transfer the current talos script to the remote machines'''
 
     create_temp_file(self)
 
@@ -186,6 +186,25 @@ def ssh_run(self, client, machine_id):
             print(line)
         except Exception as e:
             print(e)
+
+
+def ssh_get_files(self, client, machine_id):
+    '''Get files via ssh from a machine'''
+    sftp = client.open_sftp()
+
+    try:
+        sftp.chdir(self.dest_dir)  # Test if dest dir exists
+
+    except IOError:
+        sftp.mkdir(self.dest_dir)  # Create dest dir
+        sftp.chdir(self.dest_dir)
+
+    scan_object_filenames = ['']
+    for file in os.listdir("/tmp"):
+        if file in scan_object_filenames:
+            sftp.get("/tmp/" + file, file)
+
+    sftp.close()
 
 
 def fetch_latest_file(self):
@@ -273,7 +292,7 @@ def add_experiment_id(self, results_data, machine_id, start_row, end_row, db, st
     return results_data
 
 
-def write_scan_namespace(self, scan_object):
+def write_scan_namespace(self, scan_object, machine_id):
     '''
 
     Parameters
@@ -289,7 +308,7 @@ def write_scan_namespace(self, scan_object):
     import json
     import numpy as np
 
-    write_path = '/tmp/'
+    write_path = '/tmp/machine_id_' + str(machine_id) + '_'
     scan_details = scan_object.details
     scan_data = scan_object.data
     scan_learning_entropy = scan_object.learning_entropy
@@ -305,9 +324,9 @@ def write_scan_namespace(self, scan_object):
     scan_learning_entropy.to_csv(write_path + 'scan_learning_entropy.csv')
     scan_round_times.to_csv(write_path + 'scan_round_times.csv')
 
-    np.save('scan_round_history.npy', scan_round_history)
+    np.save(write_path + 'scan_round_history.npy', scan_round_history)
 
     with open(write_path + 'scan_saved_models.json', 'w') as f:
         json.dump(scan_saved_models, f, indent=2)
 
-    np.save('scan_saved_weights.npy', scan_saved_weights)
+    np.save(write_path + 'scan_saved_weights.npy', scan_saved_weights)

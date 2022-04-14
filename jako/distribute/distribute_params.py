@@ -103,4 +103,4 @@ def run_scan(self, machines, run_central_node, machine_id):
         remote = True
 
     write_config(self, new_config, remote)
-    write_scan_namespace(self, scan_object)
+    write_scan_namespace(self, scan_object, machine_id)
