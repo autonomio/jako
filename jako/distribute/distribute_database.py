@@ -59,10 +59,14 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
             db_cols = db.return_columns()
             df_cols = results_data.columns
             missing_columns = [col for col in db_cols if col not in df_cols]
+            new_columns = [col for col in df_cols if col not in db_cols]
 
             if len(missing_columns) > 0:
                 exception_str = '''You have to change the experiment_name or add at least value for {} into the input parameter'''.format(missing_columns)
                 raise Exception(exception_str)
+
+            if len(new_columns) > 0:
+                db.add_new_columns(new_columns)
 
             db.write_to_db(results_data)
         return db

@@ -131,10 +131,8 @@ class Database:
 
     def show_table_content(self):
         '''
-
-
-            Returns
-            -------
+        Returns
+        -------
         res |`list` of `tuples` | Query output from the database
 
         '''
@@ -143,8 +141,6 @@ class Database:
 
     def return_table_df(self):
         '''
-
-
         Returns
         -------
         data | Pandas DataFrame object | returns the database as a dataframe
@@ -158,18 +154,24 @@ class Database:
 
     def return_existing_experiment_ids(self):
         '''
-
         Returns
         -------
         ids | Pandas Series object | returns the experiment id of the table
 
         '''
-        table = self.return_table_df()
-        ids = table.iloc[:, -1]
-        return ids
+
+        query_str = 'SELECT experiment_id from {}'.format(self.table_name)
+        res = self.query_table(query_str)
+        res = [val[0] for val in res]
+
+        return res
 
     def return_columns(self):
-        '''Return columns of the current table'''
+        '''
+        Returns
+        -------
+        cols | list| returns the columns of the table
+        '''
 
         query_string = """select COLUMN_NAME from information_schema.columns where table_name='{}'"""
         query_string = query_string.format(self.table_name)
@@ -177,3 +179,19 @@ class Database:
         cols = [col[0] for col in cols]
 
         return cols
+
+    def add_new_columns(self, columns):
+        ''' Add a new column to the Database'''
+
+        query_str = 'ALTER TABLE {}'.format(self.table_name)
+        col_query_str = ' ADD COLUMN {} varchar,'
+
+        for col in columns:
+            query_str = query_str + col_query_str.format(col)
+
+        query_str = query_str.rstrip(',') + ';'
+
+        try:
+            self.query_table(query_str)
+        except Exception as e:
+            pass
