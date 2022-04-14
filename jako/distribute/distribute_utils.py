@@ -271,3 +271,43 @@ def add_experiment_id(self, results_data, machine_id, start_row, end_row, db, st
     results_data["experiment_id"] = experiment_ids
 
     return results_data
+
+
+def write_scan_namespace(self, scan_object):
+    '''
+
+    Parameters
+    ----------
+    scan_object | talos.Scan object | Scan object after Scan run
+
+    Returns
+    -------
+    None.
+
+    '''
+    import pandas as pd
+    import json
+    import numpy as np
+
+    write_path = '/tmp/'
+    scan_details = scan_object.details
+    scan_data = scan_object.data
+    scan_learning_entropy = scan_object.learning_entropy
+    scan_round_history = scan_object.round_history
+    scan_round_times = scan_object.round_times
+    scan_saved_models = scan_object.saved_models
+    scan_saved_weights = scan_object.saved_weights
+
+    details_df = pd.DataFrame({'scan_details': scan_details})
+    details_df.to_csv(write_path + 'scan_details.csv')
+
+    scan_data.to_csv('scan_data.csv')
+    scan_learning_entropy.to_csv(write_path + 'scan_learning_entropy.csv')
+    scan_round_times.to_csv(write_path + 'scan_round_times.csv')
+
+    np.save('scan_round_history.npy', scan_round_history)
+
+    with open(write_path + 'scan_saved_models.json', 'w') as f:
+        json.dump(scan_saved_models, f, indent=2)
+
+    np.save('scan_saved_weights.npy', scan_saved_weights)

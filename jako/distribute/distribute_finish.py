@@ -1,7 +1,8 @@
 def distribute_finish(self):
 
     attrs_final = ['data', 'x', 'y', 'learning_entropy', 'round_times',
-                   'params', 'saved_models', 'saved_weights', 'round_history']
+                   'params', 'saved_models', 'saved_weights', 'round_history',
+                   'details']
 
     keys = list(self.__dict__.keys())
     for key in keys:

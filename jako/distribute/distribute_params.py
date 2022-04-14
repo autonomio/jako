@@ -1,5 +1,5 @@
 from talos import Scan
-from .distribute_utils import read_config, write_config
+from .distribute_utils import read_config, write_config, write_scan_namespace
 
 
 def create_param_space(self, n_splits):
@@ -103,3 +103,4 @@ def run_scan(self, machines, run_central_node, machine_id):
         remote = True
 
     write_config(self, new_config, remote)
+    write_scan_namespace(self, scan_object)
