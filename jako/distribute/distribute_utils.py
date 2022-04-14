@@ -331,6 +331,8 @@ def write_scan_namespace(self, scan_object, machine_id):
     np.save(write_path + 'scan_round_history.npy', scan_round_history)
 
     with open(write_path + 'scan_saved_models.json', 'w') as f:
+        scan_saved_models = {'saved_models_machine_id_' + str(machine_id):
+                             scan_saved_models}
         json.dump(scan_saved_models, f, indent=2)
 
     np.save(write_path + 'scan_saved_weights.npy', scan_saved_weights)
