@@ -135,7 +135,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                         __start_upload(results_data)
                         write_config(self, new_config)
 
-                    exit()
+                    break
 
                 else:
 

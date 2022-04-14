@@ -95,3 +95,6 @@ def distribute_run(self):
 
         for t in threads:
             t.join()
+
+    from .distribute_finish import distribute_finish
+    self = distribute_finish(self)
