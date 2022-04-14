@@ -199,10 +199,14 @@ def ssh_get_files(self, client, machine_id):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    scan_object_filenames = ['']
-    for file in os.listdir("/tmp"):
-        if file in scan_object_filenames:
-            sftp.get("/tmp/" + file, file)
+    scan_object_filenames = ('scan_details.csv', 'scan_learning_entropy.csv',
+                             'scan_round_history.npy', 'scan_round_times.csv',
+                             'scan_saved_models.json', 'scan_saved_weights.npy',
+                             'scan_data.csv')
+
+    for file in sftp.listdir(self.dest_dir):
+        if file.endswith(scan_object_filenames):
+            sftp.get(self.dest_dir + file, '/tmp/' + file)
 
     sftp.close()
 
@@ -320,7 +324,7 @@ def write_scan_namespace(self, scan_object, machine_id):
     details_df = pd.DataFrame({'scan_details': scan_details})
     details_df.to_csv(write_path + 'scan_details.csv')
 
-    scan_data.to_csv('scan_data.csv')
+    scan_data.to_csv(write_path + 'scan_data.csv')
     scan_learning_entropy.to_csv(write_path + 'scan_learning_entropy.csv')
     scan_round_times.to_csv(write_path + 'scan_round_times.csv')
 

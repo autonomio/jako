@@ -2,7 +2,7 @@ import json
 import threading
 from .distribute_params import run_scan
 from .distribute_utils import return_current_machine_id, ssh_connect
-from .distribute_utils import ssh_file_transfer, ssh_run
+from .distribute_utils import ssh_file_transfer, ssh_run, ssh_get_files
 from .distribute_database import update_db
 
 
@@ -95,6 +95,9 @@ def distribute_run(self):
 
         for t in threads:
             t.join()
+
+        for machine_id, client in clients.items():
+            ssh_get_files(self, client, machine_id)
 
     from .distribute_finish import distribute_finish
     self = distribute_finish(self)
