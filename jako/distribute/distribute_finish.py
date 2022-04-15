@@ -18,8 +18,11 @@ def distribute_finish(self):
     self.evaluate_models = func_evaluate.__get__(self)
 
     all_filenames = ['/tmp/' + file for file in os.listdir('/tmp/')]
-
+    
+    print("DEBUG --->")
+    print(os.listdir('/tmp/'))
     print(all_filenames)
+    print("<--- DEBUG")
     
     scan_data_list = []
     scan_details_list = []
