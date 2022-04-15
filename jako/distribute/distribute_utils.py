@@ -189,11 +189,12 @@ def ssh_get_files(self, client, machine_id):
                              'scan_saved_models.json', 'scan_saved_weights.npy',
                              'scan_data.csv')
 
+    sftp.chdir(self.dest_dir)
+
     for file in sftp.listdir(self.dest_dir):
-        print("DEBUG --->")
+        print('--->DEBUG')
         print(file)
-        print("<--- DEBUG")
-        exit()
+        print('<----DEBUG')
         if file.endswith(scan_object_filenames):
             sftp.get(self.dest_dir + file, '/tmp/' + file)
 
