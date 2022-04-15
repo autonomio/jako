@@ -19,6 +19,8 @@ def distribute_finish(self):
 
     all_filenames = ['/tmp/' + file for file in os.listdir('/tmp/')]
 
+    print(all_filenames)
+    
     scan_data_list = []
     scan_details_list = []
     scan_learning_entropy_list = []
