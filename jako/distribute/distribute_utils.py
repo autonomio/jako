@@ -184,13 +184,6 @@ def ssh_get_files(self, client, machine_id):
     '''Get files via ssh from a machine'''
     sftp = client.open_sftp()
 
-    try:
-        sftp.chdir(self.dest_dir)  # Test if dest dir exists
-
-    except IOError:
-        sftp.mkdir(self.dest_dir)  # Create dest dir
-        sftp.chdir(self.dest_dir)
-
     scan_object_filenames = ('scan_details.csv', 'scan_learning_entropy.csv',
                              'scan_round_history.npy', 'scan_round_times.csv',
                              'scan_saved_models.json', 'scan_saved_weights.npy',
