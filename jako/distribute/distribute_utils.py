@@ -191,6 +191,9 @@ def ssh_get_files(self, client, machine_id):
 
     for file in sftp.listdir(self.dest_dir):
         if file.endswith(scan_object_filenames):
+            print("DEBUG --->")
+            print(file)
+            print("<--- DEBUG")
             sftp.get(self.dest_dir + file, '/tmp/' + file)
 
     sftp.close()
