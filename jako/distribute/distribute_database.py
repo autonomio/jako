@@ -2,6 +2,7 @@ import time
 from .distribute_utils import read_config, write_config, add_experiment_id, add_timestamp, fetch_latest_file
 import sys
 
+
 def get_db_object(self):
     config = self.config_data
     from ..database.database import Database

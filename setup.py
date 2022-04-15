@@ -4,9 +4,9 @@
 
 DESCRIPTION = 'Distributed Hyperparameter Experiments with Talos'
 LONG_DESCRIPTION = '''\
-Jako makes it straightforward to <strong>distribute Talos 
-experiments</strong> across one or more remote machines 
-without asking you to change anything in the way you are 
+Jako makes it straightforward to <strong>distribute Talos
+experiments</strong> across one or more remote machines
+without asking you to change anything in the way you are
 already working with Talos.
 '''
 

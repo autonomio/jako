@@ -99,7 +99,7 @@ def distribute_run(self):
 
         for file in os.listdir('/tmp/'):
             if file.startswith('machine_id'):
-                os.remove('/tmp/'+file)
+                os.remove('/tmp/' + file)
 
         for machine_id, client in clients.items():
             ssh_get_files(self, client, machine_id)
