@@ -303,8 +303,9 @@ def write_scan_namespace(self, scan_object, machine_id):
     import pandas as pd
     import json
     import numpy as np
+    import os
 
-    write_path = '/tmp/machine_id_' + str(machine_id) + '_'
+    write_path = os.path.join('/tmp/', 'machine_id_' + str(machine_id) + '_')
     scan_details = scan_object.details
     scan_data = scan_object.data
     scan_learning_entropy = scan_object.learning_entropy
