@@ -72,14 +72,10 @@ def return_central_machine_id(self):
     return central_id
 
 
-def read_config(self, remote=False):
+def read_config(self):
     '''Read config from file'''
 
-    if remote:
-        config_path = "/tmp/remote_config.json"
-
-    else:
-        config_path = "config.json"
+    config_path = "/tmp/remote_config.json"
 
     with open(config_path, 'r') as f:
         config_data = json.load(f)
@@ -87,14 +83,10 @@ def read_config(self, remote=False):
     return config_data
 
 
-def write_config(self, new_config, remote=False):
+def write_config(self, new_config):
     ''' Write config to file'''
 
-    if remote:
-        config_path = "/tmp/remote_config.json"
-
-    else:
-        config_path = "config.json"
+    config_path = "/tmp/remote_config.json"
 
     with open(config_path, 'w') as outfile:
         json.dump(new_config, outfile, indent=2)
@@ -148,7 +140,7 @@ def ssh_file_transfer(self, client, machine_id):
     scan_script_files = ['scanfile_remote.py']
     additional_scan_files = ['remote_config.json', 'arguments_remote.json']
     scan_filenames = data_files + scan_script_files + additional_scan_files
-    for file in os.listdir("/tmp"):
+    for file in os.listdir("/tmp/"):
         if file in scan_filenames:
             sftp.put("/tmp/" + file, file)
 

@@ -54,6 +54,7 @@ def run_scan(self, machines, run_central_node, machine_id):
 
     # runs Scan in a machine after param split
     machine_id = int(machine_id)
+    current_machine_id = machine_id
 
     if not run_central_node:
         if machine_id != 0:
@@ -62,7 +63,7 @@ def run_scan(self, machines, run_central_node, machine_id):
     split_params = create_param_space(self, n_splits=machines)
     split_params = split_params.param_spaces[machine_id]
 
-    print('Started experiment in machine id : {}'.format(machine_id))
+    print('Started experiment in machine id : {}'.format(current_machine_id))
 
     scan_object = Scan(x=self.x,
                        y=self.y,
@@ -90,17 +91,13 @@ def run_scan(self, machines, run_central_node, machine_id):
                        clear_session=self.clear_session,
                        save_weights=self.save_weights)
 
-    print('Completed experiment in machine id : {}'.format(machine_id))
+    print('Completed experiment in machine id : {}'.format(current_machine_id))
 
     new_config = read_config(self)
     new_config['finished_scan_run'] = True
 
-    if int(machine_id) == 0:
+    if int(current_machine_id) == 0:
         new_config['current_machine_id'] = 0
-        remote = False
 
-    else:
-        remote = True
-
-    write_config(self, new_config, remote)
-    write_scan_namespace(self, scan_object, machine_id)
+    write_config(self, new_config)
+    write_scan_namespace(self, scan_object, current_machine_id)

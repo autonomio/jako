@@ -1,6 +1,6 @@
 import time
 from .distribute_utils import read_config, write_config, add_experiment_id, add_timestamp, fetch_latest_file
-
+import sys
 
 def get_db_object(self):
     config = self.config_data
@@ -108,12 +108,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
 
                         __start_upload(results_data)
 
-                if int(current_machine_id) == 0:
-                    remote = False
-                else:
-                    remote = True
-
-                new_config = read_config(self, remote)
+                new_config = read_config(self)
 
                 if 'finished_scan_run' in new_config.keys():
 
@@ -135,7 +130,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                         __start_upload(results_data)
                         write_config(self, new_config)
 
-                    break
+                    sys.exit()
 
                 else:
 

@@ -90,13 +90,8 @@ class RemoteScan(Scan):
             with open(config, 'r') as f:
                 self.config_data = json.load(f)
 
-        elif isinstance(config, dict):
-            self.config_data = config
-            with open('/tmp/remote_config.json', 'w') as outfile:
-                json.dump(self.config_data, outfile, indent=2)
-
         else:
-            TypeError('`config` must be dict or filename string.')
+            TypeError('Pass the correct `config` path')
 
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
@@ -134,7 +129,6 @@ class RemoteScan(Scan):
 
         args = ([self, update_db_n_seconds, current_machine_id, self.stage])
         thread = threading.Thread(target=update_db, args=args)
-
         thread.start()
         threads.append(thread)
 

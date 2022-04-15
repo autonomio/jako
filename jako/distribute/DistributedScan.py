@@ -155,5 +155,8 @@ class DistributedScan(Scan):
         with open('/tmp/arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
 
+        with open('/tmp/remote_config.json', 'w') as outfile:
+            json.dump(self.config, outfile, indent=2)
+
         from .distribute_run import distribute_run
         distribute_run(self)
