@@ -120,7 +120,7 @@ class DistributedScan(Scan):
             config_path = 'config.json'
 
         with open(config_path, 'w') as f:
-            json.dump(self.config_data, f)
+            json.dump(self.config_data, f, indent=2)
 
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']

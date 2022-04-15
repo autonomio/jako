@@ -1,5 +1,6 @@
 import json
 import threading
+import os
 from .distribute_params import run_scan
 from .distribute_utils import return_current_machine_id, ssh_connect
 from .distribute_utils import ssh_file_transfer, ssh_run, ssh_get_files
@@ -95,6 +96,10 @@ def distribute_run(self):
 
         for t in threads:
             t.join()
+
+        for file in os.listdir('/tmp/'):
+            if file.startswith('machine_id'):
+                os.remove('/tmp/'+file)
 
         for machine_id, client in clients.items():
             ssh_get_files(self, client, machine_id)
