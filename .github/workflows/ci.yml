@@ -38,6 +38,7 @@ jobs:
     - name: Add Key
       run: |
         echo ${{ secrets.AUTONOMIO_DEV_PEM }} > autonomio-dev.pem
+        ls autonomio-dev.pem
         chmod 0400 autonomio-dev.pem
     - name: Tests
       run: |
