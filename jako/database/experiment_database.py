@@ -47,7 +47,7 @@ class ExperimentDatabase:
         elif db_type == 'postgres':
             if port is None:
                 port = 5432
-            url =  'postgresql://' + username + ':' + password + '@' + host + ':' + str(port) + '/' + database_name
+            url = 'postgresql://' + username + ':' + password + '@' + host + ':' + str(port) + '/' + database_name
             DB_URL = (url)
 
         self.DB_URL = DB_URL
