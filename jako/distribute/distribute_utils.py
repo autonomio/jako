@@ -190,10 +190,10 @@ def ssh_get_files(self, client, machine_id):
                              'scan_data.csv')
 
     for file in sftp.listdir(self.dest_dir):
+        print("DEBUG --->")
+        print(file)
+        print("<--- DEBUG")
         if file.endswith(scan_object_filenames):
-            print("DEBUG --->")
-            print(file)
-            print("<--- DEBUG")
             sftp.get(self.dest_dir + file, '/tmp/' + file)
 
     sftp.close()
