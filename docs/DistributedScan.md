@@ -285,9 +285,32 @@ A config file has all the information regarding connection to remote machines. T
     "DB_TYPE": "database_type",
     "DATABASE_NAME": "database_name",
     "DB_PORT": database_port,
-    "DB_TABLE_NAME": "database_table_name",
     "DB_ENCODING": "LATIN1",
     "DB_UPDATE_INTERVAL": 5
   }
 }
 ```
+
+### DistributeScan config arguments
+
+Argument | Input | Description
+--------- | ------- | -----------
+`run_central_node` | bool | if set to true, the central machine where the script runs will also be included in distributed run.       
+`machines` | list of dict | list of machine configurations    
+`machine_id` | int | id for each machine in ascending order.   
+`JAKO_IP_ADDRESS` | str | ip address for the remote machine   
+`JAKO_PORT` | int | port number for the remote machine   
+`JAKO_USER` | str | username for the remote machine   
+`JAKO_PASSWORD` | str | password for the remote machine   
+`JAKO_KEY_FILENAME` | str | if password not available, the path to RSA private key of the machine could be supplied to this argument.      
+`database` | dict | configuration parameters for central datastore   
+`DB_HOST_MACHINE_ID` | int | The machine id to one of the remote machines that can be used as the host where the database resides.   
+`DB_USERNAME` | str | database username   
+`DB_PASSWORD` | str | database_password   
+`DB_TYPE` | str | database_type. Default is `postgres`.The available options are `postgres`, `mysql` and `sqlite`      
+`DATABASE_NAME` | str | database name   
+`DB_PORT` | int | database_port   
+`DB_ENCODING` | str | Defaults to `LATIN1`   
+`DB_UPDATE_INTERVAL` | int | The frequency with which database update happens. The value is in seconds.Defaults to `5`.    
+
+
