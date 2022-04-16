@@ -42,14 +42,20 @@ class Database:
             if port is None:
                 port = 3306
 
-            url = 'mysql+pymysql://' + username + ':' + password + '@' + host + ':' + str(port) + '/' + database_name
+            url = 'mysql+pymysql://' + username
+            + ':' + password + '@' + host + ':'
+            + str(port) + '/' + database_name
+
             DB_URL = (url)
 
         elif db_type == 'postgres':
             if port is None:
                 port = 5432
 
-            url = 'postgresql://' + username + ':' + password + '@' + host + ':' + str(port) + '/' + database_name
+            url = 'postgresql://' + username + ':'
+            + password + '@' + host + ':'
+            + str(port) + '/' + database_name
+
             DB_URL = (url)
 
         self.DB_URL = DB_URL
@@ -59,7 +65,8 @@ class Database:
         Create database if it doesn't exists.
         '''
 
-        engine = create_engine(self.DB_URL, echo=False, isolation_level='AUTOCOMMIT')
+        engine = create_engine(self.DB_URL,
+                               echo=False, isolation_level='AUTOCOMMIT')
 
         if not database_exists(engine.url):
 
@@ -79,8 +86,8 @@ class Database:
                     )
                 )
 
-            except:
-                pass
+            except Exception as e:
+                print(e)
 
         return engine
 
@@ -110,7 +117,8 @@ class Database:
 
         '''
         engine = self.create_db()
-        data_frame.to_sql(self.table_name, con=engine, if_exists='append', index=False)
+        data_frame.to_sql(self.table_name, con=engine,
+                          if_exists='append', index=False)
 
     def query_table(self, query):
         '''
@@ -173,7 +181,8 @@ class Database:
         cols | list| returns the columns of the table
         '''
 
-        query_string = """select COLUMN_NAME from information_schema.columns where table_name='{}'"""
+        query_string = """select COLUMN_NAME from information_schema.columns
+                        where table_name='{}'"""
         query_string = query_string.format(self.table_name)
         cols = self.query_table(query_string)
         cols = [col[0] for col in cols]
@@ -202,4 +211,4 @@ class Database:
             if exception_str1 in e or exception_str2 in e:
                 pass
             else:
-                print(e)
+                raise Exception(e)
