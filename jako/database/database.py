@@ -194,4 +194,12 @@ class Database:
         try:
             self.query_table(query_str)
         except Exception as e:
-            pass
+            exception_str1 = '''
+                    This result object does not return rows.
+                    '''
+            exception_str2 = '(psycopg2.errors.DuplicateColumn)'
+            e = str(e)
+            if exception_str1 in e or exception_str2 in e:
+                pass
+            else:
+                print(e)
