@@ -30,7 +30,7 @@ install_requires = ['talos',
                     'numpy',
                     'pandas',
                     'paramiko',
-                    'psycopg2-binary'
+                    'psycopg2-binary',
                     'sqlalchemy',
                     'sqlalchemy_utils']
 
