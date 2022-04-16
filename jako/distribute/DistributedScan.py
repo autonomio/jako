@@ -90,7 +90,8 @@ class DistributedScan(Scan):
 
         arguments_dict = self.__dict__
         remove_parameters = ["x", "y", "model"]
-        arguments_dict = {k: v for k, v in arguments_dict.items() if k not in remove_parameters}
+        arguments_dict = {k: v for k, v in arguments_dict.items()
+                          if k not in remove_parameters}
 
         self.file_path = '/tmp/scanfile_remote.py'
 

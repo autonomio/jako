@@ -1,5 +1,7 @@
 import time
-from .distribute_utils import read_config, write_config, add_experiment_id, add_timestamp, fetch_latest_file
+from .distribute_utils import read_config, write_config
+from .distribute_utils import add_experiment_id, add_timestamp
+from .distribute_utils import fetch_latest_file
 import sys
 
 
@@ -63,7 +65,9 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
             new_columns = [col for col in df_cols if col not in db_cols]
 
             if len(missing_columns) > 0:
-                exception_str = '''You have to change the experiment_name or add at least value for {} into the input parameter'''.format(missing_columns)
+                exception_str = '''You have to change the experiment_name or
+                add at least value for {}
+                into the input parameter'''.format(missing_columns)
                 raise Exception(exception_str)
 
             if len(new_columns) > 0:
