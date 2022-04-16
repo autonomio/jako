@@ -255,3 +255,39 @@ For the case where a static value is preferred, but it's still useful to include
 p = {'first_neuron': [48]}
 ```
 
+## DistributedScan Config file
+
+A config file has all the information regarding connection to remote machines. The config file will also use one of the remote machines as the central datastore. A sample config file will look like the following:
+
+```
+{
+  "run_central_node": true, 
+  "machines": [
+    {
+      "machine_id": 1,
+      "TALOS_IP_ADDRESS": "machine_1_ip_address",
+      "TALOS_PORT": machine_1_port,
+      "TALOS_USER": "machine_1_username",
+      "TALOS_PASSWORD": "machine_1_password"
+    },
+    {
+      "machine_id": 2,
+      "TALOS_IP_ADDRESS": "machine_2_ip_address",
+      "TALOS_PORT": machine_2_port,
+      "TALOS_USER": "machine_2_username",
+      "TALOS_KEY_FILENAME": "machine_2_key_file_path"
+    }
+  ],
+  "database": {
+    "DB_HOST_MACHINE_ID": 1, #the id for machine which is the datastore
+    "DB_USERNAME": "database_username",
+    "DB_PASSWORD": "database_password",
+    "DB_TYPE": "database_type",
+    "DATABASE_NAME": "database_name",
+    "DB_PORT": database_port,
+    "DB_TABLE_NAME": "database_table_name",
+    "DB_ENCODING": "LATIN1",
+    "DB_UPDATE_INTERVAL": 5
+  }
+}
+```
