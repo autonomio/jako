@@ -18,7 +18,7 @@ def get_db_object(self):
 
     for machine in machine_config:
         if int(machine['machine_id']) == host_machine_id:
-            host = machine['TALOS_IP_ADDRESS']
+            host = machine['JAKO_IP_ADDRESS']
             break
 
     port = db_config['DB_PORT']

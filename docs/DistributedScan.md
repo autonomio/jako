@@ -265,17 +265,17 @@ A config file has all the information regarding connection to remote machines. T
   "machines": [
     {
       "machine_id": 1,
-      "TALOS_IP_ADDRESS": "machine_1_ip_address",
-      "TALOS_PORT": machine_1_port,
-      "TALOS_USER": "machine_1_username",
-      "TALOS_PASSWORD": "machine_1_password"
+      "JAKO_IP_ADDRESS": "machine_1_ip_address",
+      "JAKO_PORT": machine_1_port,
+      "JAKO_USER": "machine_1_username",
+      "JAKO_PASSWORD": "machine_1_password"
     },
     {
       "machine_id": 2,
-      "TALOS_IP_ADDRESS": "machine_2_ip_address",
-      "TALOS_PORT": machine_2_port,
-      "TALOS_USER": "machine_2_username",
-      "TALOS_KEY_FILENAME": "machine_2_key_file_path"
+      "JAKO_IP_ADDRESS": "machine_2_ip_address",
+      "JAKO_PORT": machine_2_port,
+      "JAKO_USER": "machine_2_username",
+      "JAKO_KEY_FILENAME": "machine_2_key_file_path"
     }
   ],
   "database": {

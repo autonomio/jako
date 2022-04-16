@@ -106,17 +106,17 @@ def ssh_connect(self):
     for config in configs:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        host = config['TALOS_IP_ADDRESS']
-        port = config['TALOS_PORT']
-        username = config['TALOS_USER']
+        host = config['JAKO_IP_ADDRESS']
+        port = config['JAKO_PORT']
+        username = config['JAKO_USER']
 
-        if 'TALOS_PASSWORD' in config.keys():
-            password = config['TALOS_PASSWORD']
+        if 'JAKO_PASSWORD' in config.keys():
+            password = config['JAKO_PASSWORD']
             client.connect(host, port, username, password)
 
-        elif 'TALOS_KEY_FILENAME' in config.keys():
+        elif 'JAKO_KEY_FILENAME' in config.keys():
             client.connect(host, port, username,
-                           key_filename=config['TALOS_KEY_FILENAME'])
+                           key_filename=config['JAKO_KEY_FILENAME'])
 
         clients[config['machine_id']] = client
 
@@ -264,7 +264,7 @@ def get_experiment_stage(self, db):
 
     except Exception as e:
         allowed_exception = '(psycopg2.errors.UndefinedTable)'
-
+        e = str(e)
         if allowed_exception in e:
             pass
         else:
@@ -287,7 +287,7 @@ def add_experiment_id(self, results_data, machine_id, start_row,
 
     except Exception as e:
         allowed_exception = '(psycopg2.errors.UndefinedTable)'
-
+        e = str(e)
         if allowed_exception in e:
             pass
         else:
