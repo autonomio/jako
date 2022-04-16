@@ -211,8 +211,10 @@ class Database:
                     This result object does not return rows.
                     '''
             exception_str2 = '(psycopg2.errors.DuplicateColumn)'
+            exception_str3 = '(psycopg2.errors.UndefinedTable)'
+            exceptions = [exception_str1, exception_str2, exception_str3]
             e = str(e)
-            if exception_str1 in e or exception_str2 in e:
+            if any(ex in e for ex in exceptions):
                 pass
             else:
                 raise Exception(e)
