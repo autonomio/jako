@@ -42,9 +42,11 @@ class ExperimentDatabase:
             if port is None:
                 port = 3306
 
-            url = 'mysql+pymysql://' + username
-            + ':' + password + '@' + host + ':'
-            + str(port) + '/' + database_name
+            url = '''mysql+pymysql://{}:{}@{}:{}/{}'''.format(username,
+                                                              password,
+                                                              host,
+                                                              str(port),
+                                                              database_name)
 
             DB_URL = (url)
 
@@ -52,9 +54,11 @@ class ExperimentDatabase:
             if port is None:
                 port = 5432
 
-            url = 'postgresql://' + username + ':'
-            + password + '@' + host + ':'
-            + str(port) + '/' + database_name
+            url = 'postgresql://{}:{}@{}:{}/{}'.format(username,
+                                                       password,
+                                                       host,
+                                                       str(port),
+                                                       database_name)
 
             DB_URL = (url)
 
