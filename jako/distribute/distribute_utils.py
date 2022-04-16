@@ -115,7 +115,8 @@ def ssh_connect(self):
             client.connect(host, port, username, password)
 
         elif 'TALOS_KEY_FILENAME' in config.keys():
-            client.connect(host, port, username, key_filename=config['TALOS_KEY_FILENAME'])
+            client.connect(host, port, username,
+                           key_filename=config['TALOS_KEY_FILENAME'])
 
         clients[config['machine_id']] = client
 
@@ -161,8 +162,8 @@ def ssh_run(self, client, machine_id):
     None.
 
     '''
-
-    stdin, stdout, stderr = client.exec_command('python3 /tmp/scanfile_remote.py')
+    execute_str = 'python3 /tmp/scanfile_remote.py'
+    stdin, stdout, stderr = client.exec_command(execute_str)
 
     if stderr:
         for line in stderr:
@@ -220,9 +221,14 @@ def fetch_latest_file(self):
         try:
             results_data = pd.read_csv(latest_filepath)
             return results_data
-        except:
-            return []
+        except Exception as e:
+            e = str(e)
+            allowed_exception = 'No columns to parse from file'
 
+            if allowed_exception in e:
+                return []
+            else:
+                raise Exception(e)
     else:
         return []
 
@@ -256,22 +262,36 @@ def get_experiment_stage(self, db):
         ids = db.return_existing_experiment_ids()
         stage = int(list(ids)[-1].split("-")[0]) + 1
 
-    except:
+    except Exception as e:
+        allowed_exception = '(psycopg2.errors.UndefinedTable)'
+
+        if allowed_exception in e:
+            pass
+        else:
+            raise Exception(e)
+
         stage = 0
 
     return stage
 
 
-def add_experiment_id(self, results_data, machine_id, start_row, end_row, db, stage):
+def add_experiment_id(self, results_data, machine_id, start_row,
+                      end_row, db, stage):
     '''Generate experiment id from model id and row number'''
 
     try:
         ids = db.return_existing_experiment_ids()
         if "experiment_id" in results_data.columns:
-            results_data = results_data[~results_data['experiment_id'].isin(ids)]
+            results_data = results_data[~results_data['experiment_id'].isin(ids
+                                                                            )]
 
-    except:
-        pass
+    except Exception as e:
+        allowed_exception = '(psycopg2.errors.UndefinedTable)'
+
+        if allowed_exception in e:
+            pass
+        else:
+            raise Exception(e)
 
     results_data = results_data.iloc[start_row:end_row]
     experiment_ids = []
