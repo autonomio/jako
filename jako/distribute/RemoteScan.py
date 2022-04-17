@@ -8,27 +8,7 @@ class RemoteScan(Scan):
                  params,
                  model,
                  experiment_name,
-                 x_val=None,
-                 y_val=None,
-                 val_split=0.3,
-                 random_method='uniform_mersenne',
-                 seed=None,
-                 performance_target=None,
-                 fraction_limit=None,
-                 round_limit=None,
-                 time_limit=None,
-                 boolean_limit=None,
-                 reduction_method=None,
-                 reduction_interval=50,
-                 reduction_window=20,
-                 reduction_threshold=0.2,
-                 reduction_metric='val_acc',
-                 minimize_loss=False,
-                 disable_progress_bar=False,
-                 print_params=False,
-                 clear_session=True,
-                 save_weights=True,
-                 config='/tmp/remote_config.json'):
+                 **kwargs):
         '''Distributed version of talos.Scan() for the remote machines.
 
         Parameters
@@ -50,44 +30,44 @@ class RemoteScan(Scan):
         self.params = params
         self.model = model
         self.experiment_name = experiment_name
-        self.x_val = x_val
-        self.y_val = y_val
-        self.val_split = val_split
+        self.x_val = kwargs['x_val']
+        self.y_val = kwargs['y_val']
+        self.val_split = kwargs['val_split']
 
         # randomness
-        self.random_method = random_method
-        self.seed = seed
+        self.random_method = kwargs['random_method']
+        self.seed = kwargs['seed']
 
         # limiters
-        self.performance_target = performance_target
-        self.fraction_limit = fraction_limit
-        self.round_limit = round_limit
-        self.time_limit = time_limit
-        self.boolean_limit = boolean_limit
+        self.performance_target = kwargs['performance_target']
+        self.fraction_limit = kwargs['fraction_limit']
+        self.round_limit = kwargs['round_limit']
+        self.time_limit = kwargs['time_limit']
+        self.boolean_limit = kwargs['boolean_limit']
 
         # optimization
-        self.reduction_method = reduction_method
-        self.reduction_interval = reduction_interval
-        self.reduction_window = reduction_window
-        self.reduction_threshold = reduction_threshold
-        self.reduction_metric = reduction_metric
-        self.minimize_loss = minimize_loss
+        self.reduction_method = kwargs['reduction_method']
+        self.reduction_interval = kwargs['reduction_interval']
+        self.reduction_window = kwargs['reduction_window']
+        self.reduction_threshold = kwargs['reduction_threshold']
+        self.reduction_metric = kwargs['reduction_metric']
+        self.minimize_loss = kwargs['minimize_loss']
 
         # display
-        self.disable_progress_bar = disable_progress_bar
-        self.print_params = print_params
+        self.disable_progress_bar = kwargs['disable_progress_bar']
+        self.print_params = kwargs['print_params']
 
         # performance
-        self.clear_session = clear_session
-        self.save_weights = save_weights
+        self.clear_session = kwargs['clear_session']
+        self.save_weights = kwargs['save_weights']
 
         # distributed configurations
-        self.config = config
+        self.config = kwargs['config']
 
         self.save_timestamp = time.strftime('%D%H%M%S').replace('/', '')
 
-        if isinstance(config, str):
-            with open(config, 'r') as f:
+        if isinstance(self.config, str):
+            with open(self.config, 'r') as f:
                 self.config_data = json.load(f)
 
         else:
