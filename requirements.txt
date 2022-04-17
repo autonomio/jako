@@ -2,5 +2,6 @@ talos
 numpy
 pandas
 paramiko
+psycopg2-binary
 sqlalchemy
 sqlalchemy_utils

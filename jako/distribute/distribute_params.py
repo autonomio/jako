@@ -1,9 +1,8 @@
 from talos import Scan
-from .distribute_utils import read_config, write_config
+from .distribute_utils import read_config, write_config, write_scan_namespace
 
 
 def create_param_space(self, n_splits):
-    
     '''Creates the parameter space for each machine
 
     Parameters
@@ -12,7 +11,7 @@ def create_param_space(self, n_splits):
 
     Returns
     -------
-    param_grid | `list` of `dict` | Split parameter spaces for each machine to run.
+    param_grid | `list` of `dict` | Split parameter spaces for each machine.
 
     '''
 
@@ -40,22 +39,22 @@ def create_param_space(self, n_splits):
 
 
 def run_scan(self, machines, run_central_node, machine_id):
-    
     '''Run `talos.Scan()` on each machine.
 
     Parameters
     ----------
     machines | int |
-    run_central_node | bool | 
+    run_central_node | bool |
 
     Returns
     -------
     None.
 
     '''
-    
+
     # runs Scan in a machine after param split
     machine_id = int(machine_id)
+    current_machine_id = machine_id
 
     if not run_central_node:
         if machine_id != 0:
@@ -63,6 +62,8 @@ def run_scan(self, machines, run_central_node, machine_id):
 
     split_params = create_param_space(self, n_splits=machines)
     split_params = split_params.param_spaces[machine_id]
+
+    print('Started experiment in machine id : {}'.format(current_machine_id))
 
     scan_object = Scan(x=self.x,
                        y=self.y,
@@ -90,14 +91,13 @@ def run_scan(self, machines, run_central_node, machine_id):
                        clear_session=self.clear_session,
                        save_weights=self.save_weights)
 
+    print('Completed experiment in machine id : {}'.format(current_machine_id))
+
     new_config = read_config(self)
     new_config['finished_scan_run'] = True
-    
-    if machine_id == 0:
-        new_config['current_machine_id'] = 0
-        remote=False
-    
-    else:   
-        remote=True
 
-    write_config(self, new_config,remote)
+    if int(current_machine_id) == 0:
+        new_config['current_machine_id'] = 0
+
+    write_config(self, new_config)
+    write_scan_namespace(self, scan_object, current_machine_id)

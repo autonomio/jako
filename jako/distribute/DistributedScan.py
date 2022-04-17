@@ -30,7 +30,6 @@ class DistributedScan(Scan):
                  clear_session=True,
                  save_weights=True,
                  config='config.json'):
-
         '''Distributed version of talos.Scan() for the local machine.
 
         Parameters
@@ -91,9 +90,10 @@ class DistributedScan(Scan):
 
         arguments_dict = self.__dict__
         remove_parameters = ["x", "y", "model"]
-        arguments_dict = {k: v for k, v in arguments_dict.items() if k not in remove_parameters}
+        arguments_dict = {k: v for k, v in arguments_dict.items()
+                          if k not in remove_parameters}
 
-        self.file_path = 'tmp/scanfile_remote.py'
+        self.file_path = '/tmp/scanfile_remote.py'
 
         self.save_timestamp = time.strftime('%D%H%M%S').replace('/', '')
 
@@ -111,38 +111,53 @@ class DistributedScan(Scan):
         else:
             TypeError('`config` must be dict or filename string.')
 
+        # write database name as same as experiment name
+        self.config_data['database']['DB_TABLE_NAME'] = experiment_name
+
+        if isinstance(config, str):
+            config_path = config
+
+        else:
+            config_path = 'config.json'
+
+        with open(config_path, 'w') as f:
+            json.dump(self.config_data, f, indent=2)
+
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
 
         # handles location for params,data and model
-        if not os.path.exists("tmp/"):
-            os.mkdir("tmp")
+        if not os.path.exists("/tmp/"):
+            os.mkdir("/tmp/")
 
-        self.dest_dir = "./tmp"
+        self.dest_dir = "/tmp/"
 
         # save data in numpy format
-        np.save("tmp/x_data_remote.npy", x)
-        np.save("tmp/y_data_remote.npy", y)
+        np.save("/tmp/x_data_remote.npy", x)
+        np.save("/tmp/y_data_remote.npy", y)
 
         # get model function as a string
         model_func = inspect.getsource(model).lstrip()
 
         self.model_func = model_func
         self.model_name = model.__name__
-        
+
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage
-        
-        db=get_db_object(self)
-        self.stage=get_experiment_stage(self, db)
-        
+
+        db = get_db_object(self)
+        self.stage = get_experiment_stage(self, db)
+
         if not self.stage:
-            self.stage=0
+            self.stage = 0
 
         arguments_dict["stage"] = self.stage
-        
-        with open('tmp/arguments_remote.json', 'w') as outfile:
+
+        with open('/tmp/arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
+
+        with open('/tmp/remote_config.json', 'w') as outfile:
+            json.dump(self.config, outfile, indent=2)
 
         from .distribute_run import distribute_run
         distribute_run(self)

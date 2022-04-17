@@ -4,9 +4,9 @@
 
 DESCRIPTION = 'Distributed Hyperparameter Experiments with Talos'
 LONG_DESCRIPTION = '''\
-Jako makes it straightforward to <strong>distribute Talos 
-experiments</strong> across one or more remote machines 
-without asking you to change anything in the way you are 
+Jako makes it straightforward to <strong>distribute Talos
+experiments</strong> across one or more remote machines
+without asking you to change anything in the way you are
 already working with Talos.
 '''
 
@@ -16,7 +16,7 @@ MAINTAINER_EMAIL = 'mailme@mikkokotila.com'
 URL = 'http://autonom.io'
 LICENSE = 'MIT'
 DOWNLOAD_URL = 'https://github.com/autonomio/jako/'
-VERSION = '0.1'
+VERSION = '0.1.1'
 
 
 try:
@@ -30,6 +30,7 @@ install_requires = ['talos',
                     'numpy',
                     'pandas',
                     'paramiko',
+                    'psycopg2-binary',
                     'sqlalchemy',
                     'sqlalchemy_utils']
 
