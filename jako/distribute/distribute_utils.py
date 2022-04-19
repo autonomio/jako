@@ -53,6 +53,15 @@ t=RemoteScan(x=x,
         f.write(filestr)
 
 
+def docker_install_commands(self):
+    '''commands to install docker in a machine'''
+
+    commands = ['curl -fsSL https://get.docker.com -o get-docker.sh',
+                'sh get-docker.sh']
+
+    return commands
+
+
 def return_current_machine_id(self,):
     ''' Return machine id after checking the ip from config'''
 
