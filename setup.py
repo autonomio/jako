@@ -53,6 +53,7 @@ if __name__ == '__main__':
             'jako',
             'jako.distribute',
             'jako.database',
+            'jako.docker'
         ],
         classifiers=[
             'Intended Audience :: Science/Research',
