@@ -53,15 +53,6 @@ t=RemoteScan(x=x,
         f.write(filestr)
 
 
-def docker_install_commands(self):
-    '''commands to install docker in a machine'''
-
-    commands = ['curl -fsSL https://get.docker.com -o get-docker.sh',
-                'sh get-docker.sh']
-
-    return commands
-
-
 def return_current_machine_id(self,):
     ''' Return machine id after checking the ip from config'''
 
@@ -149,7 +140,11 @@ def ssh_file_transfer(self, client, machine_id):
     data_files = ['y_data_remote.npy', 'x_data_remote.npy']
     scan_script_files = ['scanfile_remote.py']
     additional_scan_files = ['remote_config.json', 'arguments_remote.json']
-    scan_filenames = data_files + scan_script_files + additional_scan_files
+    docker_files = ['jako_docker.sh']
+    scan_filenames = data_files + scan_script_files
+    + additional_scan_files
+    + docker_files
+
     for file in os.listdir("/tmp/"):
         if file in scan_filenames:
             sftp.put("/tmp/" + file, file)
