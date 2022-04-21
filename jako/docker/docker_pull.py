@@ -144,7 +144,7 @@ def docker_pull(self, image_name):
         ublob = layer['digest']
 
         fake_layerid = hashlib.sha256(
-            (parentid+'\n'+ublob+'\n').encode('utf-8')).hexdigest()
+            (parentid + '\n' + ublob + '\n').encode('utf-8')).hexdigest()
         layerdir = imgdir + '/' + fake_layerid
         os.mkdir(layerdir)
 
@@ -190,7 +190,7 @@ def docker_pull(self, image_name):
                         _progress_bar(ublob, nb_traits)
                         acc = 0
         sys.stdout.write("\r{}: Extracting...{}".format(
-            ublob[7:19], " "*50))  # Ugly but works everywhere
+            ublob[7:19], " " * 50))
         sys.stdout.flush()
 
         # Decompress gzip response
