@@ -157,7 +157,6 @@ def ssh_run(self, client, machine_id):
     Parameters
     ----------
     client | `Object` | paramiko ssh client object
-    params | `dict`| hyperparameter options
     machine_id | `int`| Machine id for each of the distribution machines
 
     Returns
