@@ -62,6 +62,7 @@ def distribute_run(self):
 
         clients = ssh_connect(self)
 
+        run_docker = False
         if 'run_docker' in self.config_data.keys():
             run_docker = self.config_data['run_docker']
 
