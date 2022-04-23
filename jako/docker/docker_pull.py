@@ -1,21 +1,22 @@
 '''
  Courtesy: https://github.com/NotGlop/docker-drag
  '''
-import os
-import sys
-import gzip
-
-import json
-import hashlib
-import shutil
-import requests
-import tarfile
-import urllib3
-urllib3.disable_warnings()
 
 
-def docker_pull(self, image_name):
+def docker_pull(image_name):
     '''Pull the Docker image'''
+
+    import os
+    import sys
+    import gzip
+
+    import json
+    import hashlib
+    import shutil
+    import requests
+    import tarfile
+    import urllib3
+    urllib3.disable_warnings()
 
     repo = 'library'
     tag = 'latest'

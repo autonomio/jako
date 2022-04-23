@@ -77,8 +77,8 @@ def distribute_run(self):
             ssh_file_transfer(self, client, machine_id)
 
             if run_docker:
-                from ..docker.docker_run import docker_run
-                docker_run(self, client, machine_id)
+                from ..docker.docker_run import docker_setup
+                docker_setup(self, client, machine_id)
 
         # create the threads
         threads = []

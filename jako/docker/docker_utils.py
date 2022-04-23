@@ -15,7 +15,54 @@ def write_shell_script(self):
             f.write(command + '\n')
 
 
-def docker_ssh_run(self, client, machine_id):
+def write_docker_pull_script(self, db_machine=False):
+    import inspect
+    from .docker_pull import docker_pull
+
+    script = inspect.getsource(docker_pull)
+    image_name = 'abhijithneilabraham/jako_docker_image'
+    function_call = '\n' + 'docker_pull("{}")'.format(image_name)
+    script = script + function_call
+    write_path = '/tmp/jako_docker_image_pull.py'
+
+    with open(write_path, 'w') as f:
+        f.write(script)
+
+    if db_machine:
+        script = inspect.getsource(docker_pull)
+        image_name = 'abhijithneilabraham/jako_database_docker'
+        function_call = '\n' + 'docker_pull("{}")'.format(image_name)
+        write_path = '/tmp/jako_docker_database_pull.py'
+
+        with open(write_path, 'w') as f:
+            f.write(script)
+
+
+def docker_ssh_file_transfer(self, client, db_machine=False):
+    '''Transfer the docker scripts to the remote machines'''
+
+    import os
+    write_docker_pull_script(self, db_machine)
+    sftp = client.open_sftp()
+
+    try:
+        sftp.chdir(self.dest_dir)  # Test if dest dir exists
+
+    except IOError:
+        sftp.mkdir(self.dest_dir)  # Create dest dir
+        sftp.chdir(self.dest_dir)
+
+    docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
+                    'jako_docker_database_pull.py']
+
+    for file in os.listdir("/tmp/"):
+        if file in docker_files:
+            sftp.put("/tmp/" + file, file)
+
+    sftp.close()
+
+
+def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
 
     Parameters
@@ -28,7 +75,11 @@ def docker_ssh_run(self, client, machine_id):
     None.
 
     '''
-    execute_strings = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
+    execute_strings = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh',
+                       'python3 /tmp/jako_docker_image_pull.py']
+
+    if db_machine:
+        execute_strings += ['python3 /tmp/jako_docker_database_pull.py']
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)

@@ -140,7 +140,8 @@ def ssh_file_transfer(self, client, machine_id):
     data_files = ['y_data_remote.npy', 'x_data_remote.npy']
     scan_script_files = ['scanfile_remote.py']
     additional_scan_files = ['remote_config.json', 'arguments_remote.json']
-    docker_files = ['jako_docker.sh']
+    docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
+                    'jako_docker_database_pull.py']
     scan_filenames = data_files + scan_script_files + additional_scan_files
     scan_filenames = scan_filenames + docker_files
 
