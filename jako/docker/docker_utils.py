@@ -38,11 +38,30 @@ def write_docker_pull_script(self, db_machine=False):
             f.write(script)
 
 
+def write_dockerfile(self):
+    commands = ['FROM abhijithneilabraham/jako_docker_image',
+                'RUN mkdir -p /tmp/',
+                'COPY scanfile_remote.py /tmp/scanfile_remote.py',
+                'COPY x_data_remote.npy /tmp/x_data_remote.npy',
+                'COPY y_data_remote.npy /tmp/y_data_remote.npy',
+                'COPY arguments_remote.json /tmp/arguments_remote.json',
+                'COPY remote_config.json /tmp/remote_config.json',
+                'CMD python3 /tmp/scanfile_remote.py'
+                ]
+
+    with open('/tmp/Dockerfile', 'w') as f:
+        for command in commands:
+            f.write(command + '\n')
+
+
 def docker_ssh_file_transfer(self, client, db_machine=False):
     '''Transfer the docker scripts to the remote machines'''
 
     import os
+
     write_docker_pull_script(self, db_machine)
+    write_dockerfile(self)
+
     sftp = client.open_sftp()
 
     try:
@@ -53,7 +72,8 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.chdir(self.dest_dir)
 
     docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
-                    'jako_docker_database_pull.py']
+                    'jako_docker_database_pull.py',
+                    'Dockerfile']
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
@@ -80,6 +100,32 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
     if db_machine:
         execute_strings += ['python3 /tmp/jako_docker_database_pull.py']
+
+    for execute_str in execute_strings:
+        stdin, stdout, stderr = client.exec_command(execute_str)
+        if stderr:
+            for line in stderr:
+                try:
+                    # Process each error line in the remote output
+                    print(line)
+                except Exception as e:
+                    print(e)
+
+        for line in stdout:
+            try:
+                # Process each line in the remote output
+                print(line)
+            except Exception as e:
+                print(e)
+
+
+def docker_scan_run(self, client, machine_id):
+
+    execute_strings = [
+        'sudo docker pull abhijithneilabraham/jako_docker_image'
+        'sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/',
+        'sudo docker run -it jako_docker_remote'
+                       ]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)

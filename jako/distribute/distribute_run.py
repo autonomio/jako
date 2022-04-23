@@ -80,38 +80,67 @@ def distribute_run(self):
                 from ..docker.docker_run import docker_setup
                 docker_setup(self, client, machine_id)
 
-        # create the threads
-        threads = []
+        if run_docker:
+            # create the threads
+            from ..docker.docker_run import docker_run
+            threads = []
 
-        if run_central_node:
+            if run_central_node:
 
-            args = (self, n_splits, run_central_node)
-            thread = threading.Thread(target=run_central_machine, args=args)
-            thread.start()
-            threads.append(thread)
+                args = (self, n_splits, run_central_node)
+                thread = threading.Thread(target=run_central_machine, args=args)
+                thread.start()
+                threads.append(thread)
 
-            args = ([self, update_db_n_seconds, current_machine_id,
-                     self.stage])
-            thread = threading.Thread(target=update_db, args=args)
-            thread.start()
-            threads.append(thread)
+            for machine_id, client in clients.items():
 
-        for machine_id, client in clients.items():
+                args = (self, client, machine_id)
+                thread = threading.Thread(target=docker_run, args=args)
+                thread.start()
+                threads.append(thread)
 
-            args = (self, client, machine_id)
-            thread = threading.Thread(target=ssh_run, args=args)
-            thread.start()
-            threads.append(thread)
+            for t in threads:
+                t.join()
 
-        for t in threads:
-            t.join()
+            for file in os.listdir('/tmp/'):
+                if file.startswith('machine_id'):
+                    os.remove('/tmp/' + file)
 
-        for file in os.listdir('/tmp/'):
-            if file.startswith('machine_id'):
-                os.remove('/tmp/' + file)
+            for machine_id, client in clients.items():
+                ssh_get_files(self, client, machine_id)
+        else:
+            # create the threads
+            threads = []
 
-        for machine_id, client in clients.items():
-            ssh_get_files(self, client, machine_id)
+            if run_central_node:
+
+                args = (self, n_splits, run_central_node)
+                thread = threading.Thread(target=run_central_machine, args=args)
+                thread.start()
+                threads.append(thread)
+
+                args = ([self, update_db_n_seconds, current_machine_id,
+                         self.stage])
+                thread = threading.Thread(target=update_db, args=args)
+                thread.start()
+                threads.append(thread)
+
+            for machine_id, client in clients.items():
+
+                args = (self, client, machine_id)
+                thread = threading.Thread(target=ssh_run, args=args)
+                thread.start()
+                threads.append(thread)
+
+            for t in threads:
+                t.join()
+
+            for file in os.listdir('/tmp/'):
+                if file.startswith('machine_id'):
+                    os.remove('/tmp/' + file)
+
+            for machine_id, client in clients.items():
+                ssh_get_files(self, client, machine_id)
 
     from .distribute_finish import distribute_finish
     self = distribute_finish(self)
