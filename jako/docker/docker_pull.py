@@ -41,6 +41,11 @@ def docker_pull(image_name):
             repo = 'library'
 
     repository = '{}/{}'.format(repo, img)
+    docker_tar = repo.replace('/', '_') + '_' + img + '.tar'
+
+    if docker_tar in os.listdir('.'):
+        print('Existing docker image found')
+        return
 
     # Get Docker authentication endpoint when it is required
     auth_url = 'https://auth.docker.io/token'
