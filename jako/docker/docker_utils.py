@@ -77,7 +77,7 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
-            sftp.put("/tmp/" + file, file)
+            sftp.put("/tmp/" + file, self.dest_dir + file)
 
     sftp.close()
 
@@ -127,7 +127,7 @@ def docker_scan_run(self, client, machine_id):
         'sudo docker run -it  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp jako_docker_remote:/tmp/ /',
         'sudo docker rm jako_docker_remote'
-                       ]
+        ]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
