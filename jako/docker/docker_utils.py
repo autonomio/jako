@@ -41,12 +41,13 @@ def write_docker_pull_script(self, db_machine=False):
 def write_dockerfile(self):
     commands = ['FROM abhijithneilabraham/jako_docker_image',
                 'RUN mkdir -p /tmp/',
-                'COPY scanfile_remote.py /tmp/scanfile_remote.py',
-                'COPY x_data_remote.npy /tmp/x_data_remote.npy',
-                'COPY y_data_remote.npy /tmp/y_data_remote.npy',
-                'COPY arguments_remote.json /tmp/arguments_remote.json',
-                'COPY remote_config.json /tmp/remote_config.json',
-                'CMD python3 /tmp/scanfile_remote.py'
+                'COPY jako_scanfile_remote.py /tmp/jako_scanfile_remote.py',
+                'COPY jako_x_data_remote.npy /tmp/jako_x_data_remote.npy',
+                'COPY jako_y_data_remote.npy /tmp/jako_y_data_remote.npy',
+                '''COPY jako_arguments_remote.json
+                /tmp/jako_arguments_remote.json'''.replace('\n', ''),
+                'COPY jako_remote_config.json /tmp/jako_remote_config.json',
+                'CMD python3 /tmp/jako_scanfile_remote.py'
                 ]
 
     with open('/tmp/Dockerfile', 'w') as f:
