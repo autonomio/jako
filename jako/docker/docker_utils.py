@@ -124,7 +124,9 @@ def docker_scan_run(self, client, machine_id):
     execute_strings = [
         'sudo docker pull abhijithneilabraham/jako_docker_image'
         'sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/',
-        'sudo docker run -it jako_docker_remote'
+        'sudo docker run -it  --name jako_docker_remote jako_docker_remote',
+        'sudo docker container cp jako_docker_remote:/tmp/ /',
+        'sudo docker rm jako_docker_remote'
                        ]
 
     for execute_str in execute_strings:
