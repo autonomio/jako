@@ -15,29 +15,6 @@ def write_shell_script(self):
             f.write(command + '\n')
 
 
-def write_docker_pull_script(self, db_machine=False):
-    import inspect
-    from .docker_pull import docker_pull
-
-    script = inspect.getsource(docker_pull)
-    image_name = 'abhijithneilabraham/jako_docker_image'
-    function_call = '\n' + 'docker_pull("{}")'.format(image_name)
-    script = script + function_call
-    write_path = '/tmp/jako_docker_image_pull.py'
-
-    with open(write_path, 'w') as f:
-        f.write(script)
-
-    if db_machine:
-        script = inspect.getsource(docker_pull)
-        image_name = 'abhijithneilabraham/jako_database_docker'
-        function_call = '\n' + 'docker_pull("{}")'.format(image_name)
-        write_path = '/tmp/jako_docker_database_pull.py'
-
-        with open(write_path, 'w') as f:
-            f.write(script)
-
-
 def write_dockerfile(self):
     commands = ['FROM abhijithneilabraham/jako_docker_image',
                 'RUN mkdir -p /tmp/',
@@ -60,7 +37,6 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
     import os
 
-    write_docker_pull_script(self, db_machine)
     write_dockerfile(self)
 
     sftp = client.open_sftp()
@@ -72,9 +48,7 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
-                    'jako_docker_database_pull.py',
-                    'Dockerfile']
+    docker_files = ['jako_docker.sh', 'Dockerfile']
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
@@ -96,11 +70,26 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     None.
 
     '''
-    execute_strings = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh',
-                       'python3 /tmp/jako_docker_image_pull.py']
+    execute_strings = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
 
     if db_machine:
-        execute_strings += ['python3 /tmp/jako_docker_database_pull.py']
+        from ..distribute.distribute_utils import read_config
+        config = read_config(self)
+        if "database" in config.keys():
+            db_username = config['database']['DB_USERNAME']
+            db_password = config['database']['DB_PASSWORD']
+            db_port = config['database']['DB_PORT']
+        else:
+            db_username = 'postgres'
+            db_password = 'postgres'
+            db_port = '5432'
+        db_container_name = 'jako_db'
+        stop_cmd = 'docker stop {}'.format(db_container_name)
+        rm_cmd = 'docker rm {}'.format(db_container_name)
+        cmd = 'sudo docker run --name {} -e POSTGRES_PASSWORD={} -d -p {}:{} {}'
+        cmd = cmd.format(db_container_name,
+                         db_password, db_port, db_port, db_username)
+        execute_strings += [stop_cmd, rm_cmd, cmd]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)

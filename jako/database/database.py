@@ -53,6 +53,10 @@ class Database:
         elif db_type == 'postgres':
             if port is None:
                 port = 5432
+            if username is None:
+                username = 'postgres'
+            if password is None:
+                password = 'postgres'
 
             url = 'postgresql://{}:{}@{}:{}/{}'.format(username,
                                                        password,
