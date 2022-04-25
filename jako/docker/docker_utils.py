@@ -24,7 +24,8 @@ def write_dockerfile(self):
                 '''COPY jako_arguments_remote.json
                 /tmp/jako_arguments_remote.json'''.replace('\n', ''),
                 'COPY jako_remote_config.json /tmp/jako_remote_config.json',
-                'CMD python3 /tmp/jako_scanfile_remote.py'
+                'CMD python3 /tmp/jako_scanfile_remote.py',
+                'RUN chmod -R 777 /tmp/'
                 ]
 
     with open('/tmp/Dockerfile', 'w') as f:
@@ -135,9 +136,8 @@ def docker_scan_run(self, client, machine_id):
     build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
     execute_strings = [
         'sudo docker run  --name jako_docker_remote jako_docker_remote',
-        'sudo docker container cp jako_docker_remote:/tmp/ /',
-        'sudo docker rm jako_docker_remote',
-        'sudo chmod -R 777 /tmp/']
+        'sudo docker container cp -a jako_docker_remote:/tmp/ /',
+        'sudo docker rm jako_docker_remote']
     execute_strings = build + execute_strings
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
