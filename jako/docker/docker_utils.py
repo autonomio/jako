@@ -70,11 +70,29 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     None.
 
     '''
-    execute_strings = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
+    execute_str = 'sudo docker'
+    execute_strings = []
+    stdin, stdout, stderr = client.exec_command(execute_str)
+    dockerflag = True
+    if stdout:
+        if 'command not found' in stdout:
+            dockerflag = False
+    if stderr:
+        if 'command not found' in stdout:
+            dockerflag = False
+
+    if not dockerflag:
+        install = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
+        execute_strings += install
+
+    pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
+    build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
+    execute_strings += pull + build
 
     if db_machine:
         from ..distribute.distribute_utils import read_config
         config = read_config(self)
+
         if "database" in config.keys():
             db_username = config['database']['DB_USERNAME']
             db_password = config['database']['DB_PASSWORD']
@@ -83,6 +101,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
             db_username = 'postgres'
             db_password = 'postgres'
             db_port = '5432'
+
         db_container_name = 'jako_db'
         stop_cmd = 'docker stop {}'.format(db_container_name)
         rm_cmd = 'docker rm {}'.format(db_container_name)
@@ -110,10 +129,10 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
 
 def docker_scan_run(self, client, machine_id):
+    machine_id = str(machine_id)
+    print('started experiment in machine id {}'.format(machine_id))
 
     execute_strings = [
-        'sudo docker pull abhijithneilabraham/jako_docker_image'
-        'sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/',
         'sudo docker run -it  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp jako_docker_remote:/tmp/ /',
         'sudo docker rm jako_docker_remote']
@@ -124,7 +143,10 @@ def docker_scan_run(self, client, machine_id):
             for line in stderr:
                 try:
                     # Process each error line in the remote output
-                    print(line)
+                    from ..distribute.distribute_utils import read_config
+                    config = read_config(self)
+                    current_machine_id = config['current_machine_id']
+                    print(line + 'in machine id ' + str(current_machine_id))
                 except Exception as e:
                     print(e)
 
@@ -134,3 +156,5 @@ def docker_scan_run(self, client, machine_id):
                 print(line)
             except Exception as e:
                 print(e)
+
+    print('Completed experiment in machine id {}'.format(machine_id))
