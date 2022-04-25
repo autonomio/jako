@@ -295,9 +295,11 @@ def add_experiment_id(self, results_data, machine_id, start_row,
                                                                             )]
 
     except Exception as e:
-        allowed_exception = '(psycopg2.errors.UndefinedTable)'
+        allowed_exceptions = ['(psycopg2.errors.UndefinedTable)',
+                              '(psycopg2.errors.UndefinedColumn)']
+
         e = str(e)
-        if allowed_exception in e:
+        if any(exc in e for exc in allowed_exceptions):
             pass
         else:
             raise Exception(e)
