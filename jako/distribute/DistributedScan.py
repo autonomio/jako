@@ -113,6 +113,13 @@ class DistributedScan(Scan):
 
         # write database name as same as experiment name
         self.config_data['database']['DB_TABLE_NAME'] = experiment_name
+        run_docker = False
+
+        if 'run_docker' in self.config_data.keys():
+            run_docker = self.config_data['run_docker']
+
+        if run_docker:
+            self.config_data['database']['DATABASE_NAME'] = 'postgres'
 
         if isinstance(config, str):
             config_path = config
@@ -141,15 +148,6 @@ class DistributedScan(Scan):
 
         self.model_func = model_func
         self.model_name = model.__name__
-
-        from .distribute_database import get_db_object
-        from .distribute_utils import get_experiment_stage
-
-        db = get_db_object(self)
-        self.stage = get_experiment_stage(self, db)
-
-        if not self.stage:
-            self.stage = 0
 
         arguments_dict["stage"] = self.stage
 

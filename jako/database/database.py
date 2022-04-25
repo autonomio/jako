@@ -175,11 +175,17 @@ class Database:
         ids | Pandas Series object | returns the experiment id of the table
 
         '''
-
-        query_str = 'SELECT experiment_id from {}'.format(self.table_name)
-        res = self.query_table(query_str)
-        res = [val[0] for val in res]
-
+        try:
+            query_str = 'SELECT experiment_id from {}'.format(self.table_name)
+            res = self.query_table(query_str)
+            res = [val[0] for val in res]
+        except Exception as e:
+            e = str(e)
+            err_str = '''
+            Exception: (psycopg2.errors.UndefinedColumn)
+            '''
+            if err_str in e:
+                return [0-0-0]
         return res
 
     def return_columns(self):
