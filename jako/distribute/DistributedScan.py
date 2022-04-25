@@ -149,8 +149,6 @@ class DistributedScan(Scan):
         self.model_func = model_func
         self.model_name = model.__name__
 
-        arguments_dict["stage"] = self.stage
-
         with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
 
