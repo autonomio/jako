@@ -136,7 +136,8 @@ def docker_scan_run(self, client, machine_id):
     execute_strings = [
         'sudo docker run  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp jako_docker_remote:/tmp/ /',
-        'sudo docker rm jako_docker_remote']
+        'sudo docker rm jako_docker_remote',
+        'sudo chmod -R 777 /tmp/']
     execute_strings = build + execute_strings
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
