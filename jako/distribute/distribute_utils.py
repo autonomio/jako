@@ -123,10 +123,8 @@ def ssh_connect(self):
     return clients
 
 
-def ssh_file_transfer(self, client, machine_id):
+def ssh_file_transfer(self, client, machine_id, extra_files=None):
     '''Transfer the current talos script to the remote machines'''
-
-    create_temp_file(self)
 
     sftp = client.open_sftp()
 
@@ -137,19 +135,26 @@ def ssh_file_transfer(self, client, machine_id):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy']
-    scan_script_files = ['jako_scanfile_remote.py']
-    additional_scan_files = ['jako_remote_config.json',
-                             'jako_arguments_remote.json']
-    docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
-                    'jako_docker_database_pull.py']
-    scan_filenames = data_files + scan_script_files + additional_scan_files
-    scan_filenames = scan_filenames + docker_files
+    if not extra_files:
+        create_temp_file(self)
 
-    for file in os.listdir('/tmp/'):
-        if file in scan_filenames:
-            sftp.put('/tmp/' + file, file)
+        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy']
+        scan_script_files = ['jako_scanfile_remote.py']
+        additional_scan_files = ['jako_remote_config.json',
+                                 'jako_arguments_remote.json']
+        docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
+                        'jako_docker_database_pull.py']
+        scan_filenames = data_files + scan_script_files + additional_scan_files
+        scan_filenames = scan_filenames + docker_files
 
+        for file in os.listdir('/tmp/'):
+            if file in scan_filenames:
+                sftp.put('/tmp/' + file, file)
+
+    else:
+        for file in os.listdir('/tmp/'):
+            if file in extra_files:
+                sftp.put('/tmp/' + file, file)
     sftp.close()
 
 
