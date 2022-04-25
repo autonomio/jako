@@ -102,12 +102,14 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
             db_port = '5432'
 
         db_container_name = 'jako_db'
-        stop_cmd = 'docker stop {}'.format(db_container_name)
-        rm_cmd = 'docker rm {}'.format(db_container_name)
+        # start_cmd = 'sudo docker start {}'.format(db_container_name)
+
+        # rm_cmd = 'sudo docker rm {}'.format(db_container_name)
         cmd = 'sudo docker run --name {} -e POSTGRES_PASSWORD={} -d -p {}:{} {}'
         cmd = cmd.format(db_container_name,
                          db_password, db_port, db_port, db_username)
-        execute_strings += [stop_cmd, rm_cmd, cmd]
+        # stop_cmd = 'sudo docker stop {}'.format(db_container_name)
+        execute_strings += [cmd]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
@@ -132,7 +134,7 @@ def docker_scan_run(self, client, machine_id):
     print('started experiment in machine id {}'.format(machine_id))
     build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
     execute_strings = [
-        'sudo docker run -it  --name jako_docker_remote jako_docker_remote',
+        'sudo docker run  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp jako_docker_remote:/tmp/ /',
         'sudo docker rm jako_docker_remote']
     execute_strings = build + execute_strings
@@ -142,10 +144,7 @@ def docker_scan_run(self, client, machine_id):
             for line in stderr:
                 try:
                     # Process each error line in the remote output
-                    from ..distribute.distribute_utils import read_config
-                    config = read_config(self)
-                    current_machine_id = config['current_machine_id']
-                    print(line + 'in machine id ' + str(current_machine_id))
+                    print(line)
                 except Exception as e:
                     print(e)
 
