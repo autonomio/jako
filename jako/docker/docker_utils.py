@@ -86,8 +86,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
         execute_strings += install
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
-    build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
-    execute_strings += pull + build
+    execute_strings += pull
 
     if db_machine:
         from ..distribute.distribute_utils import read_config
@@ -131,12 +130,12 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 def docker_scan_run(self, client, machine_id):
     machine_id = str(machine_id)
     print('started experiment in machine id {}'.format(machine_id))
-
+    build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
     execute_strings = [
         'sudo docker run -it  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp jako_docker_remote:/tmp/ /',
         'sudo docker rm jako_docker_remote']
-
+    execute_strings = build + execute_strings
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:

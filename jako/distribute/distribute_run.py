@@ -58,6 +58,9 @@ def distribute_run(self):
 
     current_machine_id = str(return_current_machine_id(self))
 
+    if 'database' in config.keys():
+        db_machine_id = config['database']['DB_HOST_MACHINE_ID']
+
     if current_machine_id == str(0):
 
         clients = ssh_connect(self)
@@ -74,9 +77,14 @@ def distribute_run(self):
             with open('/tmp/jako_remote_config.json', 'w') as outfile:
                 json.dump(new_config, outfile)
 
+            ssh_file_transfer(self, client, machine_id)
+
             if run_docker:
+                db_machine = False
+                if int(db_machine_id) == int(machine_id):
+                    db_machine = True
                 from ..docker.docker_run import docker_setup
-                docker_setup(self, client, machine_id)
+                docker_setup(self, client, machine_id, db_machine)
 
             from .distribute_database import get_db_object
             from .distribute_utils import get_experiment_stage
@@ -89,11 +97,11 @@ def distribute_run(self):
 
             with open('/tmp/jako_arguments_remote.json', 'r') as outfile:
                 arguments_dict = json.load(outfile)
+
             arguments_dict["stage"] = self.stage
+
             with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
                 json.dump(arguments_dict, outfile, indent=2)
-
-            ssh_file_transfer(self, client, machine_id)
 
         if run_docker:
             # create the threads

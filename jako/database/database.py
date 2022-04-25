@@ -185,8 +185,6 @@ class Database:
             err_str = '(psycopg2.errors.UndefinedColumn)'
             if err_str in e:
                 return res
-            else:
-                raise Exception(e)
         return res
 
     def return_columns(self):

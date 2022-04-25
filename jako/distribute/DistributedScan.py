@@ -153,7 +153,7 @@ class DistributedScan(Scan):
             json.dump(arguments_dict, outfile, indent=2)
 
         with open('/tmp/jako_remote_config.json', 'w') as outfile:
-            json.dump(self.config, outfile, indent=2)
+            json.dump(self.config_data, outfile, indent=2)
 
         from .distribute_run import distribute_run
         distribute_run(self)
