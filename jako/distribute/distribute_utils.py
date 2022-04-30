@@ -12,12 +12,12 @@ import numpy as np
 import json
 import pickle
 
-x=np.load('/tmp/x_data_remote.npy')
-y=np.load('/tmp/y_data_remote.npy')
+x=np.load('/tmp/jako_x_data_remote.npy')
+y=np.load('/tmp/jako_y_data_remote.npy')
 
 {}
 
-with open('/tmp/arguments_remote.json','r') as f:
+with open('/tmp/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
 
 t=RemoteScan(x=x,
@@ -45,11 +45,11 @@ t=RemoteScan(x=x,
              print_params=arguments_dict['print_params'],
              clear_session=arguments_dict['clear_session'],
              save_weights=arguments_dict['save_weights'],
-             config='/tmp/remote_config.json'
+             config='/tmp/jako_remote_config.json'
              )
     '''.format(self.model_func, self.model_name)
 
-    with open("/tmp/scanfile_remote.py", "w") as f:
+    with open("/tmp/jako_scanfile_remote.py", "w") as f:
         f.write(filestr)
 
 
@@ -75,7 +75,7 @@ def return_central_machine_id(self):
 def read_config(self):
     '''Read config from file'''
 
-    config_path = "/tmp/remote_config.json"
+    config_path = "/tmp/jako_remote_config.json"
 
     with open(config_path, 'r') as f:
         config_data = json.load(f)
@@ -86,7 +86,7 @@ def read_config(self):
 def write_config(self, new_config):
     ''' Write config to file'''
 
-    config_path = "/tmp/remote_config.json"
+    config_path = "/tmp/jako_remote_config.json"
 
     with open(config_path, 'w') as outfile:
         json.dump(new_config, outfile, indent=2)
@@ -123,10 +123,8 @@ def ssh_connect(self):
     return clients
 
 
-def ssh_file_transfer(self, client, machine_id):
+def ssh_file_transfer(self, client, machine_id, extra_files=None):
     '''Transfer the current talos script to the remote machines'''
-
-    create_temp_file(self)
 
     sftp = client.open_sftp()
 
@@ -137,14 +135,26 @@ def ssh_file_transfer(self, client, machine_id):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    data_files = ['y_data_remote.npy', 'x_data_remote.npy']
-    scan_script_files = ['scanfile_remote.py']
-    additional_scan_files = ['remote_config.json', 'arguments_remote.json']
-    scan_filenames = data_files + scan_script_files + additional_scan_files
-    for file in os.listdir("/tmp/"):
-        if file in scan_filenames:
-            sftp.put("/tmp/" + file, file)
+    if not extra_files:
+        create_temp_file(self)
 
+        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy']
+        scan_script_files = ['jako_scanfile_remote.py']
+        additional_scan_files = ['jako_remote_config.json',
+                                 'jako_arguments_remote.json']
+        docker_files = ['jako_docker.sh', 'jako_docker_image_pull.py',
+                        'jako_docker_database_pull.py']
+        scan_filenames = data_files + scan_script_files + additional_scan_files
+        scan_filenames = scan_filenames + docker_files
+
+        for file in os.listdir('/tmp/'):
+            if file in scan_filenames:
+                sftp.put('/tmp/' + file, file)
+
+    else:
+        for file in os.listdir('/tmp/'):
+            if file in extra_files:
+                sftp.put('/tmp/' + file, file)
     sftp.close()
 
 
@@ -154,7 +164,6 @@ def ssh_run(self, client, machine_id):
     Parameters
     ----------
     client | `Object` | paramiko ssh client object
-    params | `dict`| hyperparameter options
     machine_id | `int`| Machine id for each of the distribution machines
 
     Returns
@@ -162,7 +171,7 @@ def ssh_run(self, client, machine_id):
     None.
 
     '''
-    execute_str = 'python3 /tmp/scanfile_remote.py'
+    execute_str = 'python3 /tmp/jako_scanfile_remote.py'
     stdin, stdout, stderr = client.exec_command(execute_str)
 
     if stderr:
@@ -286,9 +295,11 @@ def add_experiment_id(self, results_data, machine_id, start_row,
                                                                             )]
 
     except Exception as e:
-        allowed_exception = '(psycopg2.errors.UndefinedTable)'
+        allowed_exceptions = ['(psycopg2.errors.UndefinedTable)',
+                              '(psycopg2.errors.UndefinedColumn)']
+
         e = str(e)
-        if allowed_exception in e:
+        if any(exc in e for exc in allowed_exceptions):
             pass
         else:
             raise Exception(e)

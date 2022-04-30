@@ -58,51 +58,117 @@ def distribute_run(self):
 
     current_machine_id = str(return_current_machine_id(self))
 
+    if 'database' in config.keys():
+        db_machine_id = config['database']['DB_HOST_MACHINE_ID']
+
     if current_machine_id == str(0):
 
         clients = ssh_connect(self)
+
+        run_docker = False
+        if 'run_docker' in self.config_data.keys():
+            run_docker = self.config_data['run_docker']
 
         for machine_id, client in clients.items():
 
             new_config = config
             new_config['current_machine_id'] = machine_id
 
-            with open('/tmp/remote_config.json', 'w') as outfile:
+            with open('/tmp/jako_remote_config.json', 'w') as outfile:
                 json.dump(new_config, outfile)
 
             ssh_file_transfer(self, client, machine_id)
 
-        # create the threads
-        threads = []
+            if run_docker:
+                db_machine = False
+                if int(db_machine_id) == int(machine_id):
+                    db_machine = True
+                from ..docker.docker_run import docker_setup
+                docker_setup(self, client, machine_id, db_machine)
 
-        if run_central_node:
+        from .distribute_database import get_db_object
+        from .distribute_utils import get_experiment_stage
 
-            args = (self, n_splits, run_central_node)
-            thread = threading.Thread(target=run_central_machine, args=args)
-            thread.start()
-            threads.append(thread)
+        db = get_db_object(self)
+        self.stage = get_experiment_stage(self, db)
 
-            args = ([self, update_db_n_seconds, current_machine_id, self.stage])
-            thread = threading.Thread(target=update_db, args=args)
-            thread.start()
-            threads.append(thread)
+        if not self.stage:
+            self.stage = 0
 
+        with open('/tmp/jako_arguments_remote.json', 'r') as outfile:
+            arguments_dict = json.load(outfile)
+
+        arguments_dict["stage"] = self.stage
+
+        with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
+            json.dump(arguments_dict, outfile, indent=2)
+
+        extra_files = ['jako_arguments_remote.json']
         for machine_id, client in clients.items():
+            ssh_file_transfer(self, client, machine_id,
+                              extra_files)
 
-            args = (self, client, machine_id)
-            thread = threading.Thread(target=ssh_run, args=args)
-            thread.start()
-            threads.append(thread)
+        if run_docker:
+            # create the threads
+            from ..docker.docker_run import docker_run
+            threads = []
 
-        for t in threads:
-            t.join()
+            if run_central_node:
 
-        for file in os.listdir('/tmp/'):
-            if file.startswith('machine_id'):
-                os.remove('/tmp/' + file)
+                args = (self, n_splits, run_central_node)
+                thread = threading.Thread(target=run_central_machine, args=args)
+                thread.start()
+                threads.append(thread)
 
-        for machine_id, client in clients.items():
-            ssh_get_files(self, client, machine_id)
+            for machine_id, client in clients.items():
+
+                args = (self, client, machine_id)
+                thread = threading.Thread(target=docker_run, args=args)
+                thread.start()
+                threads.append(thread)
+
+            for t in threads:
+                t.join()
+
+            for file in os.listdir('/tmp/'):
+                if file.startswith('machine_id'):
+                    os.remove('/tmp/' + file)
+
+            for machine_id, client in clients.items():
+                ssh_get_files(self, client, machine_id)
+        else:
+            # create the threads
+            threads = []
+
+            if run_central_node:
+
+                args = (self, n_splits, run_central_node)
+                thread = threading.Thread(target=run_central_machine, args=args)
+                thread.start()
+                threads.append(thread)
+
+                args = ([self, update_db_n_seconds, current_machine_id,
+                         self.stage])
+                thread = threading.Thread(target=update_db, args=args)
+                thread.start()
+                threads.append(thread)
+
+            for machine_id, client in clients.items():
+
+                args = (self, client, machine_id)
+                thread = threading.Thread(target=ssh_run, args=args)
+                thread.start()
+                threads.append(thread)
+
+            for t in threads:
+                t.join()
+
+            for file in os.listdir('/tmp/'):
+                if file.startswith('machine_id'):
+                    os.remove('/tmp/' + file)
+
+            for machine_id, client in clients.items():
+                ssh_get_files(self, client, machine_id)
 
     from .distribute_finish import distribute_finish
     self = distribute_finish(self)

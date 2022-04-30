@@ -16,7 +16,7 @@ MAINTAINER_EMAIL = 'mailme@mikkokotila.com'
 URL = 'http://autonom.io'
 LICENSE = 'MIT'
 DOWNLOAD_URL = 'https://github.com/autonomio/jako/'
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 
 try:
@@ -53,6 +53,7 @@ if __name__ == '__main__':
             'jako',
             'jako.distribute',
             'jako.database',
+            'jako.docker'
         ],
         classifiers=[
             'Intended Audience :: Science/Research',
