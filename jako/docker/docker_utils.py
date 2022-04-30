@@ -49,7 +49,7 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile']
+    docker_files = ['jako_docker.sh', 'Dockerfile', 'jako_docker_compose.sh']
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
