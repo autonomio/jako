@@ -53,6 +53,10 @@ class Database:
         elif db_type == 'postgres':
             if port is None:
                 port = 5432
+            if username is None:
+                username = 'postgres'
+            if password is None:
+                password = 'postgres'
 
             url = 'postgresql://{}:{}@{}:{}/{}'.format(username,
                                                        password,
@@ -171,11 +175,16 @@ class Database:
         ids | Pandas Series object | returns the experiment id of the table
 
         '''
-
-        query_str = 'SELECT experiment_id from {}'.format(self.table_name)
-        res = self.query_table(query_str)
-        res = [val[0] for val in res]
-
+        res = ['0-0-0']
+        try:
+            query_str = 'SELECT experiment_id from {}'.format(self.table_name)
+            res = self.query_table(query_str)
+            res = [val[0] for val in res]
+        except Exception as e:
+            e = str(e)
+            err_str = '(psycopg2.errors.UndefinedColumn)'
+            if err_str in e:
+                return res
         return res
 
     def return_columns(self):

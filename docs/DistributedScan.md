@@ -262,6 +262,7 @@ A config file has all the information regarding connection to remote machines. T
 ```
 {
   "run_central_node": true, 
+  "run_docker": true
   "machines": [
     {
       "machine_id": 1,
@@ -295,7 +296,8 @@ A config file has all the information regarding connection to remote machines. T
 
 Argument | Input | Description
 --------- | ------- | -----------
-`run_central_node` | bool | if set to true, the central machine where the script runs will also be included in distributed run.       
+`run_central_node` | bool | if set to true, the central machine where the script runs will also be included in distributed run.    
+`run_docker` | bool | if set to true, pulls docker images to respective remote machines and runs DistributedScan in docker containers.      
 `machines` | list of dict | list of machine configurations    
 `machine_id` | int | id for each machine in ascending order.   
 `JAKO_IP_ADDRESS` | str | ip address for the remote machine   
@@ -312,5 +314,12 @@ Argument | Input | Description
 `DB_PORT` | int | database_port   
 `DB_ENCODING` | str | Defaults to `LATIN1`   
 `DB_UPDATE_INTERVAL` | int | The frequency with which database update happens. The value is in seconds.Defaults to `5`.    
+
+## DistributedScan with Docker
+
+With the help of docker, you can run DistributedScan in your remote machines without the requirement for setting up Jako and postgres   
+in those machines. Set the parameter `run_docker` to `true`, and Jako pulls docker to those machines and runs DistributedScan.
+
+
 
 

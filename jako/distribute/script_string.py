@@ -5,11 +5,11 @@ from jako import RemoteScan
 import numpy as np
 import json
 import pickle
-x=np.load('/tmp/x_data_remote.npy')
-y=np.load('/tmp/y_data_remote.npy')
+x=np.load('/tmp/jako_x_data_remote.npy')
+y=np.load('/tmp/jako_y_data_remote.npy')
 
 {}
-with open('/tmp/arguments_remote.json','r') as f:
+with open('/tmp/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
 
 t=RemoteScan(x=x,
@@ -37,7 +37,7 @@ t=RemoteScan(x=x,
              print_params=arguments_dict['print_params'],
              clear_session=arguments_dict['clear_session'],
              save_weights=arguments_dict['save_weights'],
-             config='/tmp/remote_config.json'
+             config='/tmp/jako_remote_config.json'
              )'''
 
     return out
