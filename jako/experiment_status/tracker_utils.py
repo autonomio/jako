@@ -4,13 +4,13 @@ import shutil
 
 def create_docker_compose_install_script(self):
     filename = 'jako_docker_compose.sh'
-    sh_path = os.path.dirname(__file__) + filename
+    sh_path = os.path.dirname(__file__) + '/' + filename
     shutil.copy(sh_path, '/tmp/')
 
 
 def create_graphql_install_script(self):
     filename = 'jako_docker_graphql.sh'
-    sh_path = os.path.dirname(__file__) + filename
+    sh_path = os.path.dirname(__file__) + '/' + filename
     shutil.copy(sh_path, '/tmp/')
 
 

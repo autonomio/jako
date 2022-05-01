@@ -6,6 +6,10 @@ from .distribute_utils import return_current_machine_id, ssh_connect
 from .distribute_utils import ssh_file_transfer, ssh_run, ssh_get_files
 from .distribute_database import update_db
 
+from ..docker.docker_run import docker_setup
+from ..experiment_status.tracker_utils import tracker_ssh_file_transfer
+from ..experiment_status.tracker_utils import setup_graphql
+
 
 def run_central_machine(self, n_splits, run_central_node):
     '''Runs `talos.Scan()` in the central machine.
@@ -80,11 +84,15 @@ def distribute_run(self):
             ssh_file_transfer(self, client, machine_id)
 
             if run_docker:
+
                 db_machine = False
                 if int(db_machine_id) == int(machine_id):
                     db_machine = True
-                from ..docker.docker_run import docker_setup
+
                 docker_setup(self, client, machine_id, db_machine)
+
+                tracker_ssh_file_transfer(self, client)
+                setup_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage

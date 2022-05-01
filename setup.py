@@ -53,8 +53,10 @@ if __name__ == '__main__':
             'jako',
             'jako.distribute',
             'jako.database',
-            'jako.docker'
+            'jako.docker',
+            'jako.experiment_status'
         ],
+        include_package_data=True,
         classifiers=[
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3.7',
