@@ -32,7 +32,8 @@ install_requires = ['talos',
                     'paramiko',
                     'psycopg2-binary',
                     'sqlalchemy',
-                    'sqlalchemy_utils']
+                    'sqlalchemy_utils',
+                    'pyyaml']
 
 if __name__ == '__main__':
 
