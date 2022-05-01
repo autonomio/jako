@@ -61,7 +61,8 @@ def tracker_ssh_file_transfer(self, client):
 
 def setup_graphql(self, client, machine_id):
 
-    execute_strings = ['sh /tmp/jako_docker_compose.sh'
+    execute_strings = ['sh /tmp/jako_docker_compose.sh',
+                       'sudo docker compose -f /tmp/docker-compose.yml up -d'
                        ]
 
     for execute_str in execute_strings:
