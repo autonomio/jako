@@ -68,7 +68,6 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
         db_object = get_db_object(self)
         db_url = db_object.DB_URL
-        db_url = db_url.replace('postgresql', 'postgres')
 
         graphql_env = data['services']['graphql-engine']['environment']
         graphql_env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
