@@ -57,7 +57,7 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         from ..distribute.distribute_database import get_db_object
         import yaml
 
-        currpath = os.path.abspath(__file__)
+        currpath = os.path.dirname(__file__)
         compose_path = currpath + '/docker-compose.yml'
         with open(compose_path, 'r') as f:
             data = yaml.safe_load(f)
