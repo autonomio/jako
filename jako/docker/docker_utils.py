@@ -1,3 +1,6 @@
+import os
+
+
 def docker_install_commands(self):
     '''commands to install docker in a machine'''
 
@@ -36,8 +39,6 @@ def write_dockerfile(self):
 def docker_ssh_file_transfer(self, client, db_machine=False):
     '''Transfer the docker scripts to the remote machines'''
 
-    import os
-
     write_dockerfile(self)
 
     sftp = client.open_sftp()
@@ -49,7 +50,27 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile']
+    docker_files = ['jako_docker.sh', 'Dockerfile', 'docker-compose.yml']
+
+    if db_machine:
+
+        from ..distribute.distribute_database import get_db_object
+        import yaml
+
+        currpath = os.path.abspath(__file__)
+        compose_path = currpath + '/docker-compose.yml'
+        with open(compose_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        db_object = get_db_object(self)
+        db_url = db_object.DB_URL
+        db_url = db_url.replace('postgresql', 'postgres')
+        env = data['services']['graphql-engine']['environment']
+        env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
+        env['PG_DATABASE_URL'] = db_url
+
+        with open('tmp/docker-compose.yml', 'w') as f:
+            yaml.dump(data, f)
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
@@ -90,26 +111,8 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings += pull
 
     if db_machine:
-        from ..distribute.distribute_utils import read_config
-        config = read_config(self)
 
-        if "database" in config.keys():
-            db_username = config['database']['DB_USERNAME']
-            db_password = config['database']['DB_PASSWORD']
-            db_port = config['database']['DB_PORT']
-        else:
-            db_username = 'postgres'
-            db_password = 'postgres'
-            db_port = '5432'
-
-        db_container_name = 'jako_db'
-        # start_cmd = 'sudo docker start {}'.format(db_container_name)
-
-        # rm_cmd = 'sudo docker rm {}'.format(db_container_name)
-        cmd = 'sudo docker run --name {} -e POSTGRES_PASSWORD={} -d -p {}:{} {}'
-        cmd = cmd.format(db_container_name,
-                         db_password, db_port, db_port, db_username)
-        # stop_cmd = 'sudo docker stop {}'.format(db_container_name)
+        cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
         execute_strings += [cmd]
 
     for execute_str in execute_strings:

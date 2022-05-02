@@ -1,8 +1,5 @@
 import os
 import shutil
-import yaml
-from ..distribute.distribute_database import get_db_object
-from ..distribute.distribute_utils import read_config
 
 
 def create_docker_compose_install_script(self):
