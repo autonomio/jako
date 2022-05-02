@@ -12,24 +12,9 @@ def create_docker_compose_install_script(self):
 
 
 def create_graphql_install_script(self):
+
     filename = 'docker-compose.yml'
-
     yml_path = os.path.dirname(__file__) + '/' + filename
-    with open(yml_path, 'r') as f:
-        data = yaml.safe_load(f)
-
-    db_object = get_db_object(self)
-    config = read_config(self)
-    pg_pwd = config['database']['DB_PASSWORD']
-    data['services']['postgres']['environment']['POSTGRES_PASSWORD'] = pg_pwd
-    env = data['services']['graphql-engine']['environment']
-    db_url = db_object.DB_URL
-    env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
-    env['PG_DATABASE_URL'] = db_url
-
-    with open(yml_path, 'w') as f:
-        yaml.dump(data, f)
-
     shutil.copy(yml_path, '/tmp/')
 
 
