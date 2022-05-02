@@ -69,9 +69,13 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         db_object = get_db_object(self)
         db_url = db_object.DB_URL
         db_url = db_url.replace('postgresql', 'postgres')
-        env = data['services']['graphql-engine']['environment']
-        env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
-        env['PG_DATABASE_URL'] = db_url
+
+        graphql_env = data['services']['graphql-engine']['environment']
+        graphql_env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
+        graphql_env['PG_DATABASE_URL'] = db_url
+
+        pg_env = data['services']['postgres']['environment']
+        pg_env['POSTGRES_PASSWORD'] = 'postgres'
 
         with open('/tmp/docker-compose.yml', 'w') as f:
             yaml.dump(data, f)
@@ -117,7 +121,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings += pull
 
     if db_machine:
-        compose_install_cmd = 'sh jako_docker_compose.sh'
+        compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
         compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
         execute_strings += [compose_install_cmd, compose_cmd]
 
