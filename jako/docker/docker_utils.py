@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def docker_install_commands(self):
@@ -50,7 +51,8 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile', 'docker-compose.yml']
+    docker_files = ['jako_docker.sh', 'Dockerfile', 'docker-compose.yml',
+                    'jako_docker_compose.sh']
 
     if db_machine:
 
@@ -58,7 +60,9 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         import yaml
 
         currpath = os.path.dirname(__file__)
+        compose_install_script_path = currpath + '/jako_docker_compose.sh'
         compose_path = currpath + '/docker-compose.yml'
+
         with open(compose_path, 'r') as f:
             data = yaml.safe_load(f)
 
@@ -69,8 +73,10 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
         env['PG_DATABASE_URL'] = db_url
 
-        with open('tmp/docker-compose.yml', 'w') as f:
+        with open('/tmp/docker-compose.yml', 'w') as f:
             yaml.dump(data, f)
+
+        shutil.copy(compose_install_script_path, '/tmp/')
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
@@ -111,9 +117,9 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings += pull
 
     if db_machine:
-
-        cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
-        execute_strings += [cmd]
+        compose_install_cmd = 'sh jako_docker_compose.sh'
+        compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
+        execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
