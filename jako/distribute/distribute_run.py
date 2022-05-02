@@ -7,7 +7,6 @@ from .distribute_utils import ssh_file_transfer, ssh_run, ssh_get_files
 from .distribute_database import update_db
 
 from ..docker.docker_run import docker_setup
-from ..experiment_status.tracker_utils import tracker_ssh_file_transfer
 from ..experiment_status.tracker_utils import setup_graphql
 
 
@@ -90,8 +89,6 @@ def distribute_run(self):
                     db_machine = True
 
                 docker_setup(self, client, machine_id, db_machine)
-
-                tracker_ssh_file_transfer(self, client)
                 setup_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
