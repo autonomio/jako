@@ -44,6 +44,7 @@ def distribute_run(self):
     '''
 
     config = self.config_data
+    status_details = {}
 
     if 'run_central_node' in config.keys():
         run_central_node = config['run_central_node']
@@ -58,6 +59,8 @@ def distribute_run(self):
 
     if run_central_node:
         n_splits += 1
+
+    status_details['total_nodes'] = n_splits
 
     current_machine_id = str(return_current_machine_id(self))
 
@@ -153,7 +156,7 @@ def distribute_run(self):
                 threads.append(thread)
 
                 args = ([self, update_db_n_seconds, current_machine_id,
-                         self.stage])
+                         self.stage, status_details])
                 thread = threading.Thread(target=update_db, args=args)
                 thread.start()
                 threads.append(thread)

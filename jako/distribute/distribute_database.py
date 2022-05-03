@@ -39,7 +39,8 @@ def get_db_object(self):
     return db
 
 
-def update_db(self, update_db_n_seconds, current_machine_id, stage):
+def update_db(self, update_db_n_seconds, current_machine_id, stage,
+              status_details=None):
     '''Make changes to the datastore based on a time interval
 
     Parameters
@@ -110,7 +111,11 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                                                          end_row,
                                                          db,
                                                          stage)
-
+                        if status_details:
+                            for col in status_details.keys():
+                                statscol = status_details[col]
+                                results_len = len(results_data)
+                                results_data[col] = [statscol] * results_len
                         __start_upload(results_data)
 
                 new_config = read_config(self)
@@ -131,6 +136,13 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                                                          end_row,
                                                          db,
                                                          stage)
+
+                        if status_details:
+
+                            for col in status_details.keys():
+                                statscol = status_details[col]
+                                results_len = len(results_data)
+                                results_data[col] = [statscol] * results_len
 
                         __start_upload(results_data)
                         write_config(self, new_config)

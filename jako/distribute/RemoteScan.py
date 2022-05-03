@@ -77,6 +77,7 @@ class RemoteScan(Scan):
             del self.config_data['finished_scan_run']
 
         config = self.config_data
+        status_details = {}
 
         with open("/tmp/jako_arguments_remote.json", "r") as f:
             arguments_dict = json.load(f)
@@ -98,6 +99,8 @@ class RemoteScan(Scan):
         if run_central_node:
             n_splits += 1
 
+        status_details['total_nodes'] = n_splits
+
         update_db_n_seconds = 5
         if 'DB_UPDATE_INTERVAL' in config['database'].keys():
             update_db_n_seconds = int(config['database']['DB_UPDATE_INTERVAL'])
@@ -107,7 +110,8 @@ class RemoteScan(Scan):
         # create the threadpool
         threads = []
 
-        args = ([self, update_db_n_seconds, current_machine_id, self.stage])
+        args = ([self, update_db_n_seconds, current_machine_id, self.stage,
+                 status_details])
         thread = threading.Thread(target=update_db, args=args)
         thread.start()
         threads.append(thread)
