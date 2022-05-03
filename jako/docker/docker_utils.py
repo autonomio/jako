@@ -56,30 +56,12 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
     if db_machine:
 
-        from ..distribute.distribute_database import get_db_object
-        import yaml
-
         currpath = os.path.dirname(__file__)
         compose_install_script_path = currpath + '/jako_docker_compose.sh'
         compose_path = currpath + '/docker-compose.yml'
 
-        with open(compose_path, 'r') as f:
-            data = yaml.safe_load(f)
-
-        db_object = get_db_object(self)
-        db_url = db_object.DB_URL
-
-        graphql_env = data['services']['graphql-engine']['environment']
-        graphql_env['HASURA_GRAPHQL_METADATA_DATABASE_URL'] = db_url
-        graphql_env['PG_DATABASE_URL'] = db_url
-
-        pg_env = data['services']['postgres']['environment']
-        pg_env['POSTGRES_PASSWORD'] = 'postgres'
-
-        with open('/tmp/docker-compose.yml', 'w') as f:
-            yaml.dump(data, f)
-
         shutil.copy(compose_install_script_path, '/tmp/')
+        shutil.copy(compose_path, '/tmp/')
 
     for file in os.listdir("/tmp/"):
         if file in docker_files:
