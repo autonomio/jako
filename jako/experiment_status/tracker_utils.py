@@ -1,3 +1,6 @@
+import requests
+
+
 def setup_graphql(self, client, machine_id):
 
     execute_strings = ['sh /tmp/jako_docker_compose.sh',
@@ -20,3 +23,12 @@ def setup_graphql(self, client, machine_id):
                 print(line)
             except Exception as e:
                 print(e)
+
+
+def run_query(uri, query, statusCode):
+    request = requests.post(uri, json={'query': query})
+    if request.status_code == statusCode:
+        return request.json()
+    else:
+        raise Exception(f'''Unexpected status code returned:
+                        {request.status_code}''')

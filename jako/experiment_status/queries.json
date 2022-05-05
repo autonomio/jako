@@ -1,0 +1,7 @@
+{
+"total_nodes": "query MyQuery {
+  diabetes_test2(limit: 1, order_by: {total_nodes: desc}) {
+    total_nodes
+  }
+}"
+}
