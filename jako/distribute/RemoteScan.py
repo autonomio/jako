@@ -107,8 +107,8 @@ class RemoteScan(Scan):
 
         current_machine_id = str(return_current_machine_id(self))
 
-        status_details['experiment_stage'] = self.stage
-        status_details['machine_id'] = current_machine_id
+        status_details['experiment_stage'] = int(self.stage)
+        status_details['machine_id'] = int(current_machine_id)
         # create the threadpool
         threads = []
 

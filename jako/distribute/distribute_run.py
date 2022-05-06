@@ -107,8 +107,8 @@ def distribute_run(self):
             arguments_dict = json.load(outfile)
 
         arguments_dict["stage"] = self.stage
-        status_details['experiment_stage'] = self.stage
-        status_details['machine_id'] = current_machine_id
+        status_details['experiment_stage'] = int(self.stage)
+        status_details['machine_id'] = int(current_machine_id)
 
         with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
