@@ -107,6 +107,8 @@ def distribute_run(self):
             arguments_dict = json.load(outfile)
 
         arguments_dict["stage"] = self.stage
+        status_details['experiment_stage'] = self.stage
+        status_details['machine_id'] = current_machine_id
 
         with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
@@ -125,6 +127,12 @@ def distribute_run(self):
 
                 args = (self, n_splits, run_central_node)
                 thread = threading.Thread(target=run_central_machine, args=args)
+                thread.start()
+                threads.append(thread)
+
+                args = ([self, update_db_n_seconds, current_machine_id,
+                         self.stage, status_details])
+                thread = threading.Thread(target=update_db, args=args)
                 thread.start()
                 threads.append(thread)
 
