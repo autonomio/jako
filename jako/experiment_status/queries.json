@@ -1,6 +1,6 @@
 {
 "total_nodes": "query MyQuery {
-  {}(limit: 1, order_by: {total_nodes: desc}) {
+  %(experiment_name)s(limit: 1, order_by: {total_nodes: desc}) {
     total_nodes
   }
 }",
