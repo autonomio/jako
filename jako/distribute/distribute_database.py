@@ -9,17 +9,11 @@ def get_db_object(self):
     config = self.config_data
     from ..database.database import Database
 
-    machine_config = config['machines']
     db_config = config['database']
     username = db_config['DB_USERNAME']
     password = db_config['DB_PASSWORD']
 
-    host_machine_id = int(db_config['DB_HOST_MACHINE_ID'])
-
-    for machine in machine_config:
-        if int(machine['machine_id']) == host_machine_id:
-            host = machine['JAKO_IP_ADDRESS']
-            break
+    host = get_db_host(self)
 
     port = db_config['DB_PORT']
     database_name = db_config['DATABASE_NAME']
@@ -37,6 +31,20 @@ def get_db_object(self):
                   encoding=encoding)
 
     return db
+
+
+def get_db_host(self):
+
+    config = read_config(self)
+    machine_config = config['machines']
+    db_config = config['database']
+    host_machine_id = int(db_config['DB_HOST_MACHINE_ID'])
+
+    for machine in machine_config:
+        if int(machine['machine_id']) == host_machine_id:
+            host = machine['JAKO_IP_ADDRESS']
+            break
+    return host
 
 
 def update_db(self, update_db_n_seconds, current_machine_id, stage,
