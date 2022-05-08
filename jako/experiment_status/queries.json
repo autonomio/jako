@@ -4,16 +4,17 @@
     total_nodes
   }
 }",
+
 "number_of_permutations":"
 query MyQuery {
-  {}_aggregate {
+  %(experiment_name)s_aggregate {
     aggregate {
       max {
         experiment_stage
       }
     }
   }
-  {} {
+  %(experiment_name)s {
     experiment_id
   }
 }

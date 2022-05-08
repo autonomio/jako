@@ -72,7 +72,7 @@ def return_central_machine_id(self):
     return central_id
 
 
-def read_config(self):
+def read_config():
     '''Read config from file'''
 
     config_path = "/tmp/jako_remote_config.json"
