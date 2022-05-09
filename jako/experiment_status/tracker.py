@@ -20,13 +20,13 @@ class Tracker:
         webbrowser.open_new(hasura_url)
 
     def total_nodes(self):
-        from .tracker_queries import total_nodes
+        from .tracker_queries import query_total_nodes
 
         experiment_name = self.experiment_name
         uri = self.uri
         statusCode = self.statusCode
 
-        query = total_nodes(experiment_name)
+        query = query_total_nodes(experiment_name)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name][0]['total_nodes']
@@ -34,15 +34,29 @@ class Tracker:
         return res
 
     def number_of_permutations(self):
-        from .tracker_queries import number_of_permutations
+        from .tracker_queries import query_number_of_permutations
 
         experiment_name = self.experiment_name
         uri = self.uri
         statusCode = self.statusCode
 
-        query = number_of_permutations(experiment_name)
+        query = query_number_of_permutations(experiment_name)
 
         res = run_query(uri, query, statusCode)
         res = len(res['data'][experiment_name])
 
+        return res
+
+    def max_by_metric(self, metric):
+        from .tracker_queries import query_max_by_metric
+
+        experiment_name = self.experiment_name
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_max_by_metric(experiment_name, metric)
+
+        res = run_query(uri, query, statusCode)
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
+        res = agg[metric]
         return res
