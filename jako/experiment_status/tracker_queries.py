@@ -25,3 +25,10 @@ def query_max_by_metric(experiment_name, metric):
     query = query % {'experiment_name': experiment_name,
                      'metric': metric}
     return query
+
+
+def query_min_by_metric(experiment_name, metric):
+    query = queries['min_by_metric']
+    query = query % {'experiment_name': experiment_name,
+                     'metric': metric}
+    return query

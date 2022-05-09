@@ -60,3 +60,17 @@ class Tracker:
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
         res = agg[metric]
         return res
+
+    def min_by_metric(self, metric):
+        from .tracker_queries import query_min_by_metric
+
+        experiment_name = self.experiment_name
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_min_by_metric(experiment_name, metric)
+
+        res = run_query(uri, query, statusCode)
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
+        res = agg[metric]
+        return res

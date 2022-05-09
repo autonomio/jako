@@ -31,5 +31,18 @@ query MyQuery {
     }
   }
 }
+",
+
+"min_by_metric":"
+query MyQuery {
+
+  %(experiment_name)s_aggregate {
+    aggregate {
+      min {
+        %(metric)s
+      }
+    }
+  }
+}
 "
 }
