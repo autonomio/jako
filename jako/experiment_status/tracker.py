@@ -52,10 +52,11 @@ class Tracker:
         from .tracker_queries import query_number_of_permutations
 
         experiment_name = self.experiment_name
+        stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_number_of_permutations(experiment_name)
+        query = query_number_of_permutations(experiment_name, stage)
 
         res = run_query(uri, query, statusCode)
         res = len(res['data'][experiment_name])
@@ -66,10 +67,11 @@ class Tracker:
         from .tracker_queries import query_max_by_metric
 
         experiment_name = self.experiment_name
+        stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_max_by_metric(experiment_name, metric)
+        query = query_max_by_metric(experiment_name, metric, stage)
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
@@ -80,10 +82,11 @@ class Tracker:
         from .tracker_queries import query_min_by_metric
 
         experiment_name = self.experiment_name
+        stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_min_by_metric(experiment_name, metric)
+        query = query_min_by_metric(experiment_name, metric, stage)
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
@@ -94,10 +97,11 @@ class Tracker:
         from .tracker_queries import query_max_by_parameter
 
         experiment_name = self.experiment_name
+        stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_max_by_parameter(experiment_name, parameter)
+        query = query_max_by_parameter(experiment_name, parameter, stage)
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
@@ -108,10 +112,11 @@ class Tracker:
         from .tracker_queries import query_min_by_parameter
 
         experiment_name = self.experiment_name
+        stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_min_by_parameter(experiment_name, parameter)
+        query = query_min_by_parameter(experiment_name, parameter, stage)
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
