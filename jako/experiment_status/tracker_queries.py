@@ -39,3 +39,10 @@ def query_max_by_parameter(experiment_name, parameter):
     query = query % {'experiment_name': experiment_name,
                      'parameter': parameter}
     return query
+
+
+def query_min_by_parameter(experiment_name, parameter):
+    query = queries['min_by_parameter']
+    query = query % {'experiment_name': experiment_name,
+                     'parameter': parameter}
+    return query

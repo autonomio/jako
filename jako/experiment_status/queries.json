@@ -58,4 +58,17 @@ query MyQuery {
   }
 }
 ",
+
+"min_by_parameter":"
+query MyQuery {
+
+  %(experiment_name)s_aggregate {
+    aggregate {
+      min {
+        %(parameter)s
+      }
+    }
+  }
+}
+"
 }
