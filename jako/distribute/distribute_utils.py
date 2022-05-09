@@ -247,11 +247,15 @@ def add_timestamp(self, results_data):
 
     timezone = datetime.timezone
     ct = datetime.datetime.now(timezone.utc)
+    sec = ct.second
     hour = ct.hour
     minute = ct.minute
     day = ct.day
     month = ct.month
     year = ct.year
+
+    if sec < 10:
+        sec = '0' + str(sec)
 
     if minute < 10:
         minute = '0' + str(minute)
@@ -259,7 +263,7 @@ def add_timestamp(self, results_data):
     if hour < 10:
         hour = '0' + str(hour)
 
-    timestamp = "{}:{}/{}-{}-{}".format(hour, minute, day, month, year)
+    timestamp = "{}:{}:{}/{}-{}-{}".format(hour, minute, sec, day, month, year)
     results_data["timestamp"] = [timestamp] * len(results_data)
 
     return results_data

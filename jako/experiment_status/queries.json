@@ -1,5 +1,12 @@
 {
 "total_nodes": "query MyQuery {
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        experiment_stage
+      }
+    }
+  }
   %(experiment_name)s(limit: 1, order_by: {total_nodes: desc}) {
     total_nodes
   }
@@ -22,7 +29,13 @@ query MyQuery {
 
 "max_by_metric":"
 query MyQuery {
-
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        experiment_stage
+      }
+    }
+  }
   %(experiment_name)s_aggregate {
     aggregate {
       max {
@@ -35,7 +48,13 @@ query MyQuery {
 
 "min_by_metric":"
 query MyQuery {
-
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        experiment_stage
+      }
+    }
+  }
   %(experiment_name)s_aggregate {
     aggregate {
       min {
@@ -48,7 +67,13 @@ query MyQuery {
 
 "max_by_parameter":"
 query MyQuery {
-
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        experiment_stage
+      }
+    }
+  }
   %(experiment_name)s_aggregate {
     aggregate {
       max {
@@ -61,7 +86,13 @@ query MyQuery {
 
 "min_by_parameter":"
 query MyQuery {
-
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        experiment_stage
+      }
+    }
+  }
   %(experiment_name)s_aggregate {
     aggregate {
       min {
