@@ -44,5 +44,18 @@ query MyQuery {
     }
   }
 }
-"
+",
+
+"max_by_parameter":"
+query MyQuery {
+
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        %(parameter)s
+      }
+    }
+  }
+}
+",
 }

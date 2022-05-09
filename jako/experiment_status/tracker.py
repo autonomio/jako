@@ -74,3 +74,17 @@ class Tracker:
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
         res = agg[metric]
         return res
+
+    def max_by_parameter(self, parameter):
+        from .tracker_queries import query_max_by_parameter
+
+        experiment_name = self.experiment_name
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_max_by_parameter(experiment_name, parameter)
+
+        res = run_query(uri, query, statusCode)
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
+        res = agg[parameter]
+        return res
