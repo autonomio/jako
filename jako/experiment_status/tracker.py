@@ -14,10 +14,25 @@ class Tracker:
             self.hasura_url = hasura_url.format(self.db_host)
             self.uri = 'http://{}:8080/v1/graphql'.format(self.db_host)
             self.statusCode = 200
+            self.stage = self.latest_stage()
 
     def open_browser(self):
         hasura_url = self.hasura_url
         webbrowser.open_new(hasura_url)
+
+    def latest_stage(self):
+        from .tracker_queries import query_latest_experiment_stage
+
+        experiment_name = self.experiment_name
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_latest_experiment_stage(experiment_name)
+        res = run_query(uri, query, statusCode)
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
+        res = agg['experiment_stage']
+
+        return res
 
     def total_nodes(self):
         from .tracker_queries import query_total_nodes

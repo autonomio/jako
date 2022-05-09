@@ -8,6 +8,12 @@ with open(json_path, 'r') as f:
     queries = json.load(f)
 
 
+def query_latest_experiment_stage(experiment_name):
+    query = queries['latest_experiment_stage']
+    query = query % {'experiment_name': experiment_name}
+    return query
+
+
 def query_total_nodes(experiment_name):
     query = queries['total_nodes']
     query = query % {'experiment_name': experiment_name}
