@@ -245,7 +245,8 @@ def fetch_latest_file(self):
 def add_timestamp(self, results_data):
     '''Adds timestamp to the DataFrame'''
 
-    ct = datetime.datetime.now()
+    timezone = datetime.timezone
+    ct = datetime.datetime.now(timezone.utc)
     hour = ct.hour
     minute = ct.minute
     day = ct.day
