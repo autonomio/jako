@@ -18,5 +18,18 @@ query MyQuery {
     experiment_id
   }
 }
+",
+
+"max_by_metric":"
+query MyQuery {
+
+  %(experiment_name)s_aggregate {
+    aggregate {
+      max {
+        %(metric)s
+      }
+    }
+  }
+}
 "
 }

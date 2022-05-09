@@ -8,9 +8,20 @@ with open(json_path, 'r') as f:
     queries = json.load(f)
 
 
-def total_nodes():
-    return queries['total_nodes']
+def total_nodes(experiment_name):
+    query = queries['total_nodes']
+    query = query % {'experiment_name': experiment_name}
+    return query
 
 
-def number_of_permutations():
-    return queries['number_of_permutations']
+def number_of_permutations(experiment_name):
+    query = queries['number_of_permutations']
+    query = query % {'experiment_name': experiment_name}
+    return query
+
+
+def max_by_metric(experiment_name, metric):
+    query = queries['max_by_metric']
+    query = query % {'experiment_name': experiment_name,
+                     'metric': metric}
+    return query

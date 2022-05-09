@@ -26,8 +26,7 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
 
-        query = total_nodes()
-        query = query % {'experiment_name': experiment_name}
+        query = total_nodes(experiment_name)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name][0]['total_nodes']
@@ -41,8 +40,7 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
 
-        query = number_of_permutations()
-        query = query % {'experiment_name': experiment_name}
+        query = number_of_permutations(experiment_name)
 
         res = run_query(uri, query, statusCode)
         res = len(res['data'][experiment_name])
