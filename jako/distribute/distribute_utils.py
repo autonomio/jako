@@ -263,8 +263,12 @@ def add_timestamp(self, results_data):
     if hour < 10:
         hour = '0' + str(hour)
 
-    timestamp = "{}:{}:{}/{}-{}-{}".format(hour, minute, sec, day, month, year)
-    results_data["timestamp"] = [timestamp] * len(results_data)
+    curr_time = "{}:{}:{}/{}-{}-{}".format(hour, minute, sec, day, month, year)
+    results_data['curr_time'] = [curr_time] * len(results_data)
+
+    timestamp = datetime.datetime.strptime(curr_time, "%H:%M:%S/%d-%m-%Y")
+    timestamp = timestamp.timestamp()
+    results_data['timestamp'] = [timestamp] * len(results_data)
 
     return results_data
 
