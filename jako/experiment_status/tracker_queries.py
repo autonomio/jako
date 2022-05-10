@@ -73,3 +73,11 @@ def query_time_per_permutation(experiment_name):
     query = query % {'experiment_name': experiment_name}
 
     return query
+
+
+def query_total_time(experiment_name, stage):
+    query = queries['total_time']
+    query = query % {'experiment_name': experiment_name,
+                     'stage': stage}
+
+    return query

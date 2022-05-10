@@ -142,3 +142,22 @@ class Tracker:
         time_elapsed = int(time1 - time2)
 
         return time_elapsed
+
+    def total_time(self):
+        from .tracker_queries import query_total_time
+
+        experiment_name = self.experiment_name
+        stage = self.stage
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_total_time(experiment_name, stage)
+
+        res = run_query(uri, query, statusCode)
+        start_ts_agg = res['data'][experiment_name + '_aggregate']['aggregate']
+        start_ts = start_ts_agg['min']['timestamp']
+        end_ts = res['data'][experiment_name][0]['timestamp']
+
+        time_elapsed = end_ts - start_ts
+
+        return time_elapsed
