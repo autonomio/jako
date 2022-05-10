@@ -66,3 +66,10 @@ def query_min_by_parameter(experiment_name, parameter, stage):
                      'parameter': parameter,
                      'stage': stage}
     return query
+
+
+def query_time_per_permutation(experiment_name):
+    query = queries['time_per_permutation']
+    query = query % {'experiment_name': experiment_name}
+
+    return query

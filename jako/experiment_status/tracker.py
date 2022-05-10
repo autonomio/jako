@@ -2,6 +2,7 @@ import webbrowser
 from ..distribute.distribute_database import get_db_host
 from .tracker_utils import run_query
 import json
+import datetime
 
 
 class Tracker:
@@ -122,3 +123,24 @@ class Tracker:
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
         res = agg[parameter]
         return res
+
+    def time_per_permutation(self):
+        from .tracker_queries import query_time_per_permutation
+
+        experiment_name = self.experiment_name
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_time_per_permutation(experiment_name)
+
+        res = run_query(uri, query, statusCode)
+        time1 = res['data'][experiment_name][0]['timestamp']
+        time2 = res['data'][experiment_name][1]['timestamp']
+        time1_ts = datetime.datetime.strptime(time1, "%H:%M:%S/%d-%m-%Y")
+        time1_ts = time1_ts.timestamp()
+        time2_ts = datetime.datetime.strptime(time2, "%H:%M:%S/%d-%m-%Y")
+        time2_ts = time2_ts.timestamp()
+
+        time_elapsed = int(time1_ts - time2_ts)
+
+        return time_elapsed
