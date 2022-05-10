@@ -135,12 +135,10 @@ class Tracker:
 
         res = run_query(uri, query, statusCode)
         time1 = res['data'][experiment_name][0]['timestamp']
+        time1 = int(time1)
         time2 = res['data'][experiment_name][1]['timestamp']
-        time1_ts = datetime.datetime.strptime(time1, "%H:%M:%S/%d-%m-%Y")
-        time1_ts = time1_ts.timestamp()
-        time2_ts = datetime.datetime.strptime(time2, "%H:%M:%S/%d-%m-%Y")
-        time2_ts = time2_ts.timestamp()
+        time2 = int(time2)
 
-        time_elapsed = int(time1_ts - time2_ts)
+        time_elapsed = int(time1 - time2)
 
         return time_elapsed
