@@ -12,7 +12,6 @@ queries = ast.literal_eval(json_str)
 q = {}
 for keys, vals in queries.items():
     v = vals.replace("\n", '')
-    v = v.replace(" ", "")
     q[keys] = v
 
 queries = q
