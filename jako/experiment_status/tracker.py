@@ -2,7 +2,6 @@ import webbrowser
 from ..distribute.distribute_database import get_db_host
 from .tracker_utils import run_query
 import json
-import datetime
 
 
 class Tracker:
