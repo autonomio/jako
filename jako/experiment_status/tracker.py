@@ -194,3 +194,33 @@ class Tracker:
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name][0]
         return res
+
+    def params_by_max_params(self, parameter, ref_param, ref_val):
+        from .tracker_queries import query_params_by_max_params
+
+        experiment_name = self.experiment_name
+        stage = self.stage
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_params_by_max_params(experiment_name,
+                                           parameter, ref_param, ref_val, stage)
+
+        res = run_query(uri, query, statusCode)
+        res = res['data'][experiment_name][0]
+        return res
+
+    def params_by_min_params(self, parameter, ref_param, ref_val):
+        from .tracker_queries import query_params_by_min_params
+
+        experiment_name = self.experiment_name
+        stage = self.stage
+        uri = self.uri
+        statusCode = self.statusCode
+
+        query = query_params_by_min_params(experiment_name,
+                                           parameter, ref_param, ref_val, stage)
+
+        res = run_query(uri, query, statusCode)
+        res = res['data'][experiment_name][0]
+        return res
