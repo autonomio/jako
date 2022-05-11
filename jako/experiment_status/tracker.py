@@ -121,7 +121,7 @@ class Tracker:
                                        parameter, param_value, metric, stage)
 
         res = run_query(uri, query, statusCode)
-        agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
         res = agg[metric]
         return res
 
