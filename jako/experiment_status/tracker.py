@@ -162,3 +162,35 @@ class Tracker:
         time_elapsed = end_ts - start_ts
 
         return time_elapsed
+
+    def params_by_max_metric(self, parameter, metric):
+        from .tracker_queries import query_params_by_max_metric
+
+        experiment_name = self.experiment_name
+        stage = self.stage
+        uri = self.uri
+        statusCode = self.statusCode
+        max_metric = self.max_by_metric(metric)
+
+        query = query_params_by_max_metric(experiment_name,
+                                           parameter, metric, max_metric, stage)
+
+        res = run_query(uri, query, statusCode)
+        res = res['data'][experiment_name][0]
+        return res
+
+    def params_by_min_metric(self, parameter, metric):
+        from .tracker_queries import query_params_by_min_metric
+
+        experiment_name = self.experiment_name
+        stage = self.stage
+        uri = self.uri
+        statusCode = self.statusCode
+        min_metric = self.min_by_metric(metric)
+
+        query = query_params_by_min_metric(experiment_name,
+                                           parameter, metric, min_metric, stage)
+
+        res = run_query(uri, query, statusCode)
+        res = res['data'][experiment_name][0]
+        return res
