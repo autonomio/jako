@@ -106,7 +106,7 @@ class Tracker:
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
-        res = agg[parameter]
+        res = agg[metric]
         return res
 
     def min_by_parameter(self, parameter, param_value, metric):
@@ -122,7 +122,7 @@ class Tracker:
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
-        res = agg[parameter]
+        res = agg[metric]
         return res
 
     def time_per_permutation(self):
