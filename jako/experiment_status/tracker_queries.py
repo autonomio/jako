@@ -59,8 +59,9 @@ def query_max_by_parameter(experiment_name,
     query = query % {'experiment_name': experiment_name,
                      'parameter': parameter,
                      'param_value': param_value,
+                     'metric': metric,
                      'stage': stage,
-                     'metric': metric}
+                     }
     return query
 
 
@@ -71,8 +72,9 @@ def query_min_by_parameter(experiment_name,
     query = query % {'experiment_name': experiment_name,
                      'parameter': parameter,
                      'param_value': param_value,
-                     'stage': stage,
-                     'metric': metric}
+                     'metric': metric,
+                     'stage': stage
+                     }
     return query
 
 
@@ -86,6 +88,30 @@ def query_time_per_permutation(experiment_name):
 def query_total_time(experiment_name, stage):
     query = queries['total_time']
     query = query % {'experiment_name': experiment_name,
+                     'stage': stage}
+
+    return query
+
+
+def query_params_by_max_metric(experiment_name,
+                               parameter, metric, max_metric, stage):
+    query = queries['params_by_max_metric']
+    query = query % {'experiment_name': experiment_name,
+                     'parameter': parameter,
+                     'metric': metric,
+                     'max_metric': max_metric,
+                     'stage': stage}
+
+    return query
+
+
+def query_params_by_min_metric(experiment_name,
+                               parameter, metric, min_metric, stage):
+    query = queries['params_by_min_metric']
+    query = query % {'experiment_name': experiment_name,
+                     'parameter': parameter,
+                     'metric': metric,
+                     'min_metric': min_metric,
                      'stage': stage}
 
     return query
