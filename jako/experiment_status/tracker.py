@@ -93,7 +93,7 @@ class Tracker:
         res = agg[metric]
         return res
 
-    def max_by_parameter(self, parameter):
+    def max_by_parameter(self, parameter, param_value, metric):
         from .tracker_queries import query_max_by_parameter
 
         experiment_name = self.experiment_name
@@ -101,14 +101,15 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_max_by_parameter(experiment_name, parameter, stage)
+        query = query_max_by_parameter(experiment_name,
+                                       parameter, param_value, metric, stage)
 
         res = run_query(uri, query, statusCode)
         agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
         res = agg[parameter]
         return res
 
-    def min_by_parameter(self, parameter):
+    def min_by_parameter(self, parameter, param_value, metric):
         from .tracker_queries import query_min_by_parameter
 
         experiment_name = self.experiment_name
@@ -116,10 +117,11 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
 
-        query = query_min_by_parameter(experiment_name, parameter, stage)
+        query = query_min_by_parameter(experiment_name,
+                                       parameter, param_value, metric, stage)
 
         res = run_query(uri, query, statusCode)
-        agg = res['data'][experiment_name + '_aggregate']['aggregate']['min']
+        agg = res['data'][experiment_name + '_aggregate']['aggregate']['max']
         res = agg[parameter]
         return res
 

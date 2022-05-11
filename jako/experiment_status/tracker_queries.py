@@ -52,19 +52,27 @@ def query_min_by_metric(experiment_name, metric, stage):
     return query
 
 
-def query_max_by_parameter(experiment_name, parameter, stage):
+def query_max_by_parameter(experiment_name,
+                           parameter, param_value, metric, stage):
     query = queries['max_by_parameter']
+    param_value = str(param_value)
     query = query % {'experiment_name': experiment_name,
                      'parameter': parameter,
-                     'stage': stage}
+                     'param_value': param_value,
+                     'stage': stage,
+                     'metric': metric}
     return query
 
 
-def query_min_by_parameter(experiment_name, parameter, stage):
+def query_min_by_parameter(experiment_name,
+                           parameter, param_value, metric, stage):
     query = queries['min_by_parameter']
+    param_value = str(param_value)
     query = query % {'experiment_name': experiment_name,
                      'parameter': parameter,
-                     'stage': stage}
+                     'param_value': param_value,
+                     'stage': stage,
+                     'metric': metric}
     return query
 
 
