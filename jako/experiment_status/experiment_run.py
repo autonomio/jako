@@ -64,5 +64,19 @@ def get_min_by_parameter(parameter: str,
     return min_by_parameter
 
 
+@app.get("/params_by_max_metric/")
+def get_params_by_max_metric(parameter: str, metric: str) -> dict:
+    tracker = Tracker()
+    params_by_max_metric = tracker.params_by_max_metric(parameter, metric)
+    return params_by_max_metric
+
+
+@app.get("/params_by_min_metric/")
+def get_params_by_min_metric(parameter: str, metric: str) -> dict:
+    tracker = Tracker()
+    params_by_min_metric = tracker.params_by_min_metric(parameter, metric)
+    return params_by_min_metric
+
+
 def run_tracker():
     uvicorn.run(app, host='0.0.0.0', port=8080)
