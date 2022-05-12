@@ -49,6 +49,11 @@ class DistributedScan(Scan):
         import inspect
         import numpy as np
 
+        # remove all pre-existing input files
+        for file in os.listdir('/tmp/'):
+            if file.startswith('jako'):
+                os.remove('/tmp/' + file)
+
         self.x = x
         self.y = y
         self.params = params

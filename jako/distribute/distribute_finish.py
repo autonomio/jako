@@ -4,11 +4,6 @@ def distribute_finish(self):
     import json
     import numpy as np
 
-    # remove all input files
-    for file in os.listdir('/tmp/'):
-        if file.startswith('jako'):
-            os.remove('/tmp/' + file)
-
     attrs_final = ['data', 'x', 'y', 'learning_entropy', 'round_times',
                    'params', 'saved_models', 'saved_weights', 'round_history',
                    'details']
