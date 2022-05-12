@@ -33,7 +33,9 @@ install_requires = ['talos',
                     'psycopg2-binary',
                     'sqlalchemy',
                     'sqlalchemy_utils',
-                    'pyyaml']
+                    'pyyaml',
+                    'uvicorn[standard]',
+                    'fastapi']
 
 if __name__ == '__main__':
 
