@@ -34,5 +34,19 @@ def get_total_time() -> int:
     return total_time
 
 
+@app.get("/max_by_metric/")
+def get_max_by_metric(metric: str) -> float:
+    tracker = Tracker()
+    max_by_metric = tracker.max_by_metric(metric)
+    return max_by_metric
+
+
+@app.get("/min_by_metric/")
+def get_min_by_metric(metric: str) -> float:
+    tracker = Tracker()
+    min_by_metric = tracker.min_by_metric(metric)
+    return min_by_metric
+
+
 def run_tracker():
     uvicorn.run(app, host='0.0.0.0', port=8080)
