@@ -48,5 +48,21 @@ def get_min_by_metric(metric: str) -> float:
     return min_by_metric
 
 
+@app.get("/max_by_parameter/")
+def get_max_by_parameter(parameter: str,
+                         param_value: str, metric: str) -> float:
+    tracker = Tracker()
+    max_by_parameter = tracker.max_by_parameter(parameter, param_value, metric)
+    return max_by_parameter
+
+
+@app.get("/min_by_parameter/")
+def get_min_by_parameter(parameter: str,
+                         param_value: str, metric: str) -> float:
+    tracker = Tracker()
+    min_by_parameter = tracker.min_by_parameter(parameter, param_value, metric)
+    return min_by_parameter
+
+
 def run_tracker():
     uvicorn.run(app, host='0.0.0.0', port=8080)
