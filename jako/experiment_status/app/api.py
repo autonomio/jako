@@ -15,3 +15,15 @@ def get_number_of_nodes() -> int:
 def get_number_of_permutations() -> int:
     number_of_permutations = tracker.number_of_permutations()
     return number_of_permutations
+
+
+@app.get("/time_per_permutation")
+def get_time_per_permutation() -> int:
+    time_per_permutation = tracker.time_per_permutation()
+    return time_per_permutation
+
+
+@app.get("/total_time")
+def get_total_time() -> int:
+    total_time = tracker.total_time()
+    return total_time
