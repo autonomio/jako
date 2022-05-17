@@ -1,6 +1,6 @@
 import webbrowser
 from ..distribute.distribute_database import get_db_host
-from .tracker_utils import run_query
+from .tracker_utils import run_query, track_table
 import json
 
 
@@ -15,6 +15,8 @@ class Tracker:
             self.hasura_url = hasura_url.format(self.db_host)
             self.uri = 'http://{}:8080/v1/graphql'.format(self.db_host)
             self.statusCode = 200
+            metadata_uri = self.uri.replace('graphql', 'metadata')
+            track_table(metadata_uri, self.experiment_name, self.statusCode)
 
     def open_browser(self):
         hasura_url = self.hasura_url

@@ -35,19 +35,17 @@ def run_query(uri, query, statusCode):
 
 
 def track_table(uri, experiment_name, statusCode):
-    query = '''
-    {
+    query = {
       "type": "pg_track_table",
       "args": {
         "source": "default",
         "schema": "public",
-        "name": "{}"
+        "name": "{}".format(experiment_name)
       }
      }
-    '''
-    query = query.format(experiment_name)
+
     request = requests.post(uri, json=query)
-    if request.status_code == statusCode:
+    if request.status_code in (statusCode, 400):
         return request.json()
     else:
         raise Exception(f'''Unexpected status code returned:
