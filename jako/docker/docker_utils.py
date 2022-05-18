@@ -25,6 +25,10 @@ def write_dockerfile(self):
                 'COPY jako_scanfile_remote.py /tmp/jako_scanfile_remote.py',
                 'COPY jako_x_data_remote.npy /tmp/jako_x_data_remote.npy',
                 'COPY jako_y_data_remote.npy /tmp/jako_y_data_remote.npy',
+                '''COPY jako_x_val_data_remote.npy
+                /tmp/jako_x_val_data_remote.npy'''.replace('\n', ''),
+                '''COPY jako_y_val_data_remote.npy
+                /tmp/jako_y_val_data_remote.npy'''.replace('\n', ''),
                 '''COPY jako_arguments_remote.json
                 /tmp/jako_arguments_remote.json'''.replace('\n', ''),
                 'COPY jako_remote_config.json /tmp/jako_remote_config.json',
