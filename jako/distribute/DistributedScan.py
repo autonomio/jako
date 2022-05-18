@@ -94,7 +94,7 @@ class DistributedScan(Scan):
         self.config = config
 
         arguments_dict = self.__dict__
-        remove_parameters = ["x", "y", "model"]
+        remove_parameters = ['x', 'y', 'model', 'x_val', 'y_val']
         arguments_dict = {k: v for k, v in arguments_dict.items()
                           if k not in remove_parameters}
 
