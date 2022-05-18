@@ -139,14 +139,16 @@ class DistributedScan(Scan):
             del self.config_data['finished_scan_run']
 
         # handles location for params,data and model
-        if not os.path.exists("/tmp/"):
-            os.mkdir("/tmp/")
+        if not os.path.exists('/tmp/'):
+            os.mkdir('/tmp/')
 
-        self.dest_dir = "/tmp/"
+        self.dest_dir = '/tmp/'
 
         # save data in numpy format
-        np.save("/tmp/jako_x_data_remote.npy", x)
-        np.save("/tmp/jako_y_data_remote.npy", y)
+        np.save('/tmp/jako_x_data_remote.npy', x)
+        np.save('/tmp/jako_y_data_remote.npy', y)
+        np.save('/tmp/jako_x_val_data_remote.npy', x_val)
+        np.save('/tmp/jako_y_val_data_remote.npy', y_val)
 
         # get model function as a string
         model_func = inspect.getsource(model).lstrip()

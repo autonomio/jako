@@ -14,6 +14,8 @@ import pickle
 
 x=np.load('/tmp/jako_x_data_remote.npy')
 y=np.load('/tmp/jako_y_data_remote.npy')
+x_val=np.load('/tmp/jako_x_val_data_remote.npy')
+y_val=np.load('/tmp/jako_y_val_data_remote.npy')
 
 {}
 
@@ -25,8 +27,8 @@ t=RemoteScan(x=x,
              params=arguments_dict['params'],
              model={},
              experiment_name=arguments_dict['experiment_name'],
-             x_val=arguments_dict['x_val'],
-             y_val=arguments_dict['y_val'],
+             x_val=x_val,
+             y_val=x_val,
              val_split=arguments_dict['val_split'],
              random_method=arguments_dict['random_method'],
              seed=arguments_dict['seed'],
