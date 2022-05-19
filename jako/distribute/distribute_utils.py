@@ -12,10 +12,10 @@ import numpy as np
 import json
 import pickle
 
-x=np.load('/tmp/jako_x_data_remote.npy')
-y=np.load('/tmp/jako_y_data_remote.npy')
-x_val=np.load('/tmp/jako_x_val_data_remote.npy')
-y_val=np.load('/tmp/jako_y_val_data_remote.npy')
+x=np.load('/tmp/jako_x_data_remote.npy',allow_pickle=True)
+y=np.load('/tmp/jako_y_data_remote.npy',allow_pickle=True)
+x_val=np.load('/tmp/jako_x_val_data_remote.npy',allow_pickle=True)
+y_val=np.load('/tmp/jako_y_val_data_remote.npy',allow_pickle=True)
 
 {}
 
