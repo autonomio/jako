@@ -79,16 +79,18 @@ def get_params_by_min_metric(metric: str) -> dict:
 
 
 @app.get("/params_by_max_params/")
-def get_params_by_max_params(ref_param: str, ref_val: str) -> dict:
+def get_params_by_max_params(metric: str, ref_param: str, ref_val: str) -> dict:
     tracker = Tracker()
-    params_by_max_params = tracker.params_by_max_params(ref_param, ref_val)
+    params_by_max_params = tracker.params_by_max_params(metric,
+                                                        ref_param, ref_val)
     return params_by_max_params
 
 
 @app.get("/params_by_min_params/")
-def get_params_by_min_params(ref_param: str, ref_val: str) -> dict:
+def get_params_by_min_params(metric: str, ref_param: str, ref_val: str) -> dict:
     tracker = Tracker()
-    params_by_min_params = tracker.params_by_min_params(ref_param, ref_val)
+    params_by_min_params = tracker.params_by_min_params(metric,
+                                                        ref_param, ref_val)
     return params_by_min_params
 
 
