@@ -140,7 +140,9 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
     if not extra_files:
         create_temp_file(self)
 
-        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy']
+        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy',
+                      'jako_x_val_data_remote.npy',
+                      'jako_y_val_data_remote.npy']
         scan_script_files = ['jako_scanfile_remote.py']
         additional_scan_files = ['jako_remote_config.json',
                                  'jako_arguments_remote.json']
