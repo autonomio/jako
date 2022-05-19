@@ -46,7 +46,7 @@ Description : Given a metric, output the maximum value for the metric. Eg: Max o
 Returns: float
 endpoint: `http://0.0.0.0:8080/max_by_metric/?metric=metric_name`
 
-Replace `metric_name` in the above endpoint with metric of your choice.
+Replace the value `metric_name` in the above endpoint with metric of your choice.
 
 ### Min By Metric
 
@@ -55,7 +55,27 @@ Description : Given a metric, output the minimum value for the metric. Eg: Min o
 Returns: float
 endpoint: `http://0.0.0.0:8080/min_by_metric/?metric=metric_name`
 
-Replace `metric_name` in the above endpoint with metric of your choice.
+Replace the value `metric_name` in the above endpoint with metric of your choice.
+
+### Max By Parameter
+
+Arguments: parameter, param_value, metric
+Description : Given a parameter, and its value, output the max value for the metric.
+Eg: Max of val_accuracy for  when parameter first neuron has param value 256.
+Returns: float
+endpoint: `http://0.0.0.0:8080/max_by_parameter/?parameter=parameter_name&param_value=param_value&metric=metric_name`
+
+Replace the values `parameter_name`, `param_value`, `metric_name` in the above endpoint with respective parameter name, parameter value and metric of your choice.
+
+### Min By Parameter
+
+Arguments: parameter, param_value, metric
+Description : Given a parameter, and its value, output the min value for the metric.
+Eg: Min of val_accuracy for  when parameter first neuron has param value 256.
+Returns: float
+endpoint: `http://0.0.0.0:8080/min_by_parameter/?parameter=parameter_name&param_value=param_value&metric=metric_name`
+
+Replace the values `parameter_name`, `param_value`, `metric_name` in the above endpoint with respective parameter name, parameter value and metric of your choice.
 
 
 
