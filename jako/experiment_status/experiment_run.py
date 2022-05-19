@@ -65,34 +65,30 @@ def get_min_by_parameter(parameter: str,
 
 
 @app.get("/params_by_max_metric/")
-def get_params_by_max_metric(parameter: str, metric: str) -> dict:
+def get_params_by_max_metric(metric: str) -> dict:
     tracker = Tracker()
-    params_by_max_metric = tracker.params_by_max_metric(parameter, metric)
+    params_by_max_metric = tracker.params_by_max_metric(metric)
     return params_by_max_metric
 
 
 @app.get("/params_by_min_metric/")
-def get_params_by_min_metric(parameter: str, metric: str) -> dict:
+def get_params_by_min_metric(metric: str) -> dict:
     tracker = Tracker()
-    params_by_min_metric = tracker.params_by_min_metric(parameter, metric)
+    params_by_min_metric = tracker.params_by_min_metric(metric)
     return params_by_min_metric
 
 
 @app.get("/params_by_max_params/")
-def get_params_by_max_params(parameter: str,
-                             ref_param: str, ref_val: str) -> dict:
+def get_params_by_max_params(ref_param: str, ref_val: str) -> dict:
     tracker = Tracker()
-    params_by_max_params = tracker.params_by_max_params(parameter,
-                                                        ref_param, ref_val)
+    params_by_max_params = tracker.params_by_max_params(ref_param, ref_val)
     return params_by_max_params
 
 
 @app.get("/params_by_min_params/")
-def get_params_by_min_params(parameter: str,
-                             ref_param: str, ref_val: str) -> dict:
+def get_params_by_min_params(ref_param: str, ref_val: str) -> dict:
     tracker = Tracker()
-    params_by_min_params = tracker.params_by_min_params(parameter,
-                                                        ref_param, ref_val)
+    params_by_min_params = tracker.params_by_min_params(ref_param, ref_val)
     return params_by_min_params
 
 

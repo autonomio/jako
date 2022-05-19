@@ -77,6 +77,36 @@ endpoint: `http://0.0.0.0:8080/min_by_parameter/?parameter=parameter_name&param_
 
 Replace the values `parameter_name`, `param_value`, `metric_name` in the above endpoint with respective parameter name, parameter value and metric of your choice.
 
+### Params by Max Metric
+
+Arguments: parameter, metric
+Description : Given a parameter and a metric, get the parameter and its value in the row where the value of the metric is maximum.
+Eg: Return the value of first neuron where val_accuracy is maximum.
+Returns: dict
+endpoint: `http://0.0.0.0:8080/params_by_max_metric/?parameter=parameter_name&metric=metric_name`
+
+Replace the values `parameter_name`, `metric_name` in the above endpoint with respective parameter name and metric of your choice.
+
+### Params by Min Metric
+
+Arguments: parameter, metric
+Description : Given a parameter and a metric, get the parameter and its value in the row where the value of the metric is minimum.
+Eg: Return the value of first neuron where val_loss is minimum.
+Returns: dict
+endpoint: `http://0.0.0.0:8080/params_by_min_metric/?parameter=parameter_name&metric=metric_name`
+
+Replace the values `parameter_name`, `metric_name` in the above endpoint with respective parameter name and metric of your choice.
+
+### Params by Max Params
+
+Arguments: parameter, ref_param, ref_val
+Description : Given a parameter and a metric, get the parameter and its value in the row where the value of the metric is minimum.
+Eg: Return the value of first neuron where val_loss is minimum.
+Returns: dict
+endpoint: `http://0.0.0.0:8080/params_by_min_metric/?parameter=parameter_name&metric=metric_name`
+
+Replace the values `parameter_name`, `metric_name` in the above endpoint with respective parameter name and metric of your choice.
+
 
 
 

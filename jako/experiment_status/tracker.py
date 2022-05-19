@@ -9,6 +9,8 @@ class Tracker:
         with open('/tmp/jako_arguments_remote.json', 'r') as f:
             arguments_dict = json.load(f)
             self.experiment_name = arguments_dict['experiment_name']
+            params = list(arguments_dict['params'].keys())
+            self.params = ' '.join(params)
             self.stage = arguments_dict['stage']
             self.db_host = get_db_host()
             hasura_url = 'http://{}:8080/console'
@@ -152,7 +154,7 @@ class Tracker:
 
         return time_elapsed
 
-    def params_by_max_metric(self, parameter, metric):
+    def params_by_max_metric(self, metric):
         from .tracker_queries import query_params_by_max_metric
 
         experiment_name = self.experiment_name
@@ -160,6 +162,7 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
         max_metric = self.max_by_metric(metric)
+        parameter = self.params
 
         query = query_params_by_max_metric(experiment_name,
                                            parameter, metric, max_metric, stage)
@@ -168,7 +171,7 @@ class Tracker:
         res = res['data'][experiment_name][0]
         return res
 
-    def params_by_min_metric(self, parameter, metric):
+    def params_by_min_metric(self, metric):
         from .tracker_queries import query_params_by_min_metric
 
         experiment_name = self.experiment_name
@@ -176,6 +179,7 @@ class Tracker:
         uri = self.uri
         statusCode = self.statusCode
         min_metric = self.min_by_metric(metric)
+        parameter = self.params
 
         query = query_params_by_min_metric(experiment_name,
                                            parameter, metric, min_metric, stage)
@@ -184,13 +188,14 @@ class Tracker:
         res = res['data'][experiment_name][0]
         return res
 
-    def params_by_max_params(self, parameter, ref_param, ref_val):
+    def params_by_max_params(self, metric, ref_param, ref_val):
         from .tracker_queries import query_params_by_max_params
 
         experiment_name = self.experiment_name
         stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
+        parameter = self.params
 
         query = query_params_by_max_params(experiment_name,
                                            parameter, ref_param, ref_val, stage)
@@ -199,13 +204,14 @@ class Tracker:
         res = res['data'][experiment_name][0]
         return res
 
-    def params_by_min_params(self, parameter, ref_param, ref_val):
+    def params_by_min_params(self, metric, ref_param, ref_val):
         from .tracker_queries import query_params_by_min_params
 
         experiment_name = self.experiment_name
         stage = self.stage
         uri = self.uri
         statusCode = self.statusCode
+        parameter = self.params
 
         query = query_params_by_min_params(experiment_name,
                                            parameter, ref_param, ref_val, stage)
