@@ -42,7 +42,8 @@ This will run the api on `http://0.0.0.0:8080`. Each API can be accessed via the
 ### Max By Metric
 
 - Arguments: metric   
-- Description : Given a metric, output the maximum value for the metric. Eg: Max of val_accuracy for a given experiment.    
+- Description : Given a metric, output the maximum value for the metric. 
+Eg: Max of val_accuracy for a given experiment.    
 - Returns: float   
 - endpoint: `http://0.0.0.0:8080/max_by_metric/?metric=metric_name`   
 
@@ -51,7 +52,8 @@ Replace the value `metric_name` in the above endpoint with metric of your choice
 ### Min By Metric
 
 - Arguments: metric   
-- Description : Given a metric, output the minimum value for the metric. Eg: Min of val_accuracy for a given experiment.   
+- Description : Given a metric, output the minimum value for the metric. 
+Eg: Min of val_accuracy for a given experiment.   
 - Returns: float   
 - endpoint: `http://0.0.0.0:8080/min_by_metric/?metric=metric_name`   
 
