@@ -131,12 +131,15 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 def docker_scan_run(self, client, machine_id):
     machine_id = str(machine_id)
     print('started experiment in machine id {}'.format(machine_id))
+    rm_container = ['sudo docker stop jako_docker_remote',
+                    'sudo docker rm jako_docker_remote']
     build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
     execute_strings = [
         'sudo docker run  --name jako_docker_remote jako_docker_remote',
         'sudo docker container cp -a jako_docker_remote:/tmp/ /',
+        'sudo docker stop jako_docker_remote',
         'sudo docker rm jako_docker_remote']
-    execute_strings = build + execute_strings
+    execute_strings = rm_container + build + execute_strings
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:
