@@ -93,6 +93,10 @@ class DistributedScan(Scan):
         # distributed configurations
         self.config = config
 
+        for file in os.listdir('/tmp/'):
+            if file.startswith('jako'):
+                os.remove('/tmp/' + file)
+
         arguments_dict = self.__dict__
         remove_parameters = ['x', 'y', 'model', 'x_val', 'y_val']
         arguments_dict = {k: v for k, v in arguments_dict.items()
@@ -147,8 +151,11 @@ class DistributedScan(Scan):
         # save data in numpy format
         np.save('/tmp/jako_x_data_remote.npy', x)
         np.save('/tmp/jako_y_data_remote.npy', y)
-        np.save('/tmp/jako_x_val_data_remote.npy', x_val)
-        np.save('/tmp/jako_y_val_data_remote.npy', y_val)
+
+        if len(x_val) > 0:
+            if len(y_val) > 0:
+                np.save('/tmp/jako_x_val_data_remote.npy', x_val)
+                np.save('/tmp/jako_y_val_data_remote.npy', y_val)
 
         # get model function as a string
         model_func = inspect.getsource(model).lstrip()
