@@ -8,6 +8,8 @@ class RemoteScan(Scan):
                  params,
                  model,
                  experiment_name,
+                 x_val,
+                 y_val,
                  **kwargs):
         '''Distributed version of talos.Scan() for the remote machines.
 
@@ -30,8 +32,8 @@ class RemoteScan(Scan):
         self.params = params
         self.model = model
         self.experiment_name = experiment_name
-        self.x_val = kwargs['x_val']
-        self.y_val = kwargs['y_val']
+        self.x_val = x_val
+        self.y_val = y_val
         self.val_split = kwargs['val_split']
 
         # randomness

@@ -11,11 +11,20 @@ from jako import RemoteScan
 import numpy as np
 import json
 import pickle
+from os.path import exists
 
 x=np.load('/tmp/jako_x_data_remote.npy',allow_pickle=True)
 y=np.load('/tmp/jako_y_data_remote.npy',allow_pickle=True)
-x_val=np.load('/tmp/jako_x_val_data_remote.npy',allow_pickle=True)
-y_val=np.load('/tmp/jako_y_val_data_remote.npy',allow_pickle=True)
+
+if exists('/tmp/jako_x_val_data_remote.npy'):
+    x_val=np.load('/tmp/jako_x_val_data_remote.npy',allow_pickle=True)
+else:
+    x_val=None
+
+if exists('/tmp/jako_y_val_data_remote.npy'):
+    y_val=np.load('/tmp/jako_y_val_data_remote.npy',allow_pickle=True)
+else:
+    y_val=None
 
 {}
 
@@ -28,7 +37,7 @@ t=RemoteScan(x=x,
              model={},
              experiment_name=arguments_dict['experiment_name'],
              x_val=x_val,
-             y_val=x_val,
+             y_val=y_val,
              val_split=arguments_dict['val_split'],
              random_method=arguments_dict['random_method'],
              seed=arguments_dict['seed'],
