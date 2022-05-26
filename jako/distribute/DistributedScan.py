@@ -152,11 +152,13 @@ class DistributedScan(Scan):
         np.save('/tmp/jako_x_data_remote.npy', x)
         np.save('/tmp/jako_y_data_remote.npy', y)
 
-        if len(x_val) > 0:
-            if len(y_val) > 0:
-                np.save('/tmp/jako_x_val_data_remote.npy', x_val)
-                np.save('/tmp/jako_y_val_data_remote.npy', y_val)
-
+        try:
+            x_val.shape
+            y_val.shape
+            np.save('/tmp/jako_x_val_data_remote.npy', x_val)
+            np.save('/tmp/jako_y_val_data_remote.npy', y_val)
+        except AttributeError:
+            pass
         # get model function as a string
         model_func = inspect.getsource(model).lstrip()
 
