@@ -160,6 +160,10 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
         scan_filenames = data_files + scan_script_files + additional_scan_files
         scan_filenames = scan_filenames + docker_files
 
+        for file in sftp.listdir('/tmp/'):
+            if file.startswith('jako'):
+                sftp.remove('/tmp/' + file)
+
         for file in os.listdir('/tmp/'):
             if file in scan_filenames:
                 sftp.put('/tmp/' + file, file)
