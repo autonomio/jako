@@ -141,8 +141,10 @@ class DistributedScan(Scan):
         self.dest_dir = '/tmp/'
 
         # save data in numpy format
-        np.save('/tmp/jako_x_data_remote.npy', x)
-        np.save('/tmp/jako_y_data_remote.npy', y)
+        np.save('/tmp/{}/jako_x_data_remote.npy'.format(self.experiment_name),
+                x)
+        np.save('/tmp/{}/jako_y_data_remote.npy'.format(self.experiment_name),
+                x)
 
         # get model function as a string
         model_func = inspect.getsource(model).lstrip()
@@ -150,10 +152,13 @@ class DistributedScan(Scan):
         self.model_func = model_func
         self.model_name = model.__name__
 
-        with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json'.format(
+                self.experiment_name), 'w') as outfile:
+
             json.dump(arguments_dict, outfile, indent=2)
 
-        with open('/tmp/jako_remote_config.json', 'w') as outfile:
+        with open('/tmp/{}/jako_remote_config.json'.format(
+                self.experiment_name), 'w') as outfile:
             json.dump(self.config_data, outfile, indent=2)
 
         from .distribute_run import distribute_run
