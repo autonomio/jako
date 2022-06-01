@@ -78,7 +78,8 @@ class RemoteScan(Scan):
 
         config = self.config_data
 
-        with open("/tmp/jako_arguments_remote.json", "r") as f:
+        with open("/tmp/{}/jako_arguments_remote.json".format(
+                self.experiment_name), "r") as f:
             arguments_dict = json.load(f)
 
         self.stage = arguments_dict["stage"]
