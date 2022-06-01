@@ -139,7 +139,7 @@ class DistributedScan(Scan):
         if not os.path.exists(inputs_path):
             os.mkdir(inputs_path)
 
-        self.dest_dir = '/tmp/'
+        self.dest_dir = '/tmp/{}/'.format(self.experiment_name)
 
         # save data in numpy format
         np.save('/tmp/{}/jako_x_data_remote.npy'.format(self.experiment_name),
