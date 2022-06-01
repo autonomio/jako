@@ -15,7 +15,8 @@ import pickle
 
 {}
 
-with open('/tmp/jako_arguments_remote.json','r') as f:
+with open('/tmp/' + experiment_name +
+          '/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
 
 experiment_name=arguments_dict['experiment_name']
@@ -48,7 +49,7 @@ t=RemoteScan(x=x,
              print_params=arguments_dict['print_params'],
              clear_session=arguments_dict['clear_session'],
              save_weights=arguments_dict['save_weights'],
-             config='/tmp/jako_remote_config.json'
+             config='/tmp/' + experiment_name + '/jako_remote_config.json'
              )
     '''.format(self.model_func, self.model_name)
 
