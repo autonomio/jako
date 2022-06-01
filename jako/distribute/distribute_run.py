@@ -74,7 +74,8 @@ def distribute_run(self):
             new_config = config
             new_config['current_machine_id'] = machine_id
 
-            with open('/tmp/jako_remote_config.json', 'w') as outfile:
+            with open('/tmp/{}/jako_remote_config.json'.format(
+                    self.experiment_name), 'w') as outfile:
                 json.dump(new_config, outfile)
 
             ssh_file_transfer(self, client, machine_id)
@@ -95,12 +96,12 @@ def distribute_run(self):
         if not self.stage:
             self.stage = 0
 
-        with open('/tmp/jako_arguments_remote.json', 'r') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json', 'r') as outfile:
             arguments_dict = json.load(outfile)
 
         arguments_dict["stage"] = self.stage
 
-        with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json', 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
 
         extra_files = ['jako_arguments_remote.json']
@@ -130,9 +131,9 @@ def distribute_run(self):
             for t in threads:
                 t.join()
 
-            for file in os.listdir('/tmp/'):
+            for file in os.listdir('/tmp/{}/'.format(self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/' + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
@@ -163,9 +164,9 @@ def distribute_run(self):
             for t in threads:
                 t.join()
 
-            for file in os.listdir('/tmp/'):
+            for file in os.listdir('/tmp/{}/'.format(self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/' + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)

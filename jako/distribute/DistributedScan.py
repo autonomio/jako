@@ -93,7 +93,8 @@ class DistributedScan(Scan):
         arguments_dict = {k: v for k, v in arguments_dict.items()
                           if k not in remove_parameters}
 
-        self.file_path = '/tmp/scanfile_remote.py'
+        self.file_path = '/tmp/{}/scanfile_remote.py'.format(
+            self.experiment_name)
 
         self.save_timestamp = time.strftime('%D%H%M%S').replace('/', '')
 
