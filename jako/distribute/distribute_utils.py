@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 
 
-def create_temp_file(self):
+def create_temp_file(self, experiment_name):
     filestr = '''
 from jako import RemoteScan
 import numpy as np
@@ -13,10 +13,10 @@ import json
 import pickle
 from os.path import exists
 
-with open('/tmp/jako_arguments_remote.json','r') as f:
+experiment_name = {}
+with open('/tmp/'+experiment_name+'/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
 
-experiment_name = str(arguments_dict['experiment_name'])
 
 x=np.load('/tmp/'+experiment_name+'/jako_x_data_remote.npy',allow_pickle=True)
 y=np.load('/tmp/'+experiment_name+'/jako_y_data_remote.npy',allow_pickle=True)
@@ -62,10 +62,10 @@ t=RemoteScan(x=x,
              save_weights=arguments_dict['save_weights'],
              config='/tmp/'+experiment_name+'/jako_remote_config.json'
              )
-    '''.format(self.model_func, self.model_name)
+    '''.format(experiment_name, self.model_func, self.model_name)
 
     with open("/tmp/{}/jako_scanfile_remote.py".format(
-            self.experiment_name), "w") as f:
+            experiment_name), "w") as f:
         f.write(filestr)
 
 
@@ -154,8 +154,10 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
+    experiment_name = self.experiment_name
+
     if not extra_files:
-        create_temp_file(self)
+        create_temp_file(self, experiment_name)
 
         data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy',
                       'jako_x_val_data_remote.npy',
