@@ -33,9 +33,9 @@ def get_db_object(self):
     return db
 
 
-def get_db_host():
+def get_db_host(self):
 
-    config = read_config()
+    config = read_config(self)
     machine_config = config['machines']
     db_config = config['database']
     host_machine_id = int(db_config['DB_HOST_MACHINE_ID'])
@@ -126,7 +126,7 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage,
                                 results_data[col] = [statscol] * results_len
                         __start_upload(results_data)
 
-                new_config = read_config()
+                new_config = read_config(self)
 
                 if 'finished_scan_run' in new_config.keys():
 
