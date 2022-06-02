@@ -10,7 +10,10 @@ def docker_install_commands(self):
 def write_shell_script(self):
     '''write docker commands to shell script'''
     commands = docker_install_commands(self)
-    with open('/tmp/jako_docker.sh', 'w') as f:
+
+    with open('/tmp/{}/jako_docker.sh'.format(
+            self.experiment_name), 'w') as f:
+
         for command in commands:
             f.write(command + '\n')
 
@@ -28,7 +31,7 @@ def write_dockerfile(self):
                 'RUN chmod -R 777 /tmp/'
                 ]
 
-    with open('/tmp/Dockerfile', 'w') as f:
+    with open('/tmp/{}/Dockerfile'.format(self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
 
@@ -51,9 +54,10 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
     docker_files = ['jako_docker.sh', 'Dockerfile']
 
-    for file in os.listdir("/tmp/"):
+    for file in os.listdir("/tmp/{}".format(self.experiment_name)):
         if file in docker_files:
-            sftp.put("/tmp/" + file, self.dest_dir + file)
+            sftp.put("/tmp/{}/".format(self.experiment_name) + file,
+                     self.dest_dir + file)
 
     sftp.close()
 
@@ -83,7 +87,10 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
             dockerflag = False
 
     if not dockerflag:
-        install = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
+        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
+            self.experiment_name),
+            '/tmp/{}/jako_docker.sh'.format(self.experiment_name)]
+
         execute_strings += install
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
