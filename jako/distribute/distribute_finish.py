@@ -6,7 +6,7 @@ def distribute_finish(self):
 
     # remove all input files
     experiment_name = self.experiment_name
-    for file in os.listdir('/tmp/{}'.format(experiment_name)):
+    for file in os.listdir('/tmp/{}/'.format(experiment_name)):
         if file.startswith('jako'):
             os.remove('/tmp/{}/'.format(experiment_name) + file)
 
@@ -23,9 +23,9 @@ def distribute_finish(self):
     self.best_model = func_best_model.__get__(self)
     self.evaluate_models = func_evaluate.__get__(self)
 
-    all_filenames = ['/tmp/{}'.format(experiment_name) +
+    all_filenames = ['/tmp/{}/'.format(experiment_name) +
                      file for file in os.listdir(
-                         '/tmp/{}'.format(experiment_name))]
+                         '/tmp/{}/'.format(experiment_name))]
 
     scan_data_list = []
     scan_details_list = []
