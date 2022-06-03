@@ -111,7 +111,7 @@ class DistributedScan(Scan):
                           if k not in remove_parameters}
 
         self.file_path = '/tmp/{}/scanfile_remote.py'.format(
-                self.experiment_name)
+            self.experiment_name)
 
         self.save_timestamp = time.strftime('%D%H%M%S').replace('/', '')
 
@@ -151,8 +151,7 @@ class DistributedScan(Scan):
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
 
-        self.dest_dir = '/tmp/{}/'.format(
-                self.experiment_name)
+        self.dest_dir = '/tmp/{}/'.format(self.experiment_name)
 
         # save data in numpy format
         np.save('/tmp/{}/jako_x_data_remote.npy'.format(
