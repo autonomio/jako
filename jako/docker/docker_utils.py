@@ -58,8 +58,8 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile', 'docker-compose.yml',
-                    'jako_docker_compose.sh']
+    docker_files = ['jako_docker.sh', 'Dockerfile']
+    docker_compose_files = ['docker-compose.yml', 'jako_docker_compose.sh']
 
     if db_machine:
 
@@ -77,6 +77,10 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         if file in docker_files:
             sftp.put("/tmp/{}/".format(
                     self.experiment_name) + file, self.dest_dir + file)
+
+    for file in os.listdir("/tmp/"):
+        if file in docker_compose_files:
+            sftp.put("/tmp/" + file, '/tmp/' + file)
 
     sftp.close()
 
@@ -141,10 +145,8 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings += pull
 
     if db_machine:
-        compose_install_cmd = 'sh /tmp/{}/jako_docker_compose.sh'.format(
-                experiment_name)
-        compose_cmd = 'sudo docker compose -f /tmp/{}/'.format(experiment_name)
-        compose_cmd = compose_cmd + 'docker-compose.yml up -d'
+        compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
+        compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
         execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
