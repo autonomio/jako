@@ -152,8 +152,7 @@ def distribute_run(self):
             for file in os.listdir('/tmp/{}'.format(
                     self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/{}/'.format(
-                            self.experiment_name) + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
@@ -187,8 +186,7 @@ def distribute_run(self):
             for file in os.listdir('/tmp/{}'.format(
                     self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/{}/'.format(
-                            self.experiment_name) + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
