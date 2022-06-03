@@ -234,9 +234,9 @@ def ssh_get_files(self, client, machine_id):
 
     sftp.chdir(self.dest_dir)
 
-    for file in sftp.listdir(self.dest_dir):
+    for file in sftp.listdir(self.dest_dir + '/tmp/'):
         if file.endswith(scan_object_filenames):
-            sftp.get(self.dest_dir + file, '/tmp/{}/'.format(
+            sftp.get(self.dest_dir + '/tmp/' + file, '/tmp/{}/'.format(
                     self.experiment_name) + file)
 
     sftp.close()
