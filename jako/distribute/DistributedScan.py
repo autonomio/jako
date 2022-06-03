@@ -55,14 +55,12 @@ class DistributedScan(Scan):
         # handles location for params,data and model
         if not os.path.exists('/tmp/{}'.format(
                 self.experiment_name)):
-            os.mkdir('/tmp/{}/'.format(
-                    self.experiment_name))
+            os.mkdir('/tmp/{}/'.format(self.experiment_name))
 
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
             if file.startswith('jako'):
-                os.remove('/tmp/{}/'.format(
-                        self.experiment_name) + file)
+                os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
         self.x = x
         self.y = y
@@ -105,8 +103,7 @@ class DistributedScan(Scan):
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
             if file.startswith('jako'):
-                os.remove('/tmp/{}'.format(
-                        self.experiment_name) + file)
+                os.remove('/tmp/{}'.format(self.experiment_name) + file)
 
         arguments_dict = self.__dict__
         remove_parameters = ['x', 'y', 'model', 'x_val', 'y_val']
