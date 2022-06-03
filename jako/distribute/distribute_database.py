@@ -13,7 +13,7 @@ def get_db_object(self):
     username = db_config['DB_USERNAME']
     password = db_config['DB_PASSWORD']
 
-    host = get_db_host()
+    host = get_db_host(self)
 
     port = db_config['DB_PORT']
     database_name = db_config['DATABASE_NAME']
