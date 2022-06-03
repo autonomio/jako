@@ -154,7 +154,7 @@ class DistributedScan(Scan):
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
 
-        self.dest_dir = '/tmp/{}'.format(
+        self.dest_dir = '/tmp/{}/'.format(
                 self.experiment_name)
 
         # save data in numpy format
