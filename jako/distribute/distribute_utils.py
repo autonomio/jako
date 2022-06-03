@@ -90,8 +90,7 @@ def return_central_machine_id(self):
 def read_config(self):
     '''Read config from file'''
 
-    config_path = "/tmp/{}/jako_remote_config.json".format(
-            self.experiment_name)
+    config_path = "/tmp/{}/jako_remote_config.json".format(self.experiment_name)
 
     with open(config_path, 'r') as f:
         config_data = json.load(f)
@@ -103,8 +102,7 @@ def write_config(self, new_config):
     ''' Write config to file'''
 
     experiment_name = self.experiment_name
-    config_path = "/tmp/{}/jako_remote_config.json".format(
-            experiment_name)
+    config_path = "/tmp/{}/jako_remote_config.json".format(experiment_name)
 
     with open(config_path, 'w') as outfile:
         json.dump(new_config, outfile, indent=2)
@@ -175,15 +173,13 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
                 sftp.remove('/tmp/{}/'.format(
                         self.experiment_name) + file)
 
-        for file in os.listdir('/tmp/{}'.format(
-                self.experiment_name)):
+        for file in os.listdir('/tmp/{}'.format(self.experiment_name)):
             if file in scan_filenames:
                 sftp.put('/tmp/{}/'.format(
                         self.experiment_name) + file, file)
 
     else:
-        for file in os.listdir('/tmp/{}'.format(
-                self.experiment_name)):
+        for file in os.listdir('/tmp/{}'.format(self.experiment_name)):
             if file in extra_files:
                 sftp.put('/tmp/{}/'.format(
                         self.experiment_name) + file, file)
