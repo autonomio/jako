@@ -179,14 +179,14 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
             if file in scan_filenames:
-                sftp.put('/tmp/{}'.format(
+                sftp.put('/tmp/{}/'.format(
                         self.experiment_name) + file, file)
 
     else:
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
             if file in extra_files:
-                sftp.put('/tmp/{}'.format(
+                sftp.put('/tmp/{}/'.format(
                         self.experiment_name) + file, file)
     sftp.close()
 

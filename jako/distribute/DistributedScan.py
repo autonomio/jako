@@ -50,6 +50,14 @@ class DistributedScan(Scan):
         import numpy as np
 
         # remove all pre-existing input files
+        self.experiment_name = experiment_name
+
+        # handles location for params,data and model
+        if not os.path.exists('/tmp/{}'.format(
+                self.experiment_name)):
+            os.mkdir('/tmp/{}/'.format(
+                    self.experiment_name))
+
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
             if file.startswith('jako'):
@@ -60,7 +68,6 @@ class DistributedScan(Scan):
         self.y = y
         self.params = params
         self.model = model
-        self.experiment_name = experiment_name
         self.x_val = x_val
         self.y_val = y_val
         self.val_split = val_split
@@ -146,12 +153,6 @@ class DistributedScan(Scan):
 
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
-
-        # handles location for params,data and model
-        if not os.path.exists('/tmp/{}'.format(
-                self.experiment_name)):
-            os.mkdir('/tmp/{}/'.format(
-                    self.experiment_name))
 
         self.dest_dir = '/tmp/{}'.format(
                 self.experiment_name)

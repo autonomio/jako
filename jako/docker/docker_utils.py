@@ -122,6 +122,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings = []
     stdin, stdout, stderr = client.exec_command(execute_str)
     dockerflag = True
+    experiment_name = self.experiment_name
     if stdout:
         if 'command not found' in stdout:
             dockerflag = False
@@ -141,9 +142,9 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
     if db_machine:
         compose_install_cmd = 'sh /tmp/{}/jako_docker_compose.sh'.format(
-                self.experiment_name)
-        compose_cmd = 'sudo docker compose -f /tmp/' + self.experiment_name
-        + '/docker-compose.yml up -d'
+                experiment_name)
+        compose_cmd = 'sudo docker compose -f /tmp/{}/'.format(experiment_name)
+        compose_cmd = compose_cmd + 'docker-compose.yml up -d'
         execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
