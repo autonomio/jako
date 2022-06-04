@@ -68,15 +68,14 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         compose_path = currpath + '/docker-compose.yml'
 
         shutil.copy(compose_install_script_path, '/tmp/{}/'.format(
-                self.experiment_name))
+            self.experiment_name))
         shutil.copy(compose_path, '/tmp/{}/'.format(
-                self.experiment_name))
+            self.experiment_name))
 
-    for file in os.listdir("/tmp/{}".format(
-            self.experiment_name)):
+    for file in os.listdir("/tmp/{}".format(self.experiment_name)):
         if file in docker_files:
             sftp.put("/tmp/{}/".format(
-                    self.experiment_name) + file, self.dest_dir + file)
+                self.experiment_name) + file, self.dest_dir + file)
 
     for file in os.listdir("/tmp/"):
         if file in docker_compose_files:
@@ -136,9 +135,9 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
     if not dockerflag:
         install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
-                self.experiment_name),
+            self.experiment_name),
             '/tmp/{}/jako_docker.sh'.format(
-                    self.experiment_name)]
+                self.experiment_name)]
         execute_strings += install
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
