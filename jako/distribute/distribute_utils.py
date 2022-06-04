@@ -197,7 +197,7 @@ def ssh_run(self, client, machine_id):
 
     '''
     execute_str = 'python3 /tmp/{}/jako_scanfile_remote.py'.format(
-            self.experiment_name)
+        self.experiment_name)
     stdin, stdout, stderr = client.exec_command(execute_str)
 
     if stderr:
@@ -230,7 +230,7 @@ def ssh_get_files(self, client, machine_id):
     for file in sftp.listdir(self.dest_dir + '/tmp/'):
         if file.endswith(scan_object_filenames):
             sftp.get(self.dest_dir + '/tmp/' + file, '/tmp/{}/'.format(
-                    self.experiment_name) + file)
+                self.experiment_name) + file)
 
     sftp.close()
 
@@ -368,7 +368,7 @@ def write_scan_namespace(self, scan_object, machine_id):
     import os
 
     write_path = os.path.join('/tmp/{}/'.format(
-            self.experiment_name), 'machine_id_' + str(machine_id) + '_')
+        self.experiment_name), 'machine_id_' + str(machine_id) + '_')
     scan_details = scan_object.details
     scan_data = scan_object.data
     scan_learning_entropy = scan_object.learning_entropy
