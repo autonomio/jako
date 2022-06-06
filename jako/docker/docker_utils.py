@@ -179,8 +179,7 @@ def docker_scan_run(self, client, machine_id):
         'sudo docker container cp -a jako_docker_remote:/tmp/ /tmp/' +
         experiment_name + '/',
         'sudo docker stop jako_docker_remote',
-        'sudo docker rm jako_docker_remote'
-        ]
+        'sudo docker rm jako_docker_remote']
 
     cmd_strings = rm_container + build + execute_strings
     execute_strings = []
