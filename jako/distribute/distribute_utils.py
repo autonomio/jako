@@ -5,28 +5,42 @@ import pandas as pd
 import datetime
 
 
-def create_temp_file(self):
+def create_temp_file(self, experiment_name):
     filestr = '''
 from jako import RemoteScan
 import numpy as np
 import json
 import pickle
-
-x=np.load('/tmp/jako_x_data_remote.npy')
-y=np.load('/tmp/jako_y_data_remote.npy')
-
-{}
+from os.path import exists
 
 with open('/tmp/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
+
+
+x=np.load('/tmp/jako_x_data_remote.npy',allow_pickle=True)
+y=np.load('/tmp/jako_y_data_remote.npy',allow_pickle=True)
+
+if exists('/tmp/jako_x_val_data_remote.npy'):
+    x_val=np.load('/tmp/jako_x_val_data_remote.npy',allow_pickle=True)
+else:
+    x_val=None
+
+if exists('/tmp/jako_y_val_data_remote.npy'):
+    y_val=np.load('/tmp/jako_y_val_data_remote.npy',allow_pickle=True)
+else:
+    y_val=None
+
+{}
+
+
 
 t=RemoteScan(x=x,
              y=y,
              params=arguments_dict['params'],
              model={},
              experiment_name=arguments_dict['experiment_name'],
-             x_val=arguments_dict['x_val'],
-             y_val=arguments_dict['y_val'],
+             x_val=x_val,
+             y_val=y_val,
              val_split=arguments_dict['val_split'],
              random_method=arguments_dict['random_method'],
              seed=arguments_dict['seed'],
@@ -49,7 +63,8 @@ t=RemoteScan(x=x,
              )
     '''.format(self.model_func, self.model_name)
 
-    with open("/tmp/jako_scanfile_remote.py", "w") as f:
+    with open("/tmp/{}/jako_scanfile_remote.py".format(
+            experiment_name), "w") as f:
         f.write(filestr)
 
 
@@ -75,7 +90,7 @@ def return_central_machine_id(self):
 def read_config(self):
     '''Read config from file'''
 
-    config_path = "/tmp/jako_remote_config.json"
+    config_path = "/tmp/{}/jako_remote_config.json".format(self.experiment_name)
 
     with open(config_path, 'r') as f:
         config_data = json.load(f)
@@ -86,7 +101,8 @@ def read_config(self):
 def write_config(self, new_config):
     ''' Write config to file'''
 
-    config_path = "/tmp/jako_remote_config.json"
+    experiment_name = self.experiment_name
+    config_path = "/tmp/{}/jako_remote_config.json".format(experiment_name)
 
     with open(config_path, 'w') as outfile:
         json.dump(new_config, outfile, indent=2)
@@ -135,10 +151,14 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    if not extra_files:
-        create_temp_file(self)
+    experiment_name = self.experiment_name
 
-        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy']
+    if not extra_files:
+        create_temp_file(self, experiment_name)
+
+        data_files = ['jako_y_data_remote.npy', 'jako_x_data_remote.npy',
+                      'jako_x_val_data_remote.npy',
+                      'jako_y_val_data_remote.npy']
         scan_script_files = ['jako_scanfile_remote.py']
         additional_scan_files = ['jako_remote_config.json',
                                  'jako_arguments_remote.json']
@@ -147,14 +167,19 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
         scan_filenames = data_files + scan_script_files + additional_scan_files
         scan_filenames = scan_filenames + docker_files
 
-        for file in os.listdir('/tmp/'):
+        for file in sftp.listdir('/tmp/{}'.format(
+                self.experiment_name)):
+            if file.startswith('jako'):
+                sftp.remove('/tmp/{}/'.format(self.experiment_name) + file)
+
+        for file in os.listdir('/tmp/{}'.format(self.experiment_name)):
             if file in scan_filenames:
-                sftp.put('/tmp/' + file, file)
+                sftp.put('/tmp/{}/'.format(self.experiment_name) + file, file)
 
     else:
-        for file in os.listdir('/tmp/'):
+        for file in os.listdir('/tmp/{}'.format(self.experiment_name)):
             if file in extra_files:
-                sftp.put('/tmp/' + file, file)
+                sftp.put('/tmp/{}/'.format(self.experiment_name) + file, file)
     sftp.close()
 
 
@@ -171,7 +196,8 @@ def ssh_run(self, client, machine_id):
     None.
 
     '''
-    execute_str = 'python3 /tmp/jako_scanfile_remote.py'
+    execute_str = 'python3 /tmp/{}/jako_scanfile_remote.py'.format(
+        self.experiment_name)
     stdin, stdout, stderr = client.exec_command(execute_str)
 
     if stderr:
@@ -201,9 +227,10 @@ def ssh_get_files(self, client, machine_id):
 
     sftp.chdir(self.dest_dir)
 
-    for file in sftp.listdir(self.dest_dir):
+    for file in sftp.listdir(self.dest_dir + '/tmp/'):
         if file.endswith(scan_object_filenames):
-            sftp.get(self.dest_dir + file, '/tmp/' + file)
+            sftp.get(self.dest_dir + '/tmp/' + file, '/tmp/{}/'.format(
+                self.experiment_name) + file)
 
     sftp.close()
 
@@ -245,12 +272,17 @@ def fetch_latest_file(self):
 def add_timestamp(self, results_data):
     '''Adds timestamp to the DataFrame'''
 
-    ct = datetime.datetime.now()
+    timezone = datetime.timezone
+    ct = datetime.datetime.now(timezone.utc)
+    sec = ct.second
     hour = ct.hour
     minute = ct.minute
     day = ct.day
     month = ct.month
     year = ct.year
+
+    if sec < 10:
+        sec = '0' + str(sec)
 
     if minute < 10:
         minute = '0' + str(minute)
@@ -258,8 +290,12 @@ def add_timestamp(self, results_data):
     if hour < 10:
         hour = '0' + str(hour)
 
-    timestamp = "{}:{}/{}-{}-{}".format(hour, minute, day, month, year)
-    results_data["timestamp"] = [timestamp] * len(results_data)
+    curr_time = "{}:{}:{}/{}-{}-{}".format(hour, minute, sec, day, month, year)
+    results_data['curr_time'] = [curr_time] * len(results_data)
+
+    timestamp = datetime.datetime.strptime(curr_time, "%H:%M:%S/%d-%m-%Y")
+    timestamp = timestamp.timestamp()
+    results_data['timestamp'] = [timestamp] * len(results_data)
 
     return results_data
 
@@ -331,7 +367,8 @@ def write_scan_namespace(self, scan_object, machine_id):
     import numpy as np
     import os
 
-    write_path = os.path.join('/tmp/', 'machine_id_' + str(machine_id) + '_')
+    write_path = os.path.join('/tmp/{}/'.format(
+        self.experiment_name), 'machine_id_' + str(machine_id) + '_')
     scan_details = scan_object.details
     scan_data = scan_object.data
     scan_learning_entropy = scan_object.learning_entropy

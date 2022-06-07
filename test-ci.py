@@ -1,5 +1,4 @@
 def test_distribute():
-
     '''Test distributing a Talos experiment'''
 
     from numpy import loadtxt

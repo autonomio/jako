@@ -6,6 +6,9 @@ from .distribute_utils import return_current_machine_id, ssh_connect
 from .distribute_utils import ssh_file_transfer, ssh_run, ssh_get_files
 from .distribute_database import update_db
 
+from ..docker.docker_run import docker_setup
+from ..docker.docker_utils import setup_db_with_graphql
+
 
 def run_central_machine(self, n_splits, run_central_node):
     '''Runs `talos.Scan()` in the central machine.
@@ -41,6 +44,7 @@ def distribute_run(self):
     '''
 
     config = self.config_data
+    status_details = {}
 
     if 'run_central_node' in config.keys():
         run_central_node = config['run_central_node']
@@ -55,6 +59,8 @@ def distribute_run(self):
 
     if run_central_node:
         n_splits += 1
+
+    status_details['total_nodes'] = n_splits
 
     current_machine_id = str(return_current_machine_id(self))
 
@@ -74,17 +80,20 @@ def distribute_run(self):
             new_config = config
             new_config['current_machine_id'] = machine_id
 
-            with open('/tmp/jako_remote_config.json', 'w') as outfile:
+            with open('/tmp/{}/jako_remote_config.json'.format(
+                    self.experiment_name), 'w') as outfile:
                 json.dump(new_config, outfile)
 
             ssh_file_transfer(self, client, machine_id)
 
             if run_docker:
+
                 db_machine = False
                 if int(db_machine_id) == int(machine_id):
                     db_machine = True
-                from ..docker.docker_run import docker_setup
+
                 docker_setup(self, client, machine_id, db_machine)
+                setup_db_with_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage
@@ -95,12 +104,16 @@ def distribute_run(self):
         if not self.stage:
             self.stage = 0
 
-        with open('/tmp/jako_arguments_remote.json', 'r') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json'.format(
+                self.experiment_name), 'r') as outfile:
             arguments_dict = json.load(outfile)
 
         arguments_dict["stage"] = self.stage
+        status_details['experiment_stage'] = int(self.stage)
+        status_details['machine_id'] = int(current_machine_id)
 
-        with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json'.format(
+                self.experiment_name), 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
 
         extra_files = ['jako_arguments_remote.json']
@@ -120,6 +133,12 @@ def distribute_run(self):
                 thread.start()
                 threads.append(thread)
 
+                args = ([self, update_db_n_seconds, current_machine_id,
+                         self.stage, status_details])
+                thread = threading.Thread(target=update_db, args=args)
+                thread.start()
+                threads.append(thread)
+
             for machine_id, client in clients.items():
 
                 args = (self, client, machine_id)
@@ -130,9 +149,10 @@ def distribute_run(self):
             for t in threads:
                 t.join()
 
-            for file in os.listdir('/tmp/'):
+            for file in os.listdir('/tmp/{}'.format(
+                    self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/' + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
@@ -148,7 +168,7 @@ def distribute_run(self):
                 threads.append(thread)
 
                 args = ([self, update_db_n_seconds, current_machine_id,
-                         self.stage])
+                         self.stage, status_details])
                 thread = threading.Thread(target=update_db, args=args)
                 thread.start()
                 threads.append(thread)
@@ -163,9 +183,10 @@ def distribute_run(self):
             for t in threads:
                 t.join()
 
-            for file in os.listdir('/tmp/'):
+            for file in os.listdir('/tmp/{}'.format(
+                    self.experiment_name)):
                 if file.startswith('machine_id'):
-                    os.remove('/tmp/' + file)
+                    os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)

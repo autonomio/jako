@@ -16,3 +16,4 @@ jako.egg-info
 test.sh
 .vscode
 .test_*
+autonomio-dev.pem

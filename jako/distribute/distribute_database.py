@@ -9,17 +9,11 @@ def get_db_object(self):
     config = self.config_data
     from ..database.database import Database
 
-    machine_config = config['machines']
     db_config = config['database']
     username = db_config['DB_USERNAME']
     password = db_config['DB_PASSWORD']
 
-    host_machine_id = int(db_config['DB_HOST_MACHINE_ID'])
-
-    for machine in machine_config:
-        if int(machine['machine_id']) == host_machine_id:
-            host = machine['JAKO_IP_ADDRESS']
-            break
+    host = get_db_host(self)
 
     port = db_config['DB_PORT']
     database_name = db_config['DATABASE_NAME']
@@ -39,7 +33,22 @@ def get_db_object(self):
     return db
 
 
-def update_db(self, update_db_n_seconds, current_machine_id, stage):
+def get_db_host(self):
+
+    config = read_config(self)
+    machine_config = config['machines']
+    db_config = config['database']
+    host_machine_id = int(db_config['DB_HOST_MACHINE_ID'])
+
+    for machine in machine_config:
+        if int(machine['machine_id']) == host_machine_id:
+            host = machine['JAKO_IP_ADDRESS']
+            break
+    return host
+
+
+def update_db(self, update_db_n_seconds, current_machine_id, stage,
+              status_details=None):
     '''Make changes to the datastore based on a time interval
 
     Parameters
@@ -110,7 +119,11 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                                                          end_row,
                                                          db,
                                                          stage)
-
+                        if status_details:
+                            for col in status_details.keys():
+                                statscol = status_details[col]
+                                results_len = len(results_data)
+                                results_data[col] = [statscol] * results_len
                         __start_upload(results_data)
 
                 new_config = read_config(self)
@@ -131,6 +144,13 @@ def update_db(self, update_db_n_seconds, current_machine_id, stage):
                                                          end_row,
                                                          db,
                                                          stage)
+
+                        if status_details:
+
+                            for col in status_details.keys():
+                                statscol = status_details[col]
+                                results_len = len(results_data)
+                                results_data[col] = [statscol] * results_len
 
                         __start_upload(results_data)
                         write_config(self, new_config)

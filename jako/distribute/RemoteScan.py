@@ -8,13 +8,15 @@ class RemoteScan(Scan):
                  params,
                  model,
                  experiment_name,
+                 x_val,
+                 y_val,
                  **kwargs):
         '''Distributed version of talos.Scan() for the remote machines.
 
         Parameters
         ----------
         params | `dict` | Hyperparameters for distribution.
-        config | str or dict | The default is '/tmp/jako_remote_config.json'.
+        config | str or dict | Path to remote config file
 
         Returns
         -------
@@ -30,8 +32,8 @@ class RemoteScan(Scan):
         self.params = params
         self.model = model
         self.experiment_name = experiment_name
-        self.x_val = kwargs['x_val']
-        self.y_val = kwargs['y_val']
+        self.x_val = x_val
+        self.y_val = y_val
         self.val_split = kwargs['val_split']
 
         # randomness
@@ -77,8 +79,10 @@ class RemoteScan(Scan):
             del self.config_data['finished_scan_run']
 
         config = self.config_data
+        status_details = {}
 
-        with open("/tmp/jako_arguments_remote.json", "r") as f:
+        with open("/tmp/{}/jako_arguments_remote.json".format(
+                self.experiment_name), "r") as f:
             arguments_dict = json.load(f)
 
         self.stage = arguments_dict["stage"]
@@ -98,16 +102,21 @@ class RemoteScan(Scan):
         if run_central_node:
             n_splits += 1
 
+        status_details['total_nodes'] = n_splits
+
         update_db_n_seconds = 5
         if 'DB_UPDATE_INTERVAL' in config['database'].keys():
             update_db_n_seconds = int(config['database']['DB_UPDATE_INTERVAL'])
 
         current_machine_id = str(return_current_machine_id(self))
 
+        status_details['experiment_stage'] = int(self.stage)
+        status_details['machine_id'] = int(current_machine_id)
         # create the threadpool
         threads = []
 
-        args = ([self, update_db_n_seconds, current_machine_id, self.stage])
+        args = ([self, update_db_n_seconds, current_machine_id, self.stage,
+                 status_details])
         thread = threading.Thread(target=update_db, args=args)
         thread.start()
         threads.append(thread)
