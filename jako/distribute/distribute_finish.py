@@ -4,6 +4,12 @@ def distribute_finish(self):
     import json
     import numpy as np
 
+    # remove all input files
+    experiment_name = self.experiment_name
+    for file in os.listdir('/tmp/{}/'.format(experiment_name)):
+        if file.startswith('jako'):
+            os.remove('/tmp/{}/'.format(experiment_name) + file)
+
     attrs_final = ['data', 'x', 'y', 'learning_entropy', 'round_times',
                    'params', 'saved_models', 'saved_weights', 'round_history',
                    'details']
@@ -17,7 +23,9 @@ def distribute_finish(self):
     self.best_model = func_best_model.__get__(self)
     self.evaluate_models = func_evaluate.__get__(self)
 
-    all_filenames = ['/tmp/' + file for file in os.listdir('/tmp/')]
+    all_filenames = ['/tmp/{}/'.format(experiment_name) +
+                     file for file in os.listdir(
+                         '/tmp/{}/'.format(experiment_name))]
 
     scan_data_list = []
     scan_details_list = []

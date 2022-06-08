@@ -50,15 +50,22 @@ class DistributedScan(Scan):
         import numpy as np
 
         # remove all pre-existing input files
-        for file in os.listdir('/tmp/'):
+        self.experiment_name = experiment_name
+
+        # handles location for params,data and model
+        if not os.path.exists('/tmp/{}'.format(
+                self.experiment_name)):
+            os.mkdir('/tmp/{}/'.format(self.experiment_name))
+
+        for file in os.listdir('/tmp/{}'.format(
+                self.experiment_name)):
             if file.startswith('jako'):
-                os.remove('/tmp/' + file)
+                os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
         self.x = x
         self.y = y
         self.params = params
         self.model = model
-        self.experiment_name = experiment_name
         self.x_val = x_val
         self.y_val = y_val
         self.val_split = val_split
@@ -93,16 +100,18 @@ class DistributedScan(Scan):
         # distributed configurations
         self.config = config
 
-        for file in os.listdir('/tmp/'):
+        for file in os.listdir('/tmp/{}'.format(
+                self.experiment_name)):
             if file.startswith('jako'):
-                os.remove('/tmp/' + file)
+                os.remove('/tmp/{}'.format(self.experiment_name) + file)
 
         arguments_dict = self.__dict__
         remove_parameters = ['x', 'y', 'model', 'x_val', 'y_val']
         arguments_dict = {k: v for k, v in arguments_dict.items()
                           if k not in remove_parameters}
 
-        self.file_path = '/tmp/scanfile_remote.py'
+        self.file_path = '/tmp/{}/scanfile_remote.py'.format(
+            self.experiment_name)
 
         self.save_timestamp = time.strftime('%D%H%M%S').replace('/', '')
 
@@ -142,21 +151,21 @@ class DistributedScan(Scan):
         if 'finished_scan_run' in self.config_data.keys():
             del self.config_data['finished_scan_run']
 
-        # handles location for params,data and model
-        if not os.path.exists('/tmp/'):
-            os.mkdir('/tmp/')
-
-        self.dest_dir = '/tmp/'
+        self.dest_dir = '/tmp/{}/'.format(self.experiment_name)
 
         # save data in numpy format
-        np.save('/tmp/jako_x_data_remote.npy', x)
-        np.save('/tmp/jako_y_data_remote.npy', y)
+        np.save('/tmp/{}/jako_x_data_remote.npy'.format(
+                self.experiment_name), x)
+        np.save('/tmp/{}/jako_y_data_remote.npy'.format(
+                self.experiment_name), y)
 
         try:
             x_val.shape
             y_val.shape
-            np.save('/tmp/jako_x_val_data_remote.npy', x_val)
-            np.save('/tmp/jako_y_val_data_remote.npy', y_val)
+            np.save('/tmp/{}/jako_x_val_data_remote.npy'.format(
+                    self.experiment_name), x_val)
+            np.save('/tmp/{}/jako_y_val_data_remote.npy'.format(
+                    self.experiment_name), y_val)
         except AttributeError:
             pass
         # get model function as a string
@@ -165,10 +174,12 @@ class DistributedScan(Scan):
         self.model_func = model_func
         self.model_name = model.__name__
 
-        with open('/tmp/jako_arguments_remote.json', 'w') as outfile:
+        with open('/tmp/{}/jako_arguments_remote.json'.format(
+                self.experiment_name), 'w') as outfile:
             json.dump(arguments_dict, outfile, indent=2)
 
-        with open('/tmp/jako_remote_config.json', 'w') as outfile:
+        with open('/tmp/{}/jako_remote_config.json'.format(
+                self.experiment_name), 'w') as outfile:
             json.dump(self.config_data, outfile, indent=2)
 
         from .distribute_run import distribute_run

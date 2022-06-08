@@ -14,7 +14,9 @@ def docker_install_commands(self):
 def write_shell_script(self):
     '''write docker commands to shell script'''
     commands = docker_install_commands(self)
-    with open('/tmp/jako_docker.sh', 'w') as f:
+
+    with open('/tmp/{}/jako_docker.sh'.format(
+            self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
 
@@ -36,7 +38,8 @@ def write_dockerfile(self):
                 'RUN chmod -R 777 /tmp/'
                 ]
 
-    with open('/tmp/Dockerfile', 'w') as f:
+    with open('/tmp/{}/Dockerfile'.format(
+            self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
 
@@ -55,8 +58,8 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile', 'docker-compose.yml',
-                    'jako_docker_compose.sh']
+    docker_files = ['jako_docker.sh', 'Dockerfile']
+    docker_compose_files = ['docker-compose.yml', 'jako_docker_compose.sh']
 
     if db_machine:
 
@@ -64,14 +67,45 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         compose_install_script_path = currpath + '/jako_docker_compose.sh'
         compose_path = currpath + '/docker-compose.yml'
 
-        shutil.copy(compose_install_script_path, '/tmp/')
-        shutil.copy(compose_path, '/tmp/')
+        shutil.copy(compose_install_script_path, '/tmp/{}/'.format(
+            self.experiment_name))
+        shutil.copy(compose_path, '/tmp/{}/'.format(
+            self.experiment_name))
+
+    for file in os.listdir("/tmp/{}".format(self.experiment_name)):
+        if file in docker_files:
+            sftp.put("/tmp/{}/".format(
+                self.experiment_name) + file, self.dest_dir + file)
 
     for file in os.listdir("/tmp/"):
-        if file in docker_files:
-            sftp.put("/tmp/" + file, self.dest_dir + file)
+        if file in docker_compose_files:
+            sftp.put("/tmp/" + file, '/tmp/' + file)
 
     sftp.close()
+
+
+def setup_db_with_graphql(self, client, machine_id):
+
+    execute_strings = ['sh /tmp/jako_docker_compose.sh',
+                       'sudo docker compose -f /tmp/docker-compose.yml up -d'
+                       ]
+
+    for execute_str in execute_strings:
+        stdin, stdout, stderr = client.exec_command(execute_str)
+        if stderr:
+            for line in stderr:
+                try:
+                    # Process each error line in the remote output
+                    print(line)
+                except Exception as e:
+                    print(e)
+
+        for line in stdout:
+            try:
+                # Process each line in the remote output
+                print(line)
+            except Exception as e:
+                print(e)
 
 
 def docker_image_setup(self, client, machine_id, db_machine=False):
@@ -91,6 +125,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings = []
     stdin, stdout, stderr = client.exec_command(execute_str)
     dockerflag = True
+
     if stdout:
         if 'command not found' in stdout:
             dockerflag = False
@@ -99,7 +134,10 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
             dockerflag = False
 
     if not dockerflag:
-        install = ['chmod +x /tmp/jako_docker.sh', '/tmp/jako_docker.sh']
+        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
+            self.experiment_name),
+            '/tmp/{}/jako_docker.sh'.format(
+                self.experiment_name)]
         execute_strings += install
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
@@ -130,16 +168,26 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
 def docker_scan_run(self, client, machine_id):
     machine_id = str(machine_id)
+    experiment_name = self.experiment_name
     print('started experiment in machine id {}'.format(machine_id))
     rm_container = ['sudo docker stop jako_docker_remote',
                     'sudo docker rm jako_docker_remote']
-    build = ['sudo docker build -t jako_docker_remote -f /tmp/Dockerfile /tmp/']
+    build = ['sudo docker build -t jako_docker_remote -f /tmp/' +
+             experiment_name + '/Dockerfile /tmp/' + experiment_name + '/']
     execute_strings = [
         'sudo docker run  --name jako_docker_remote jako_docker_remote',
-        'sudo docker container cp -a jako_docker_remote:/tmp/ /',
+        'sudo docker container cp -a jako_docker_remote:/tmp/ /tmp/' +
+        experiment_name + '/',
         'sudo docker stop jako_docker_remote',
         'sudo docker rm jako_docker_remote']
-    execute_strings = rm_container + build + execute_strings
+
+    cmd_strings = rm_container + build + execute_strings
+    execute_strings = []
+
+    for string in cmd_strings:
+        string = string.replace('jako_docker_remote', experiment_name)
+        execute_strings.append(string)
+
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:
