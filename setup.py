@@ -16,8 +16,8 @@ MAINTAINER_EMAIL = 'mailme@mikkokotila.com'
 URL = 'http://autonom.io'
 LICENSE = 'MIT'
 DOWNLOAD_URL = 'https://github.com/autonomio/jako/'
-VERSION = '0.2.0'
 
+VERSION = '0.2.1'
 
 try:
     from setuptools import setup
@@ -32,7 +32,10 @@ install_requires = ['talos',
                     'paramiko',
                     'psycopg2-binary',
                     'sqlalchemy',
-                    'sqlalchemy_utils']
+                    'sqlalchemy_utils',
+                    'pyyaml',
+                    'uvicorn[standard]',
+                    'fastapi']
 
 if __name__ == '__main__':
 
@@ -53,8 +56,10 @@ if __name__ == '__main__':
             'jako',
             'jako.distribute',
             'jako.database',
-            'jako.docker'
+            'jako.docker',
+            'jako.experiment_status'
         ],
+        include_package_data=True,
         classifiers=[
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3.7',

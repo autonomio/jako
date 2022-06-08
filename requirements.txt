@@ -5,3 +5,6 @@ paramiko
 psycopg2-binary
 sqlalchemy
 sqlalchemy_utils
+pyyaml
+uvicorn[standard]
+fastapi

@@ -11,7 +11,6 @@ jako.egg-info
 *_.csv
 *.txt
 *.h5
-*.json
 *.npy
 test.sh
 .vscode
