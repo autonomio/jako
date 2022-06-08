@@ -16,7 +16,7 @@ class RemoteScan(Scan):
         Parameters
         ----------
         params | `dict` | Hyperparameters for distribution.
-        config | str or dict | The default is '/tmp/jako_remote_config.json'.
+        config | str or dict | Path to remote config file
 
         Returns
         -------
@@ -81,7 +81,8 @@ class RemoteScan(Scan):
         config = self.config_data
         status_details = {}
 
-        with open("/tmp/jako_arguments_remote.json", "r") as f:
+        with open("/tmp/{}/jako_arguments_remote.json".format(
+                self.experiment_name), "r") as f:
             arguments_dict = json.load(f)
 
         self.stage = arguments_dict["stage"]
