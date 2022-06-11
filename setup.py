@@ -17,7 +17,7 @@ URL = 'http://autonom.io'
 LICENSE = 'MIT'
 DOWNLOAD_URL = 'https://github.com/autonomio/jako/'
 
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 
 try:
     from setuptools import setup
