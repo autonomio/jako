@@ -35,7 +35,8 @@ install_requires = ['talos',
                     'sqlalchemy_utils',
                     'pyyaml',
                     'uvicorn[standard]',
-                    'fastapi']
+                    'fastapi',
+                    'yaml']
 
 if __name__ == '__main__':
 

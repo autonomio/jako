@@ -1,5 +1,6 @@
 import os
 import shutil
+from ..distribute.distribute_database import get_db_host
 
 
 def docker_install_commands(self):
@@ -42,6 +43,26 @@ def write_dockerfile(self):
             self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
+
+
+def modify_docker_compose(self):
+    import yaml
+    currpath = os.path.dirname(__file__)
+    compose_path = currpath + '/docker-compose.yml'
+
+    with open(compose_path) as f:
+        compose_config = yaml.safe_load(f)
+
+    compose_config_metabase = compose_config['services']['metabase-app']
+    compose_config_env = compose_config_metabase['environment']
+
+    db_host = get_db_host(self)
+    compose_config_env['MB_DB_HOST'] = db_host
+
+    with open(compose_path, "w") as f:
+        yaml.dump(compose_config, f)
+
+    return compose_config
 
 
 def docker_ssh_file_transfer(self, client, db_machine=False):
