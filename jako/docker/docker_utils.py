@@ -57,7 +57,9 @@ def modify_docker_compose(self):
     compose_config_env = compose_config_metabase['environment']
 
     db_host = get_db_host(self)
-    compose_config_env['MB_DB_HOST'] = db_host
+    db_uri = 'postgresql://postgres:postgres@{}:5432/postgres'
+    db_uri = db_uri.format(db_host)
+    compose_config_env['MB_DB_CONNECTION_URI'] = db_host
 
     with open(compose_path, "w") as f:
         yaml.dump(compose_config, f)

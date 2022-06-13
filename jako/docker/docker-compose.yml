@@ -41,11 +41,6 @@ services:
       - /home/app/metabase-data:/metabase-data
     environment:
       MB_DB_TYPE: "postgres"
-      MB_DB_DBNAME: "postgres"
-      MB_DB_PORT: "5432"
-      MB_DB_USER: "postgres"
-      MB_DB_PASS: "postgres"
-      MB_DB_HOST: "postgres"
 
     depends_on:
       - postgres
