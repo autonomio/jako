@@ -58,7 +58,8 @@ if __name__ == '__main__':
             'jako.distribute',
             'jako.database',
             'jako.docker',
-            'jako.experiment_status'
+            'jako.experiment_status',
+            'jako.data_visualisation'
         ],
         include_package_data=True,
         classifiers=[
