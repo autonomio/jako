@@ -36,7 +36,7 @@ install_requires = ['talos',
                     'pyyaml',
                     'uvicorn[standard]',
                     'fastapi',
-                    'yaml']
+                    ]
 
 if __name__ == '__main__':
 
