@@ -8,3 +8,4 @@ sqlalchemy_utils
 pyyaml
 uvicorn[standard]
 fastapi
+yaml
