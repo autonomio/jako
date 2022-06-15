@@ -20,13 +20,16 @@ def get_token(self):
     return token
 
 
-def run_query(self, endpoint):
+def run_query(self, endpoint, req_type='get'):
 
     db_host = get_db_host(self)
     url = 'http://{}/{}'.format(db_host, endpoint)
 
     token = get_token(self)
     headers = {'Content-Type': 'application/json', 'X-Metabase-Session': token}
-    res = requests.get(url, headers=headers)
+    if req_type == 'get':
+        res = requests.get(url, headers=headers)
+    elif req_type == 'post':
+        res = requests.post(url, headers=headers)
 
     return res.json()
