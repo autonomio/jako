@@ -39,16 +39,16 @@ def create_database(self, token, db_host):
     experiment_name = self.experiment_name
 
     db = {
-            "engine": "postgres",
-            "name": experiment_name,
-            "details": {
-                "host": db_host,
-                "port": "5432",
-                "db": "postgres",
-                "user": "postgres",
-                "password": "postgres"
+        "engine": "postgres",
+        "name": experiment_name,
+        "details": {
+            "host": db_host,
+            "port": "5432",
+            "db": "postgres",
+            "user": "postgres",
+            "password": "postgres"
             }
-            }
+        }
 
     res = requests.post(url, headers=headers, json=db)
     return res.json()
