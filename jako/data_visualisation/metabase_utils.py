@@ -48,8 +48,8 @@ def create_database(self, token, db_host):
                 "db": "postgres",
                 "user": "postgres",
                 "password": "postgres"
-             }
-          }
+            }
+    }
 
     res = requests.post(url, headers=headers, json=db)
     return res.json()
