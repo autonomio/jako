@@ -19,6 +19,6 @@ class MetabaseRun:
 
     def run_browser(self):
         db_host = self.db_host
-        url = 'http://{}:3000/browse/1-jako-metabase-postgres'
+        url = 'http://{}:3000/browse/'
         url = url.format(db_host)
         webbrowser.open_new(url)
