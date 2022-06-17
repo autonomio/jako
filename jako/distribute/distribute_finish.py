@@ -6,9 +6,6 @@ def distribute_finish(self):
 
     # remove all input files
     experiment_name = self.experiment_name
-    for file in os.listdir('/tmp/{}/'.format(experiment_name)):
-        if file.startswith('jako'):
-            os.remove('/tmp/{}/'.format(experiment_name) + file)
 
     attrs_final = ['data', 'x', 'y', 'learning_entropy', 'round_times',
                    'params', 'saved_models', 'saved_weights', 'round_history',
