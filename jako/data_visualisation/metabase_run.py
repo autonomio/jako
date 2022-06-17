@@ -1,6 +1,7 @@
 from .metabase_utils import get_token, create_database
 from ..distribute.distribute_utils import read_config
 from ..distribute.distribute_database import get_db_host
+import webbrowser
 
 
 class MetabaseRun:
@@ -15,3 +16,9 @@ class MetabaseRun:
         self.token = token
 
         create_database(self, token, db_host)
+
+    def run_browser(self):
+        db_host = self.db_host
+        url = 'http://{}:3000/browse/1-jako-metabase-postgres'
+        url = url.format(db_host)
+        webbrowser.open_new(url)
