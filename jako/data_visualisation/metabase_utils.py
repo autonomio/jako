@@ -32,11 +32,10 @@ def run_query(self, token, db_host, endpoint, req_type='get'):
 def create_database(self, token, db_host):
     headers = {'Content-Type': 'application/json', 'X-Metabase-Session': token}
     url = 'http://{}:3000/api/database/'.format(db_host)
-    experiment_name = self.experiment_name
 
     db = {
         "engine": "postgres",
-        "name": experiment_name,
+        "name": 'jako_metabase_postgres',
         "details":
             {
                 "host": db_host,
