@@ -46,5 +46,15 @@ def create_database(self, token, db_host):
             }
     }
 
-    res = requests.post(url, headers=headers, json=db)
+    res = requests.get(url, headers=headers).json()
+    db_list = [data['name'] for data in res['data']]
+
+    db_flag = False
+    if 'jako_metabase_postgres' in db_list:
+        db_flag = True
+
+    if not db_flag:
+        # if database does not exist, create database using databaset header
+        res = requests.post(url, headers=headers, json=db)
+
     return res.json()
