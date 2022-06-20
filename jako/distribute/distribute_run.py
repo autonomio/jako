@@ -139,6 +139,15 @@ def distribute_run(self):
                 thread.start()
                 threads.append(thread)
 
+            if 'metabase' in config.keys():
+                from ..data_visualisation.metabase_run import MetabaseRun
+                mb = MetabaseRun(self.experiment_name)
+                args = ()
+                thread = threading.Thread(target=mb.run_browser(),
+                                          args=args)
+                thread.start()
+                threads.append(thread)
+
             for machine_id, client in clients.items():
 
                 args = (self, client, machine_id)

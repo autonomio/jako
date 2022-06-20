@@ -2,6 +2,7 @@ from .metabase_utils import get_token, create_database
 from ..distribute.distribute_utils import read_config
 from ..distribute.distribute_database import get_db_host
 import webbrowser
+import time
 
 
 class MetabaseRun:
@@ -12,7 +13,16 @@ class MetabaseRun:
         self.db_host = db_host
 
         config = read_config(self)
-        token = get_token(self, db_host, config)
+        try:
+            token = get_token(self, db_host, config)
+        except KeyError:
+            print(''''Opening browser console....
+                  Enter username and password for metabase session.
+                  The username and password should be same as given in config.
+                  And run the jako program again''')
+            time.sleep(2)
+            self.run_browser()
+            exit()
         self.token = token
 
         create_database(self, token, db_host)
