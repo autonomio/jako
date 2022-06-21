@@ -57,4 +57,4 @@ def create_database(self, token, db_host):
         # if database does not exist, create database using databaset header
         res = requests.post(url, headers=headers, json=db)
 
-    return res.json()
+    return res
