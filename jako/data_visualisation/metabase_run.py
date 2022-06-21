@@ -22,7 +22,6 @@ class MetabaseRun:
                   And run the jako program again''')
             time.sleep(2)
             self.run_browser()
-            exit()
         self.token = token
 
         create_database(self, token, db_host)
