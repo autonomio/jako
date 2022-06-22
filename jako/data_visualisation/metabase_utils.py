@@ -12,7 +12,12 @@ def get_token(self, db_host, config):
                'password': mb_password
                }
     res = requests.post(url, json=headers)
-    token = res.json()['id']
+
+    try:
+        token = res.json()['id']
+    except KeyError:
+        token = None
+
     return token
 
 
