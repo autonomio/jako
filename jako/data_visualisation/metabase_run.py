@@ -15,6 +15,10 @@ class MetabaseRun:
         config = read_config(self)
         try:
             token = get_token(self, db_host, config)
+            self.token = token
+
+            create_database(self, token, db_host)
+
         except KeyError:
             print(''''Opening browser console....
                   Enter username and password for metabase session.
@@ -22,9 +26,6 @@ class MetabaseRun:
                   And run the jako program again''')
             time.sleep(2)
             self.run_browser()
-        self.token = token
-
-        create_database(self, token, db_host)
 
     def run_browser(self):
         db_host = self.db_host
