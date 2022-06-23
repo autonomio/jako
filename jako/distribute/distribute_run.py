@@ -93,7 +93,8 @@ def distribute_run(self):
                     db_machine = True
 
                 docker_setup(self, client, machine_id, db_machine)
-                setup_db_with_graphql(self, client, machine_id)
+                if db_machine:
+                    setup_db_with_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage

@@ -27,7 +27,7 @@ class MetabaseRun:
             self.run_browser()
             print("Waiting for user to finish sign in...")
             while True:
-                time.sleep(1)
+                time.sleep(5)
                 token = get_token(self, db_host, config)
 
                 if token:

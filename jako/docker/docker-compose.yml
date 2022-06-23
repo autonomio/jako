@@ -33,7 +33,7 @@ services:
       # HASURA_GRAPHQL_ADMIN_SECRET: jako_secret_key
   metabase-app:
     image: metabase/metabase
-    restart: 'no'
+    restart: always
     ports:
       - 3000:3000
     volumes:
