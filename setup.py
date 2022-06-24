@@ -17,7 +17,7 @@ URL = 'http://autonom.io'
 LICENSE = 'MIT'
 DOWNLOAD_URL = 'https://github.com/autonomio/jako/'
 
-VERSION = '0.2.1'
+VERSION = '0.2.3'
 
 try:
     from setuptools import setup
@@ -35,7 +35,8 @@ install_requires = ['talos',
                     'sqlalchemy_utils',
                     'pyyaml',
                     'uvicorn[standard]',
-                    'fastapi']
+                    'fastapi',
+                    ]
 
 if __name__ == '__main__':
 
@@ -57,7 +58,8 @@ if __name__ == '__main__':
             'jako.distribute',
             'jako.database',
             'jako.docker',
-            'jako.experiment_status'
+            'jako.experiment_status',
+            'jako.data_visualisation'
         ],
         include_package_data=True,
         classifiers=[

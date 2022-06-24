@@ -94,9 +94,9 @@ def get_params_by_min_params(metric: str, ref_param: str, ref_val: str) -> dict:
     return params_by_min_params
 
 
-def run_tracker():
+def run_tracker(experiment_name):
     uvicorn.run(app, host='0.0.0.0', port=8080)
-    tracker = Tracker()
+    tracker = Tracker(experiment_name)
     uri = tracker.hasura_url
     out_str = '''
     Hasura console running at {}

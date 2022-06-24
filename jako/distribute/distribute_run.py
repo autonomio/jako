@@ -93,7 +93,8 @@ def distribute_run(self):
                     db_machine = True
 
                 docker_setup(self, client, machine_id, db_machine)
-                setup_db_with_graphql(self, client, machine_id)
+                if db_machine:
+                    setup_db_with_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage
@@ -136,6 +137,15 @@ def distribute_run(self):
                 args = ([self, update_db_n_seconds, current_machine_id,
                          self.stage, status_details])
                 thread = threading.Thread(target=update_db, args=args)
+                thread.start()
+                threads.append(thread)
+
+            if 'metabase' in config.keys():
+                from ..data_visualisation.metabase_run import MetabaseRun
+                mb = MetabaseRun(self.experiment_name)
+                args = ()
+                thread = threading.Thread(target=mb.run_browser(),
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
