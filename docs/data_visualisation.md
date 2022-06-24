@@ -18,7 +18,7 @@ jako.DistributedScan(x='x', y='y', params=p, model=input_model,config='config.js
 
 ## Adding Data source to Metabase   
 
-When you are running a DistributedScan experiment, the metabase window opens automatically in your browser.The url will be 'http://DB_HOST:3000', where `DB_HOST` is the host id of the remote machine which is used as centralised datastore.
+When you are running a DistributedScan experiment, the metabase window opens automatically in your browser.The url will be `http://DB_HOST:3000`, where `DB_HOST` is the host id of the remote machine which is used as centralised datastore.
 
 If you are setting up metabase for the first time, then the url above will lead you to a setup page. Choose your language, and give the details as shown.   
 
