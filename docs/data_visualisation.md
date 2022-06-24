@@ -7,7 +7,7 @@ While the experiment is running, the user can access the round results and make 
 Add a key named `metabase` and set its value to `True` in the config.   
 
 ```
-"metabase": "True"
+"metabase": true
 ```   
 
 And include the config while running DistributeScan.   
