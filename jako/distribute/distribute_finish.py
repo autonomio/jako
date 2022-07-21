@@ -1,4 +1,8 @@
 def distribute_finish(self):
+    '''
+    All operations including file logging to be done after DistributedScan run.
+
+    '''
     import pandas as pd
     import os
     import json

@@ -165,7 +165,8 @@ class Tracker:
         parameter = self.params
 
         query = query_params_by_max_metric(experiment_name,
-                                           parameter, metric, max_metric, stage)
+                                           parameter, metric,
+                                           max_metric, stage)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name][0]
@@ -182,7 +183,8 @@ class Tracker:
         parameter = self.params
 
         query = query_params_by_min_metric(experiment_name,
-                                           parameter, metric, min_metric, stage)
+                                           parameter, metric,
+                                           min_metric, stage)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name][0]
@@ -198,7 +200,8 @@ class Tracker:
         parameter = self.params
 
         query = query_params_by_max_params(experiment_name, metric,
-                                           parameter, ref_param, ref_val, stage)
+                                           parameter, ref_param,
+                                           ref_val, stage)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name]
@@ -214,7 +217,8 @@ class Tracker:
         parameter = self.params
 
         query = query_params_by_min_params(experiment_name, metric,
-                                           parameter, ref_param, ref_val, stage)
+                                           parameter, ref_param,
+                                           ref_val, stage)
 
         res = run_query(uri, query, statusCode)
         res = res['data'][experiment_name]

@@ -30,16 +30,109 @@ class DistributedScan(Scan):
                  clear_session=True,
                  save_weights=True,
                  config='config.json'):
-        '''Distributed version of talos.Scan() for the local machine.
+        '''
+    Distributed version of talos.Scan() for the local machine.
+    USE: jako.DistributedScan(x=x,
+                                y=y,
+                                params=params_dict,
+                                model=model,
+                                config=config)
+    # CORE ARGUMENTS
+    ----------------
+    x : ndarray
+        1d or 2d array, or a list of arrays with features for the prediction
+        task.
+    y : ndarray
+        1d or 2d array, or a list of arrays with labels for the prediction
+        task.
+    params : dict
+        Lists all permutations of hyperparameters, a subset of which will be
+        selected at random for training and evaluation.
+    model : keras model
+        Any Keras model with relevant declrations like params['first_neuron']
+    experiment_name : str
+        Experiment name will be used to produce a folder (unless already) it's
+        there from previous iterations of the experiment. Logs of the
+        experiment are saved in the folder with timestamp of start
+        time as filenames.
+    x_val : ndarray
+        User specified cross-validation data. (Default is None).
+    y_val : ndarray
+        User specified cross-validation labels. (Default is None).
+    val_split : float, optional
+        The proportion of the input `x` which is set aside as the
+        validation data. (Default is 0.3).
+    multi_input : bool, optional
+        If it is a multi_input model, then set to True.
+    # RANDOMNESS ARGUMENTS
+    ----------------------
+    random_method : str
+        Determinines the way in which the grid_downsample is applied. The
+        default setting is 'uniform_mersenne'.
+    seed : int
+        Sets numpy random seed.
+    # LIMITER ARGUMENTS
+    -------------------
+    performance_target : None or list [metric, threshold, loss or not]
+        Allows setting a threshold for a given metric, at which point the
+        experiment will be concluded as successful.
+        E.g. performance_target=['f1score', 0.8, False]
+    fraction_limit : int
+        The fraction of `params` that will be tested (Default is None).
+        Previously grid_downsample.
+    round_limit : int
+        Limits the number of rounds (permutations) in the experiment.
+    time_limit : None or str
+        Allows setting a time when experiment will be completed. Use the format
+        "%Y-%m-%d %H:%M" here.
+    boolean_limit : None or lambda function
+        Allows setting a limit to accepted permutations as a lambda function.
+        E.g. example lambda p: p['first_neuron'] * p['hidden_layers'] < 220
+    # OPTIMIZER ARGUMENTS
+    ---------------------
+    reduction_method : None or string
+        If None, random search will be used as the optimization strategy.
+        Otherwise use the name of the specific strategy, e.g. 'correlation'.
+    reduction_interval : None or int
+        The number of reduction method rounds that will be performed. (Default
+        is None).
+    reduction_window : None or int
+        The number of rounds of the reduction method before observing the
+        results. (Default is None).
+    reduction_threshold: None or float
+        The minimum value for reduction to be applied. For example, when
+        the 'correlation' reducer finds correlation below the threshold,
+        nothing is reduced.
+    reduction_metric : None or str
+        Metric used to tune the reductions. minimize_loss has to be set to True
+        if this is a loss.
+    minimize_loss : bool
+        Must be set to True if a reduction_metric is a loss.
+    # OUTPUT ARGUMENTS
+    ------------------
+    disable_progress_bar : bool
+        Disable TQDM live progress bar.
+    print_params : bool
+        Print params for each round on screen (useful when using TrainingLog
+        callback for visualization)
+    # CONFIG ARGUMENTS
+    -----------------
+    config : str or dict | Path or dict containing details of
+                            Distributed Machines and database.
 
-        Parameters
-        ----------
-        params | `dict` | Hyperparameters for distribution.
-        config | str or dict | The default is 'config.json'.
+    # OTHER ARGUMENTS
+    -----------------
+    clear_session : bool
+        If the backend session is cleared between every permutation.
+    save_weights : bool
+        If set to False, then model weights will not be saved and best_model
+        and some other features will not work. Will reduce memory pressure
+        on very large models and high number of rounds/permutations.
+    save_models : bool
+        If True, models will be saved on the local disk in theexperiment
+        folder. When `save_models` is set to True, you should consider setting
+        `save_weights` to False.
 
-        Returns
-        -------
-        None.
 
         '''
 

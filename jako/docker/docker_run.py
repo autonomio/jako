@@ -11,4 +11,7 @@ def docker_setup(self, client, machine_id, db_machine=False):
 
 
 def docker_run(self, client, machine_id):
+    '''
+    Run the DistributedScan using docker
+    '''
     docker_scan_run(self, client, machine_id)

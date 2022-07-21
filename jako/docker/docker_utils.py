@@ -85,6 +85,7 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
 
 def setup_db_with_graphql(self, client, machine_id):
+    ''' Hasura GraphQL setup along with the current database'''
 
     execute_strings = ['sh /tmp/jako_docker_compose.sh',
                        'sudo docker compose -f /tmp/docker-compose.yml up -d'
@@ -167,6 +168,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
 
 def docker_scan_run(self, client, machine_id):
+    ''' Run DistributedScan using docker'''
     machine_id = str(machine_id)
     experiment_name = self.experiment_name
     print('started experiment in machine id {}'.format(machine_id))
