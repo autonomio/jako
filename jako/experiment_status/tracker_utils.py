@@ -47,8 +47,8 @@ def track_table(uri, experiment_name, statusCode):
         "source": "default",
         "schema": "public",
         "name": "{}".format(experiment_name)
+        }
       }
-     }
 
     request = requests.post(uri, json=query)
     if request.status_code in (statusCode, 400):
