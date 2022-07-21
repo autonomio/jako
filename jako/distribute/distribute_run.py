@@ -129,7 +129,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
@@ -163,7 +164,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 

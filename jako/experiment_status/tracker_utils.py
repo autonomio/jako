@@ -2,6 +2,7 @@ import requests
 
 
 def setup_graphql(self, client, machine_id):
+    ''' Set up Hasura graphql for database'''
 
     execute_strings = ['sh /tmp/jako_docker_compose.sh',
                        'sudo docker compose -f /tmp/docker-compose.yml up -d'
@@ -26,6 +27,8 @@ def setup_graphql(self, client, machine_id):
 
 
 def run_query(uri, query, statusCode):
+    ''' Send a post request containing the query'''
+
     request = requests.post(uri, json={'query': query})
     if request.status_code == statusCode:
         return request.json()
@@ -35,6 +38,9 @@ def run_query(uri, query, statusCode):
 
 
 def track_table(uri, experiment_name, statusCode):
+    ''' Track table in the beginning of the experiment
+    if it is not already tracked'''
+
     query = {
       "type": "pg_track_table",
       "args": {

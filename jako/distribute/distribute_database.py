@@ -6,6 +6,9 @@ import sys
 
 
 def get_db_object(self):
+    '''
+    Returns Database object with database details from config
+    '''
     config = self.config_data
     from ..database.database import Database
 
@@ -34,6 +37,9 @@ def get_db_object(self):
 
 
 def get_db_host(self):
+    '''
+    Returns IP address of machine that contains the database
+    '''
 
     config = read_config(self)
     machine_config = config['machines']
