@@ -41,14 +41,10 @@ def track_table(uri, experiment_name, statusCode):
     ''' Track table in the beginning of the experiment
     if it is not already tracked'''
 
-    query = {
-      "type": "pg_track_table",
-      "args": {
-        "source": "default",
-        "schema": "public",
-        "name": "{}".format(experiment_name)
-        }
-      }
+    query = {"type": "pg_track_table",
+             "args": {"source": "default",
+                      "schema": "public",
+                      "name": "{}".format(experiment_name)}}
 
     request = requests.post(uri, json=query)
     if request.status_code in (statusCode, 400):
