@@ -90,7 +90,8 @@ def return_central_machine_id(self):
 def read_config(self):
     '''Read config from file'''
 
-    config_path = "/tmp/{}/jako_remote_config.json".format(self.experiment_name)
+    config_path = "/tmp/{}/jako_remote_config.json".format(
+        self.experiment_name)
 
     with open(config_path, 'r') as f:
         config_data = json.load(f)
