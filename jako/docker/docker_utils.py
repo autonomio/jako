@@ -174,8 +174,12 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     execute_strings += pull
 
     if db_machine:
-        compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
-        compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
+        compose_install_cmd = 'sh /tmp/{}/jako_docker_compose.sh'.format(
+            self.experiment_name)
+        compose_cmd = 'sudo docker compose'
+        compose_cmd += ' -f /tmp/{}/docker-compose.yml up -d'.format(
+            self.experiment_name)
+
         execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:

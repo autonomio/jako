@@ -59,8 +59,7 @@ class DistributedScan(Scan):
 
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
-            if file.startswith('jako'):
-                os.remove('/tmp/{}/'.format(self.experiment_name) + file)
+            os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
         self.x = x
         self.y = y

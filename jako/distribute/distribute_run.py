@@ -130,7 +130,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
@@ -141,13 +142,14 @@ def distribute_run(self):
                 threads.append(thread)
 
             if 'metabase' in config.keys():
-                from ..data_visualisation.metabase_run import MetabaseRun
-                mb = MetabaseRun(self.experiment_name)
-                args = ()
-                thread = threading.Thread(target=mb.run_browser(),
-                                          args=args)
-                thread.start()
-                threads.append(thread)
+                if config['metabase']:
+                    from ..data_visualisation.metabase_run import MetabaseRun
+                    mb = MetabaseRun(self.experiment_name)
+                    args = ()
+                    thread = threading.Thread(target=mb.run_browser(),
+                                              args=args)
+                    thread.start()
+                    threads.append(thread)
 
             for machine_id, client in clients.items():
 
@@ -173,7 +175,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
