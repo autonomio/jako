@@ -88,8 +88,8 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         sftp.mkdir(self.dest_dir)  # Create dest dir
         sftp.chdir(self.dest_dir)
 
-    docker_files = ['jako_docker.sh', 'Dockerfile']
-    docker_compose_files = ['docker-compose.yml', 'jako_docker_compose.sh']
+    docker_files = ['jako_docker.sh', 'Dockerfile',
+                    'docker-compose.yml', 'jako_docker_compose.sh']
 
     if db_machine:
 
@@ -105,19 +105,18 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
     for file in os.listdir("/tmp/{}".format(self.experiment_name)):
         if file in docker_files:
             sftp.put("/tmp/{}/".format(
-                self.experiment_name) + file, self.dest_dir + file)
-
-    for file in os.listdir("/tmp/"):
-        if file in docker_compose_files:
-            sftp.put("/tmp/" + file, '/tmp/' + file)
+                self.experiment_name) + file, file)
 
     sftp.close()
 
 
 def setup_db_with_graphql(self, client, machine_id):
 
-    execute_strings = ['sh /tmp/jako_docker_compose.sh',
-                       'sudo docker compose -f /tmp/docker-compose.yml up -d'
+    execute_strings = [
+        'sh /tmp/{}/jako_docker_compose.sh'.format(
+            self.experiment_name),
+        'sudo docker compose -f /tmp/{}/docker-compose.yml up -d'.format(
+            self.experiment_name)
                        ]
 
     for execute_str in execute_strings:
