@@ -93,7 +93,7 @@ def run_scan(self, machines, run_central_node, machine_id):
 
     print('Completed experiment in machine id : {}'.format(current_machine_id))
 
-    new_config = read_config()
+    new_config = read_config(self)
     new_config['finished_scan_run'] = True
 
     if int(current_machine_id) == 0:
