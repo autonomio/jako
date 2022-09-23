@@ -118,6 +118,7 @@ def distribute_run(self):
             json.dump(arguments_dict, outfile, indent=2)
 
         extra_files = ['jako_arguments_remote.json']
+
         clients = ssh_connect(self)
         for machine_id, client in clients.items():
             ssh_file_transfer(self, client, machine_id,
@@ -152,6 +153,7 @@ def distribute_run(self):
                     thread.start()
                     threads.append(thread)
 
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
 
                 args = (self, client, machine_id)
@@ -167,6 +169,7 @@ def distribute_run(self):
                 if file.startswith('machine_id'):
                     os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
         else:
@@ -201,7 +204,7 @@ def distribute_run(self):
                     self.experiment_name)):
                 if file.startswith('machine_id'):
                     os.remove('/tmp/{}/'.format(self.experiment_name) + file)
-
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
 
