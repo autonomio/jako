@@ -118,6 +118,7 @@ def distribute_run(self):
             json.dump(arguments_dict, outfile, indent=2)
 
         extra_files = ['jako_arguments_remote.json']
+        clients = ssh_connect(self)
         for machine_id, client in clients.items():
             ssh_file_transfer(self, client, machine_id,
                               extra_files)
