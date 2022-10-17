@@ -142,6 +142,78 @@ def setup_db_with_graphql(self, client, machine_id):
                 print(e)
 
 
+def amazon_linux_docker_cmds(self):
+    '''commands to install docker in amazon linux'''
+    cmds = ['sudo yum update -y',
+            'sudo amazon-linux-extras install docker',
+            'sudo service docker start',
+            ]
+    return cmds
+
+
+def docker_install(self, client, machine_id):
+    execute_str = 'sudo docker'
+    '''execute commands to install docker across any platform'''
+
+    stdin, stdout, stderr = client.exec_command(execute_str)
+    dockerflag = True
+
+    if stdout:
+        for line in stdout.read().splitlines():
+            line = str(line)
+            if 'docker: command not found' in line:
+                dockerflag = False
+    if stderr:
+        for line in stderr.read().splitlines():
+            line = str(line)
+            if 'docker: command not found' in line:
+                dockerflag = False
+
+    if not dockerflag:
+        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
+            self.experiment_name),
+            'sh /tmp/{}/jako_docker.sh'.format(
+                self.experiment_name)]
+
+        machine_spec_install = None
+
+        for execute_str in install:
+            stdin, stdout, stderr = client.exec_command(execute_str)
+
+            if stdout:
+                for line in stdout.read().splitlines():
+                    line = str(line)
+                    if "ERROR: Unsupported distribution 'amzn'" in line:
+                        machine_spec_install = 'amazon_linux'
+            if stderr:
+                for line in stderr.read().splitlines():
+                    line = str(line)
+                    if "ERROR: Unsupported distribution 'amzn'" in line:
+                        machine_spec_install = 'amazon_linux'
+
+        if machine_spec_install == 'amazon_linux':
+            cmds = [
+                'sudo yum update -y',
+                'sudo amazon-linux-extras install docker',
+                'sudo service docker start']
+            for cmd in cmds:
+                _, stdout, stderr = client.exec_command(cmd)
+                if stdout:
+                    for line in stdout.read().splitlines():
+                        line = str(line)
+                        print('-'*100)
+                        print(line)
+                        if "ERROR: Unsupported distribution 'amzn'" in line:
+                            machine_spec_install = 'amazon_linux'
+                if stderr:
+                    for line in stderr.read().splitlines():
+                        line = str(line)
+                        print('-'*100)
+                        print(line)
+                        if "ERROR: Unsupported distribution 'amzn'" in line:
+                            machine_spec_install = 'amazon_linux'
+
+
 def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
 
@@ -155,25 +227,9 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     None.
 
     '''
-    execute_str = 'sudo docker'
     execute_strings = []
-    stdin, stdout, stderr = client.exec_command(execute_str)
-    dockerflag = True
 
-    if stdout:
-        if 'command not found' in stdout:
-            dockerflag = False
-    if stderr:
-        if 'command not found' in stdout:
-            dockerflag = False
-
-    if not dockerflag:
-        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
-            self.experiment_name),
-            '/tmp/{}/jako_docker.sh'.format(
-                self.experiment_name)]
-
-        execute_strings += install
+    docker_install(self, client, machine_id)
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
     execute_strings += pull
@@ -184,16 +240,17 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
         execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
+        print(execute_str + '---------execute_str')
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:
-            for line in stderr:
+            for line in stderr.read().splitlines():
                 try:
                     # Process each error line in the remote output
                     print(line)
                 except Exception as e:
                     print(e)
 
-        for line in stdout:
+        for line in stdout.read().splitlines():
             try:
                 # Process each line in the remote output
                 print(line)
