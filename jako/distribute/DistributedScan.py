@@ -181,5 +181,7 @@ class DistributedScan(Scan):
                 self.experiment_name), 'w') as outfile:
             json.dump(self.config_data, outfile, indent=2)
 
+        self.machine_spec = None
+
         from .distribute_run import distribute_run
         distribute_run(self)

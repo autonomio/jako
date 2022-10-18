@@ -29,6 +29,7 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_MIGRATIONS_DIR: /tmp/hasura_migrations_dir
       HASURA_GRAPHQL_METADATA_DIR: /tmp/hasura_metadata_dir
+      HASURA_GRAPHQL_MIGRATIONS_SERVER_TIMEOUT: 100
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: jako_secret_key
   metabase-app:

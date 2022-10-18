@@ -120,9 +120,13 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
 
 def setup_db_with_graphql(self, client, machine_id):
 
-    execute_strings = ['sh /tmp/jako_docker_compose.sh',
-                       'sudo docker compose -f /tmp/docker-compose.yml up -d'
-                       ]
+    if self.machine_spec == 'amazon_linux':
+        execute_strings = [
+            'sudo docker-compose -f /tmp/docker-compose.yml up -d']
+    else:
+        execute_strings = ['sh /tmp/jako_docker_compose.sh']
+        execute_strings.append(
+            'sudo docker compose -f /tmp/docker-compose.yml up -d')
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
@@ -157,7 +161,6 @@ def docker_install(self, client, machine_id):
 
     stdin, stdout, stderr = client.exec_command(execute_str)
     dockerflag = True
-    machine_spec = None
 
     if stdout:
         for line in stdout.read().splitlines():
@@ -183,14 +186,14 @@ def docker_install(self, client, machine_id):
                 for line in stdout.read().splitlines():
                     line = str(line)
                     if "ERROR: Unsupported distribution 'amzn'" in line:
-                        machine_spec = 'amazon_linux'
+                        self.machine_spec = 'amazon_linux'
             if stderr:
                 for line in stderr.read().splitlines():
                     line = str(line)
                     if "ERROR: Unsupported distribution 'amzn'" in line:
-                        machine_spec = 'amazon_linux'
+                        self.machine_spec = 'amazon_linux'
 
-        if machine_spec == 'amazon_linux':
+        if self.machine_spec == 'amazon_linux':
             cmds = [
                 'sudo yum update -y',
                 'sudo yum install amazon-linux-extras',
@@ -208,8 +211,6 @@ def docker_install(self, client, machine_id):
                     for line in stderr.read().splitlines():
                         print(line)
 
-    return machine_spec
-
 
 def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
@@ -226,14 +227,14 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     '''
     execute_strings = []
 
-    machine_spec = docker_install(self, client, machine_id)
+    docker_install(self, client, machine_id)
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
     execute_strings += pull
 
     if db_machine:
 
-        if machine_spec == 'amazon_linux':
+        if self.machine_spec == 'amazon_linux':
             compose_install_cmd = 'sudo curl -L '
             compose_install_cmd += 'https://github.com/docker/compose/'
             compose_install_cmd += 'releases/download/1.22.0/'
@@ -254,7 +255,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
         else:
             compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
             compose_cmd = 'sudo docker compose -f '
-            + '/tmp/docker-compose.yml up -d'
+            compose_cmd += '/tmp/docker-compose.yml up -d'
             execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
