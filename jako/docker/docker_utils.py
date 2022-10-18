@@ -157,6 +157,7 @@ def docker_install(self, client, machine_id):
 
     stdin, stdout, stderr = client.exec_command(execute_str)
     dockerflag = True
+    machine_spec = None
 
     if stdout:
         for line in stdout.read().splitlines():
@@ -175,8 +176,6 @@ def docker_install(self, client, machine_id):
             'sh /tmp/{}/jako_docker.sh'.format(
                 self.experiment_name)]
 
-        machine_spec_install = None
-
         for execute_str in install:
             stdin, stdout, stderr = client.exec_command(execute_str)
 
@@ -184,34 +183,32 @@ def docker_install(self, client, machine_id):
                 for line in stdout.read().splitlines():
                     line = str(line)
                     if "ERROR: Unsupported distribution 'amzn'" in line:
-                        machine_spec_install = 'amazon_linux'
+                        machine_spec = 'amazon_linux'
             if stderr:
                 for line in stderr.read().splitlines():
                     line = str(line)
                     if "ERROR: Unsupported distribution 'amzn'" in line:
-                        machine_spec_install = 'amazon_linux'
+                        machine_spec = 'amazon_linux'
 
-        if machine_spec_install == 'amazon_linux':
+        if machine_spec == 'amazon_linux':
             cmds = [
                 'sudo yum update -y',
+                'sudo yum install amazon-linux-extras',
                 'sudo amazon-linux-extras install docker',
-                'sudo service docker start']
+                'sudo service docker start',
+                'sudo groupadd docker',
+                'sudo usermod -aG docker $USER']
+
             for cmd in cmds:
                 _, stdout, stderr = client.exec_command(cmd)
                 if stdout:
                     for line in stdout.read().splitlines():
-                        line = str(line)
-                        print('-'*100)
                         print(line)
-                        if "ERROR: Unsupported distribution 'amzn'" in line:
-                            machine_spec_install = 'amazon_linux'
                 if stderr:
                     for line in stderr.read().splitlines():
-                        line = str(line)
-                        print('-'*100)
                         print(line)
-                        if "ERROR: Unsupported distribution 'amzn'" in line:
-                            machine_spec_install = 'amazon_linux'
+
+    return machine_spec
 
 
 def docker_image_setup(self, client, machine_id, db_machine=False):
@@ -229,18 +226,38 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     '''
     execute_strings = []
 
-    docker_install(self, client, machine_id)
+    machine_spec = docker_install(self, client, machine_id)
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
     execute_strings += pull
 
     if db_machine:
-        compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
-        compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
-        execute_strings += [compose_install_cmd, compose_cmd]
+
+        if machine_spec == 'amazon_linux':
+            compose_install_cmd = 'sudo curl -L '
+            compose_install_cmd += 'https://github.com/docker/compose/'
+            compose_install_cmd += 'releases/download/1.22.0/'
+            compose_install_cmd += 'docker-compose-$(uname -s)-$(uname -m)'
+            compose_install_cmd += ' -o /usr/local/bin/docker-compose'
+
+            permission_cmd = 'sudo chmod +x /usr/local/bin/docker-compose'
+            # symlink_cmd = 'ln -s /usr/local/bin/docker-compose'
+            # symlink_cmd += ' /usr/bin/docker-compose'
+
+            compose_cmd = 'sudo docker-compose -f'
+            compose_cmd += ' /tmp/docker-compose.yml up -d'
+
+            execute_strings += [compose_install_cmd,
+                                permission_cmd,
+                                # symlink_cmd,
+                                compose_cmd]
+        else:
+            compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
+            compose_cmd = 'sudo docker compose -f '
+            + '/tmp/docker-compose.yml up -d'
+            execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
-        print(execute_str + '---------execute_str')
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:
             for line in stderr.read().splitlines():
