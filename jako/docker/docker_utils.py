@@ -242,15 +242,15 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
             compose_install_cmd += ' -o /usr/local/bin/docker-compose'
 
             permission_cmd = 'sudo chmod +x /usr/local/bin/docker-compose'
-            # symlink_cmd = 'ln -s /usr/local/bin/docker-compose'
-            # symlink_cmd += ' /usr/bin/docker-compose'
+            symlink_cmd = 'sudo ln -s /usr/local/bin/docker-compose'
+            symlink_cmd += ' /usr/bin/docker-compose'
 
             compose_cmd = 'sudo docker-compose -f'
             compose_cmd += ' /tmp/docker-compose.yml up -d'
 
             execute_strings += [compose_install_cmd,
                                 permission_cmd,
-                                # symlink_cmd,
+                                symlink_cmd,
                                 compose_cmd]
         else:
             compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
