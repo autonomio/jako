@@ -6,6 +6,20 @@ import datetime
 
 
 def create_temp_file(self, experiment_name):
+    '''
+    python script to be run on each remote machine
+
+    Parameters
+    ----------
+    experiment_name : str
+        Name of the experiment.
+
+    Returns
+    -------
+    None.
+
+    '''
+
     filestr = '''
 from jako import RemoteScan
 import numpy as np
@@ -223,7 +237,8 @@ def ssh_get_files(self, client, machine_id):
 
     scan_object_filenames = ('scan_details.csv', 'scan_learning_entropy.csv',
                              'scan_round_history.npy', 'scan_round_times.csv',
-                             'scan_saved_models.json', 'scan_saved_weights.npy',
+                             'scan_saved_models.json',
+                             'scan_saved_weights.npy',
                              'scan_data.csv')
 
     sftp.chdir(self.dest_dir)
