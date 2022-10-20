@@ -93,7 +93,8 @@ def distribute_run(self):
                     db_machine = True
 
                 docker_setup(self, client, machine_id, db_machine)
-                setup_db_with_graphql(self, client, machine_id)
+                if db_machine:
+                    setup_db_with_graphql(self, client, machine_id)
 
         from .distribute_database import get_db_object
         from .distribute_utils import get_experiment_stage
@@ -117,6 +118,8 @@ def distribute_run(self):
             json.dump(arguments_dict, outfile, indent=2)
 
         extra_files = ['jako_arguments_remote.json']
+
+        clients = ssh_connect(self)
         for machine_id, client in clients.items():
             ssh_file_transfer(self, client, machine_id,
                               extra_files)
@@ -129,7 +132,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
@@ -139,6 +143,17 @@ def distribute_run(self):
                 thread.start()
                 threads.append(thread)
 
+            if 'metabase' in config.keys():
+                if config['metabase']:
+                    from ..data_visualisation.metabase_run import MetabaseRun
+                    mb = MetabaseRun(self.experiment_name)
+                    args = ()
+                    thread = threading.Thread(target=mb.run_browser(),
+                                              args=args)
+                    thread.start()
+                    threads.append(thread)
+
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
 
                 args = (self, client, machine_id)
@@ -154,6 +169,7 @@ def distribute_run(self):
                 if file.startswith('machine_id'):
                     os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
         else:
@@ -163,7 +179,8 @@ def distribute_run(self):
             if run_central_node:
 
                 args = (self, n_splits, run_central_node)
-                thread = threading.Thread(target=run_central_machine, args=args)
+                thread = threading.Thread(target=run_central_machine,
+                                          args=args)
                 thread.start()
                 threads.append(thread)
 
@@ -187,7 +204,7 @@ def distribute_run(self):
                     self.experiment_name)):
                 if file.startswith('machine_id'):
                     os.remove('/tmp/{}/'.format(self.experiment_name) + file)
-
+            clients = ssh_connect(self)
             for machine_id, client in clients.items():
                 ssh_get_files(self, client, machine_id)
 

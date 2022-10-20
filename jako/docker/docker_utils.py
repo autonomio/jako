@@ -1,5 +1,6 @@
 import os
 import shutil
+from ..distribute.distribute_database import get_db_host
 
 
 def docker_install_commands(self):
@@ -27,10 +28,17 @@ def write_dockerfile(self):
                 'COPY jako_scanfile_remote.py /tmp/jako_scanfile_remote.py',
                 'COPY jako_x_data_remote.npy /tmp/jako_x_data_remote.npy',
                 'COPY jako_y_data_remote.npy /tmp/jako_y_data_remote.npy',
+                ]
+
+    if self.x_val and self.y_val:
+        commands += [
                 '''COPY jako_x_val_data_remote.npy
                 /tmp/jako_x_val_data_remote.npy'''.replace('\n', ''),
                 '''COPY jako_y_val_data_remote.npy
-                /tmp/jako_y_val_data_remote.npy'''.replace('\n', ''),
+                /tmp/jako_y_val_data_remote.npy'''.replace('\n', '')
+                ]
+
+    commands += [
                 '''COPY jako_arguments_remote.json
                 /tmp/jako_arguments_remote.json'''.replace('\n', ''),
                 'COPY jako_remote_config.json /tmp/jako_remote_config.json',
@@ -42,6 +50,28 @@ def write_dockerfile(self):
             self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
+
+
+def modify_docker_compose(self):
+    import yaml
+    currpath = os.path.dirname(__file__)
+    compose_path = currpath + '/docker-compose.yml'
+
+    with open(compose_path) as f:
+        compose_config = yaml.safe_load(f)
+
+    compose_config_metabase = compose_config['services']['metabase-app']
+    compose_config_env = compose_config_metabase['environment']
+
+    db_host = get_db_host(self)
+    db_uri = 'postgresql://postgres:postgres@{}:5432/postgres'
+    db_uri = db_uri.format(db_host)
+    compose_config_env['MB_DB_CONNECTION_URI'] = db_host
+
+    with open(compose_path, "w") as f:
+        yaml.dump(compose_config, f)
+
+    return compose_config
 
 
 def docker_ssh_file_transfer(self, client, db_machine=False):
@@ -67,28 +97,36 @@ def docker_ssh_file_transfer(self, client, db_machine=False):
         compose_install_script_path = currpath + '/jako_docker_compose.sh'
         compose_path = currpath + '/docker-compose.yml'
 
-        shutil.copy(compose_install_script_path, '/tmp/{}/'.format(
-            self.experiment_name))
-        shutil.copy(compose_path, '/tmp/{}/'.format(
-            self.experiment_name))
+        shutil.copy(compose_install_script_path, '/tmp/')
+        shutil.copy(compose_path, '/tmp/')
 
     for file in os.listdir("/tmp/{}".format(self.experiment_name)):
         if file in docker_files:
             sftp.put("/tmp/{}/".format(
                 self.experiment_name) + file, self.dest_dir + file)
+    try:
+        sftp.chdir('/tmp/')  # Test if dest dir exists
+
+    except IOError:
+        sftp.mkdir('/tmp/')  # Create dest dir
+        sftp.chdir('/tmp/')
 
     for file in os.listdir("/tmp/"):
         if file in docker_compose_files:
-            sftp.put("/tmp/" + file, '/tmp/' + file)
+            sftp.put("/tmp/" + file, file)
 
     sftp.close()
 
 
 def setup_db_with_graphql(self, client, machine_id):
 
-    execute_strings = ['sh /tmp/jako_docker_compose.sh',
-                       'sudo docker compose -f /tmp/docker-compose.yml up -d'
-                       ]
+    if self.machine_spec == 'amazon_linux':
+        execute_strings = [
+            'sudo docker-compose -f /tmp/docker-compose.yml up -d']
+    else:
+        execute_strings = ['sh /tmp/jako_docker_compose.sh']
+        execute_strings.append(
+            'sudo docker compose -f /tmp/docker-compose.yml up -d')
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
@@ -108,6 +146,72 @@ def setup_db_with_graphql(self, client, machine_id):
                 print(e)
 
 
+def amazon_linux_docker_cmds(self):
+    '''commands to install docker in amazon linux'''
+    cmds = ['sudo yum update -y',
+            'sudo amazon-linux-extras install docker',
+            'sudo service docker start',
+            ]
+    return cmds
+
+
+def docker_install(self, client, machine_id):
+    execute_str = 'sudo docker'
+    '''execute commands to install docker across any platform'''
+
+    stdin, stdout, stderr = client.exec_command(execute_str)
+    dockerflag = True
+
+    if stdout:
+        for line in stdout.read().splitlines():
+            line = str(line)
+            if 'docker: command not found' in line:
+                dockerflag = False
+    if stderr:
+        for line in stderr.read().splitlines():
+            line = str(line)
+            if 'docker: command not found' in line:
+                dockerflag = False
+
+    if not dockerflag:
+        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
+            self.experiment_name),
+            'sh /tmp/{}/jako_docker.sh'.format(
+                self.experiment_name)]
+
+        for execute_str in install:
+            stdin, stdout, stderr = client.exec_command(execute_str)
+
+            if stdout:
+                for line in stdout.read().splitlines():
+                    line = str(line)
+                    if "ERROR: Unsupported distribution 'amzn'" in line:
+                        self.machine_spec = 'amazon_linux'
+            if stderr:
+                for line in stderr.read().splitlines():
+                    line = str(line)
+                    if "ERROR: Unsupported distribution 'amzn'" in line:
+                        self.machine_spec = 'amazon_linux'
+
+        if self.machine_spec == 'amazon_linux':
+            cmds = [
+                'sudo yum update -y',
+                'sudo yum install amazon-linux-extras',
+                'sudo amazon-linux-extras install docker',
+                'sudo service docker start',
+                'sudo groupadd docker',
+                'sudo usermod -aG docker $USER']
+
+            for cmd in cmds:
+                _, stdout, stderr = client.exec_command(cmd)
+                if stdout:
+                    for line in stdout.read().splitlines():
+                        print(line)
+                if stderr:
+                    for line in stderr.read().splitlines():
+                        print(line)
+
+
 def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
 
@@ -121,44 +225,50 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
     None.
 
     '''
-    execute_str = 'sudo docker'
     execute_strings = []
-    stdin, stdout, stderr = client.exec_command(execute_str)
-    dockerflag = True
 
-    if stdout:
-        if 'command not found' in stdout:
-            dockerflag = False
-    if stderr:
-        if 'command not found' in stdout:
-            dockerflag = False
-
-    if not dockerflag:
-        install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
-            self.experiment_name),
-            '/tmp/{}/jako_docker.sh'.format(
-                self.experiment_name)]
-        execute_strings += install
+    docker_install(self, client, machine_id)
 
     pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
     execute_strings += pull
 
     if db_machine:
-        compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
-        compose_cmd = 'sudo docker compose -f /tmp/docker-compose.yml up -d'
-        execute_strings += [compose_install_cmd, compose_cmd]
+
+        if self.machine_spec == 'amazon_linux':
+            compose_install_cmd = 'sudo curl -L '
+            compose_install_cmd += 'https://github.com/docker/compose/'
+            compose_install_cmd += 'releases/download/1.22.0/'
+            compose_install_cmd += 'docker-compose-$(uname -s)-$(uname -m)'
+            compose_install_cmd += ' -o /usr/local/bin/docker-compose'
+
+            permission_cmd = 'sudo chmod +x /usr/local/bin/docker-compose'
+            symlink_cmd = 'sudo ln -s /usr/local/bin/docker-compose'
+            symlink_cmd += ' /usr/bin/docker-compose'
+
+            compose_cmd = 'sudo docker-compose -f'
+            compose_cmd += ' /tmp/docker-compose.yml up -d'
+
+            execute_strings += [compose_install_cmd,
+                                permission_cmd,
+                                symlink_cmd,
+                                compose_cmd]
+        else:
+            compose_install_cmd = 'sh /tmp/jako_docker_compose.sh'
+            compose_cmd = 'sudo docker compose -f '
+            compose_cmd += '/tmp/docker-compose.yml up -d'
+            execute_strings += [compose_install_cmd, compose_cmd]
 
     for execute_str in execute_strings:
         stdin, stdout, stderr = client.exec_command(execute_str)
         if stderr:
-            for line in stderr:
+            for line in stderr.read().splitlines():
                 try:
                     # Process each error line in the remote output
                     print(line)
                 except Exception as e:
                     print(e)
 
-        for line in stdout:
+        for line in stdout.read().splitlines():
             try:
                 # Process each line in the remote output
                 print(line)

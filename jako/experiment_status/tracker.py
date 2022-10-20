@@ -5,10 +5,10 @@ import json
 
 
 class Tracker:
-    def __init__(self):
+    def __init__(self, experiment_name):
         with open('/tmp/jako_arguments_remote.json', 'r') as f:
             arguments_dict = json.load(f)
-            self.experiment_name = arguments_dict['experiment_name']
+            self.experiment_name = experiment_name
             params = list(arguments_dict['params'].keys())
             self.params = ' '.join(params)
             self.stage = arguments_dict['stage']

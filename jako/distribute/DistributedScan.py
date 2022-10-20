@@ -59,8 +59,7 @@ class DistributedScan(Scan):
 
         for file in os.listdir('/tmp/{}'.format(
                 self.experiment_name)):
-            if file.startswith('jako'):
-                os.remove('/tmp/{}/'.format(self.experiment_name) + file)
+            os.remove('/tmp/{}/'.format(self.experiment_name) + file)
 
         self.x = x
         self.y = y
@@ -181,6 +180,8 @@ class DistributedScan(Scan):
         with open('/tmp/{}/jako_remote_config.json'.format(
                 self.experiment_name), 'w') as outfile:
             json.dump(self.config_data, outfile, indent=2)
+
+        self.machine_spec = None
 
         from .distribute_run import distribute_run
         distribute_run(self)
