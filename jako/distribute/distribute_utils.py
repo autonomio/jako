@@ -198,6 +198,23 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
     sftp.close()
 
 
+def get_stdout(self, stdout, stderr, check_errline=False):
+
+    if stderr:
+        for line in stderr.read().splitlines():
+            try:
+                # Process each error line in the remote output
+                print(line)
+            except Exception as e:
+                print(e)
+    for line in stdout.read().splitlines():
+        try:
+            # Process each line in the remote output
+            print(line)
+        except Exception as e:
+            print(e)
+
+
 def ssh_run(self, client, machine_id):
     '''Run the transmitted script remotely without args and show its output.
 
@@ -213,22 +230,9 @@ def ssh_run(self, client, machine_id):
     '''
     execute_str = 'python3 /tmp/{}/jako_scanfile_remote.py'.format(
         self.experiment_name)
-    stdin, stdout, stderr = client.exec_command(execute_str)
+    _, stdout, stderr = client.exec_command(execute_str)
 
-    if stderr:
-        for line in stderr:
-            try:
-                # Process each error line in the remote output
-                print(line)
-            except Exception as e:
-                print(e)
-
-    for line in stdout:
-        try:
-            # Process each line in the remote output
-            print(line)
-        except Exception as e:
-            print(e)
+    get_stdout(self, stdout, stderr)
 
 
 def ssh_get_files(self, client, machine_id):
