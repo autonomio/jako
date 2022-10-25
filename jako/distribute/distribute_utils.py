@@ -199,20 +199,25 @@ def ssh_file_transfer(self, client, machine_id, extra_files=None):
 
 
 def get_stdout(self, stdout, stderr, check_errline=False):
-
+    out = None
     if stderr:
         for line in stderr.read().splitlines():
-            try:
-                # Process each error line in the remote output
-                print(line)
-            except Exception as e:
-                print(e)
-    for line in stdout.read().splitlines():
-        try:
-            # Process each line in the remote output
+            # Process each error line in the remote output
             print(line)
-        except Exception as e:
-            print(e)
+            if check_errline:
+                if 'docker: command not found' in line:
+                    out = 'docker_error'
+                if "ERROR: Unsupported distribution 'amzn'" in line:
+                    out = 'amazon_machine_spec_error'
+    if stdout:
+        for line in stdout.read().splitlines():
+            print(line)
+            if check_errline:
+                if 'docker: command not found' in line:
+                    out = 'docker_error'
+                if "ERROR: Unsupported distribution 'amzn'" in line:
+                    out = 'amazon_machine_spec_error'
+    return out
 
 
 def ssh_run(self, client, machine_id):
