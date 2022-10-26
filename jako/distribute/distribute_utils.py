@@ -213,8 +213,8 @@ def get_stdout(self, stdout, stderr):
     '''
     out = None
     allowed__errors = {
-        'docker: command not found': 'docker_error',
-        "ERROR: Unsupported distribution 'amzn'": 'amazon_machine_spec_error'}
+        "docker: command not found": "docker_error",
+        "ERROR: Unsupported distribution 'amzn'": "amazon_machine_spec_error"}
 
     def __check_errline(line, allowed__errors):
         out = None
@@ -222,21 +222,26 @@ def get_stdout(self, stdout, stderr):
             if err in line:
                 out = allowed__errors[err]
 
+        if not out:
+            print(line)
+
         return out
 
     if stderr:
         for line in stderr.read().splitlines():
             # Process each error line in the remote output
-            line = str(line)
-            out = __check_errline(line, allowed__errors)
-            if not out:
-                print(line)
+            line = line.decode()
+            stderr_flag = __check_errline(line, allowed__errors)
+            if stderr_flag:
+                out = stderr_flag
+
     if stdout:
         for line in stdout.read().splitlines():
-            line = str(line)
-            out = __check_errline(line, allowed__errors)
-            if not out:
-                print(line)
+            line = line.decode()
+            stdout_flag = __check_errline(line, allowed__errors)
+            if stdout_flag:
+                out = stdout_flag
+
     return out
 
 
