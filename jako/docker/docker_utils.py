@@ -182,6 +182,18 @@ def docker_install(self, client, machine_id):
                 get_stdout(self, stdout, stderr)
 
 
+def check_architecture(self, client):
+    cmd = 'uname -m'
+    _, stdout, stderr = client.exec_command(cmd)
+    print('-'*100)
+    print(stdout, stderr)
+    if 'x86_64' in stdout or 'x86_64' in stderr:
+        arch = 'amd'
+    else:
+        arch = 'arm'
+    return arch
+
+
 def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
 
@@ -199,8 +211,14 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
     docker_install(self, client, machine_id)
 
-    pull = ['sudo docker pull abhijithneilabraham/jako_docker_image']
-    execute_strings += pull
+    arch = check_architecture(self, client)
+
+    if arch == 'amd':
+        pull = 'sudo docker pull abhijithneilabraham/jako_docker_image'
+    elif arch == 'arm':
+        pull = 'sudo docker pull abhijithneilabraham/jako_docker_image_arm64'
+
+    execute_strings.append(pull)
 
     if db_machine:
 
