@@ -23,8 +23,26 @@ def write_shell_script(self):
             f.write(command + '\n')
 
 
-def write_dockerfile(self):
-    commands = ['FROM abhijithneilabraham/jako_docker_image',
+def check_architecture(self, client):
+    cmd = 'uname -m'
+    _, stdout, stderr = client.exec_command(cmd)
+    print('-'*100)
+    print(stdout, stderr)
+    if 'x86_64' in stdout or 'x86_64' in stderr:
+        arch = 'amd'
+    else:
+        arch = 'arm'
+    return arch
+
+
+def write_dockerfile(self, arch):
+
+    if arch == 'amd':
+        image_pull = 'FROM abhijithneilabraham/jako_docker_image'
+    elif arch == 'arm':
+        image_pull = 'FROM abhijithneilabraham/jako_docker_image_arm64'
+
+    commands = [image_pull,
                 'RUN mkdir -p /tmp/',
                 'COPY jako_scanfile_remote.py /tmp/jako_scanfile_remote.py',
                 'COPY jako_x_data_remote.npy /tmp/jako_x_data_remote.npy',
@@ -77,8 +95,10 @@ def modify_docker_compose(self):
 
 def docker_ssh_file_transfer(self, client, db_machine=False):
     '''Transfer the docker scripts to the remote machines'''
+    arch = check_architecture(self, client)
+    self.arch = arch
 
-    write_dockerfile(self)
+    write_dockerfile(self, arch)
 
     sftp = client.open_sftp()
 
@@ -182,18 +202,6 @@ def docker_install(self, client, machine_id):
                 get_stdout(self, stdout, stderr)
 
 
-def check_architecture(self, client):
-    cmd = 'uname -m'
-    _, stdout, stderr = client.exec_command(cmd)
-    print('-'*100)
-    print(stdout, stderr)
-    if 'x86_64' in stdout or 'x86_64' in stderr:
-        arch = 'amd'
-    else:
-        arch = 'arm'
-    return arch
-
-
 def docker_image_setup(self, client, machine_id, db_machine=False):
     '''Run the transmitted script remotely without args and show its output.
 
@@ -211,7 +219,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
 
     docker_install(self, client, machine_id)
 
-    arch = check_architecture(self, client)
+    arch = self.arch
 
     if arch == 'amd':
         pull = 'sudo docker pull abhijithneilabraham/jako_docker_image'
