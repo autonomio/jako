@@ -24,14 +24,30 @@ def write_shell_script(self):
 
 
 def check_architecture(self, client):
+
     cmd = 'uname -m'
     _, stdout, stderr = client.exec_command(cmd)
-    print('-'*100)
-    print(stdout, stderr)
-    if 'x86_64' in stdout or 'x86_64' in stderr:
-        arch = 'amd'
-    else:
-        arch = 'arm'
+    arch = 'amd'
+
+    if stderr:
+        for line in stderr.read().splitlines():
+            # Process each error line in the remote output
+            line = line.decode()
+            if 'x86_64' in line:
+                arch = 'amd'
+                return arch
+            else:
+                arch = 'arm'
+
+    if stdout:
+        for line in stdout.read().splitlines():
+            line = line.decode()
+            if 'x86_64' in line:
+                arch = 'amd'
+                return arch
+            else:
+                arch = 'arm'
+
     return arch
 
 
