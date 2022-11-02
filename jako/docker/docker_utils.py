@@ -249,7 +249,7 @@ def docker_image_setup(self, client, machine_id, db_machine=False):
         if self.machine_spec == 'amazon_linux':
             compose_install_cmd = 'sudo curl -L '
             compose_install_cmd += 'https://github.com/docker/compose/'
-            compose_install_cmd += 'releases/download/1.22.0/'
+            compose_install_cmd += 'releases/latest/download/'
             compose_install_cmd += 'docker-compose-$(uname -s)-$(uname -m)'
             compose_install_cmd += ' -o /usr/local/bin/docker-compose'
 
