@@ -214,7 +214,8 @@ def get_stdout(self, stdout, stderr):
     out = None
     allowed__errors = {
         "docker: command not found": "docker_error",
-        "ERROR: Unsupported distribution 'amzn'": "amazon_machine_spec_error"}
+        "ERROR: Unsupported distribution 'amzn'": "amazon_machine_spec_error",
+        }
 
     def __check_errline(line, allowed__errors):
         out = None
@@ -242,6 +243,13 @@ def get_stdout(self, stdout, stderr):
             if stdout_flag:
                 out = stdout_flag
 
+    return out
+
+
+def detect_machine(self, client):
+    execute_str = r"grep -Po '(^|[ ,])NAME=\K[^,]*' /etc/os-release"
+    _, stdout, stderr = client.exec_command(execute_str)
+    out = get_stdout(self, stdout, stderr)
     return out
 
 
