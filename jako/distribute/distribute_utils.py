@@ -214,7 +214,6 @@ def get_stdout(self, stdout, stderr):
     out = None
     allowed__errors = {
         "docker: command not found": "docker_error",
-        "ERROR: Unsupported distribution 'amzn'": "amazon_machine_spec_error",
         }
 
     def __check_errline(line, allowed__errors):
@@ -247,9 +246,31 @@ def get_stdout(self, stdout, stderr):
 
 
 def detect_machine(self, client):
+    '''
+    Detect the machine in which the remote distribution is running in
+    '''
+
+    machines = {
+        "Amazon Linux": 'amazon_linux'
+        }
     execute_str = r"grep -Po '(^|[ ,])NAME=\K[^,]*' /etc/os-release"
     _, stdout, stderr = client.exec_command(execute_str)
-    out = get_stdout(self, stdout, stderr)
+
+    def __check_machine(line, machines):
+        out = None
+        for machine in machines.keys():
+            if machine in line:
+                out = machines[machine]
+
+        return out
+
+    out = None
+
+    if stdout:
+        for line in stdout.read().splitlines():
+            line = line.decode()
+            out = __check_machine(line, machines)
+
     return out
 
 
