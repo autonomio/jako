@@ -1,7 +1,7 @@
 import os
 import shutil
 from ..distribute.distribute_database import get_db_host
-from ..distribute.distribute_utils import get_stdout
+from ..distribute.distribute_utils import get_stdout, detect_machine
 
 
 def docker_install_commands(self):
@@ -191,6 +191,8 @@ def docker_install(self, client, machine_id):
     if out == "docker_error":
         dockerflag = False
 
+    self.machine_spec = detect_machine(self, client)
+
     if not dockerflag:
         install = ['chmod +x /tmp/{}/jako_docker.sh'.format(
             self.experiment_name),
@@ -200,9 +202,6 @@ def docker_install(self, client, machine_id):
         for execute_str in install:
             stdin, stdout, stderr = client.exec_command(execute_str)
             out = get_stdout(self, stdout, stderr)
-
-            if out == 'amazon_machine_spec_error':
-                self.machine_spec = 'amazon_linux'
 
         if self.machine_spec == 'amazon_linux':
             cmds = [
