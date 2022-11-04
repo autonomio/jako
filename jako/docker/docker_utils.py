@@ -60,26 +60,29 @@ def write_dockerfile(self, arch):
 
     commands = [image_pull,
                 'RUN mkdir -p /tmp/',
-                'COPY jako_scanfile_remote.py /tmp/jako_scanfile_remote.py',
-                'COPY jako_x_data_remote.npy /tmp/jako_x_data_remote.npy',
-                'COPY jako_y_data_remote.npy /tmp/jako_y_data_remote.npy',
+                'RUN mkdir -p /tmp/{}/',
+                'COPY jako_scanfile_remote.py /tmp/{}/jako_scanfile_remote.py',
+                'COPY jako_x_data_remote.npy /tmp/{}/jako_x_data_remote.npy',
+                'COPY jako_y_data_remote.npy /tmp/{}/jako_y_data_remote.npy',
                 ]
-
     if self.x_val and self.y_val:
         commands += [
                 '''COPY jako_x_val_data_remote.npy
-                /tmp/jako_x_val_data_remote.npy'''.replace('\n', ''),
+                /tmp/{}/jako_x_val_data_remote.npy'''.replace('\n', ''),
                 '''COPY jako_y_val_data_remote.npy
-                /tmp/jako_y_val_data_remote.npy'''.replace('\n', '')
+                /tmp/{}/jako_y_val_data_remote.npy'''.replace('\n', '')
                 ]
 
     commands += [
                 '''COPY jako_arguments_remote.json
-                /tmp/jako_arguments_remote.json'''.replace('\n', ''),
-                'COPY jako_remote_config.json /tmp/jako_remote_config.json',
-                'CMD python3 /tmp/jako_scanfile_remote.py',
+                /tmp/{}/jako_arguments_remote.json'''.replace('\n', ''),
+                'COPY jako_remote_config.json /tmp/{}/jako_remote_config.json',
+                'CMD python3 /tmp/{}/jako_scanfile_remote.py',
                 'RUN chmod -R 777 /tmp/'
                 ]
+
+    experiment_name = self.experiment_name
+    commands = [cmd.format(experiment_name) for cmd in commands]
 
     with open('/tmp/{}/Dockerfile'.format(
             self.experiment_name), 'w') as f:

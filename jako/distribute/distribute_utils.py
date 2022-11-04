@@ -27,31 +27,31 @@ import json
 import pickle
 from os.path import exists
 
-with open('/tmp/jako_arguments_remote.json','r') as f:
+with open('/tmp/{0}/jako_arguments_remote.json','r') as f:
     arguments_dict=json.load(f)
 
 
-x=np.load('/tmp/jako_x_data_remote.npy',allow_pickle=True)
-y=np.load('/tmp/jako_y_data_remote.npy',allow_pickle=True)
+x=np.load('/tmp/{0}/jako_x_data_remote.npy',allow_pickle=True)
+y=np.load('/tmp/{0}/jako_y_data_remote.npy',allow_pickle=True)
 
-if exists('/tmp/jako_x_val_data_remote.npy'):
-    x_val=np.load('/tmp/jako_x_val_data_remote.npy',allow_pickle=True)
+if exists('/tmp/{0}/jako_x_val_data_remote.npy'):
+    x_val=np.load('/tmp/{0}/jako_x_val_data_remote.npy',allow_pickle=True)
 else:
     x_val=None
 
-if exists('/tmp/jako_y_val_data_remote.npy'):
-    y_val=np.load('/tmp/jako_y_val_data_remote.npy',allow_pickle=True)
+if exists('/tmp/{0}/jako_y_val_data_remote.npy'):
+    y_val=np.load('/tmp/{0}/jako_y_val_data_remote.npy',allow_pickle=True)
 else:
     y_val=None
 
-{}
+{1}
 
 
 
 t=RemoteScan(x=x,
              y=y,
              params=arguments_dict['params'],
-             model={},
+             model={2},
              experiment_name=arguments_dict['experiment_name'],
              x_val=x_val,
              y_val=y_val,
@@ -73,9 +73,9 @@ t=RemoteScan(x=x,
              print_params=arguments_dict['print_params'],
              clear_session=arguments_dict['clear_session'],
              save_weights=arguments_dict['save_weights'],
-             config='/tmp/jako_remote_config.json'
+             config='/tmp/{0}/jako_remote_config.json'
              )
-    '''.format(self.model_func, self.model_name)
+    '''.format(experiment_name, self.model_func, self.model_name)
 
     with open("/tmp/{}/jako_scanfile_remote.py".format(
             experiment_name), "w") as f:
