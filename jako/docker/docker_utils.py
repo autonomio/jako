@@ -288,8 +288,8 @@ def docker_scan_run(self, client, machine_id):
              experiment_name + '/Dockerfile /tmp/' + experiment_name + '/']
     execute_strings = [
         'sudo docker run  --name jako_docker_remote jako_docker_remote',
-        'sudo docker container cp -a jako_docker_remote:/tmp/ /tmp/' +
-        experiment_name + '/',
+        'sudo docker container cp -a jako_docker_remote:/tmp/' +
+        experiment_name + ' /tmp/',
         'sudo docker stop jako_docker_remote',
         'sudo docker rm jako_docker_remote']
 

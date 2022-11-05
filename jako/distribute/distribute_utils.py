@@ -214,6 +214,7 @@ def get_stdout(self, stdout, stderr):
     out = None
     allowed__errors = {
         "docker: command not found": "docker_error",
+        "ERROR: Unsupported distribution 'amzn'": 'amazon_docker_install_error'
         }
 
     def __check_errline(line, allowed__errors):
@@ -306,9 +307,9 @@ def ssh_get_files(self, client, machine_id):
 
     sftp.chdir(self.dest_dir)
 
-    for file in sftp.listdir(self.dest_dir + '/tmp/'):
+    for file in sftp.listdir(self.dest_dir):
         if file.endswith(scan_object_filenames):
-            sftp.get(self.dest_dir + '/tmp/' + file, '/tmp/{}/'.format(
+            sftp.get(self.dest_dir + file, '/tmp/{}/'.format(
                 self.experiment_name) + file)
 
     sftp.close()
