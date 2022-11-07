@@ -12,12 +12,8 @@ class RemoteScan(Scan):
                  y_val,
                  **kwargs):
         '''
-    Distributed version of talos.Scan() for the local machine.
-    USE: jako.DistributedScan(x=x,
-                                y=y,
-                                params=params_dict,
-                                model=model,
-                                config=config)
+    Distributed version of talos.Scan() for the Remote machine.
+
     # CORE ARGUMENTS
     ----------------
     x : ndarray
