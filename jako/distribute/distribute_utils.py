@@ -123,6 +123,34 @@ def write_config(self, new_config):
         json.dump(new_config, outfile, indent=2)
 
 
+def check_architecture(self, client):
+
+    cmd = 'uname -m'
+    _, stdout, stderr = client.exec_command(cmd)
+    arch = 'amd'
+
+    if stderr:
+        for line in stderr.read().splitlines():
+            # Process each error line in the remote output
+            line = line.decode()
+            if 'x86_64' in line:
+                arch = 'amd'
+                return arch
+            else:
+                arch = 'arm'
+
+    if stdout:
+        for line in stdout.read().splitlines():
+            line = line.decode()
+            if 'x86_64' in line:
+                arch = 'amd'
+                return arch
+            else:
+                arch = 'arm'
+
+    return arch
+
+
 def ssh_connect(self):
     '''
     Returns
