@@ -2,6 +2,7 @@ import os
 import shutil
 from ..distribute.distribute_database import get_db_host
 from ..distribute.distribute_utils import get_stdout, detect_machine
+from ..distribute.distribute_utils import check_architecture
 
 
 def docker_install_commands(self):
@@ -21,34 +22,6 @@ def write_shell_script(self):
             self.experiment_name), 'w') as f:
         for command in commands:
             f.write(command + '\n')
-
-
-def check_architecture(self, client):
-
-    cmd = 'uname -m'
-    _, stdout, stderr = client.exec_command(cmd)
-    arch = 'amd'
-
-    if stderr:
-        for line in stderr.read().splitlines():
-            # Process each error line in the remote output
-            line = line.decode()
-            if 'x86_64' in line:
-                arch = 'amd'
-                return arch
-            else:
-                arch = 'arm'
-
-    if stdout:
-        for line in stdout.read().splitlines():
-            line = line.decode()
-            if 'x86_64' in line:
-                arch = 'amd'
-                return arch
-            else:
-                arch = 'arm'
-
-    return arch
 
 
 def write_dockerfile(self, arch):
